@@ -1,0 +1,8 @@
+1
+00:00:00,000 --> 00:00:03,080
+ This is an ARK-X cinema whisper test.
+
+2
+00:00:03,080 --> 00:00:08,660
+ The system is processing spoken English and checking whether whisper can accurately recognize the words.
+

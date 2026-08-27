@@ -1,0 +1,2 @@
+This is an ARK-X cinema whisper test.
+The system is processing spoken English and checking whether whisper can accurately recognize the words.
