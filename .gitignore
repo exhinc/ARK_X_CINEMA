@@ -1,5 +1,5 @@
-ï»¿# ================================
-# ARK X CINEMA â€” GITIGNORE
+# ================================
+# ARK X CINEMA — GITIGNORE
 # ================================
 
 # Python
@@ -25,13 +25,12 @@ Thumbs.db
 desktop.ini
 
 # Logs / runtime output
-Logs/
 *.log
 
 # Whisper test/runtime directories
 Engine/_whisper_test/
 
-# Large source media â€” NEVER commit
+# Large source media — NEVER commit
 *.mp4
 *.mkv
 *.mov
@@ -53,6 +52,7 @@ Movies/
 # Projects/ contains intentional production metadata,
 # manifests, state files, and production subtitle artifacts.
 
-# Movie source directory â€” structure only; all contents remain local
+# Movie source directory — structure only; all contents remain local
 Movies/*
 !Movies/.gitkeep
+
