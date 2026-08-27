@@ -1,0 +1,41 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Logs generated during operation
+*.log
+
+# Temporary whisper test directories
+Engine/_whisper_test/
+
+# Runtime/cache files
+*.cache
+
+# Large generated media should generally not be committed to Git
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.wav
+*.mp3
+*.m4a
+
+# Generated subtitle/transcription outputs can be committed selectively,
+# but do not automatically commit every generated artifact.

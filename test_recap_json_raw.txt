@@ -1,0 +1,18 @@
+{
+  "00:00:00", "narration sentence(s) for this beat": "A mysterious platform system unfolds, with each meal a test of survival."
+  "00:00:06", "timestamp": "00:00:06"
+  "00:00:08", "text": "Netflix presents a co-production with Basque films and Mr. Miyagi's I.E. movie platform."
+  "00:00:10", "text": "A Basque film production and participation from RTV."
+  "00:00:12", "text": "In co-production with Mr. Miyagi."
+  "00:00:14", "text": "A I.E. movie platform with participation of RTV."
+  "00:00:17", "text": "E.T.B."
+  "00:00:30", "music": "A haunting melody plays as the camera pans over the platform's food preparation area."
+  "00:00:49", "timestamp": "00:00:49"
+  "00:00:54", "text": "The white-haired man watches oranges tumble down a metal spiral."
+  "00:00:57", "text": "A red-haired white woman nods in response."
+  "00:00:59", "timestamp": "00:00:59"
+  "00:01:01", "text": "The white-haired man moves on."
+  "00:01:04", "text": "Cooks carry prepared dishes on trays."
+  "00:01:06", "timestamp": "00:01:06"
+  "00:01:08", "text": "He touches meat hanging from the ceiling, then pierces at his fingers."
+}

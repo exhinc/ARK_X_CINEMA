@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "model": "llama3.2:1b",
+  "movie": "The Platform (2019)",
+  "sample_entries": 15,
+  "generation_seconds": 23.92,
+  "segments": [],
+  "errors": [
+    "JSON parsing failed: Expecting ':' delimiter: line 2 column 13 (char 14)"
+  ]
+}
