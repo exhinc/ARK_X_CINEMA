@@ -1,26 +1,28 @@
-﻿{
-    "project_name":  "ARK X Cinema",
-    "version":  "0.1.0",
-    "root":  "C:\\Users\\owena\\Desktop\\ARK_X_CINEMA",
-    "whisper_root":  "C:\\Whisper\\Release",
-    "whisper_model":  "C:\\Whisper\\Release\\ggml-base.en.bin",
-    "ollama_model":  "qwen3:1.7b",
-    "paths":  {
-                  "movies":  "Movies",
-                  "transcripts":  "Transcripts",
-                  "scenes":  "Scenes",
-                  "analysis":  "Analysis",
-                  "scripts":  "Scripts",
-                  "narration":  "Narration",
-                  "visuals":  "Visuals",
-                  "subtitles":  "Subtitles",
-                  "projects":  "Projects",
-                  "finished":  "Finished",
-                  "logs":  "Logs",
-                  "upload":  "Upload"
-              },
-    "limits":  {
-                   "max_parallel_heavy_stages":  1,
-                   "ram_priority":  "strict"
-               }
+{
+  "project_name": "ARK X Cinema",
+  "version": "0.2.0",
+  "root": ".",
+  "whisper_root": "Tools/Whisper",
+  "whisper_executable": "Tools/Whisper/whisper-cli.exe",
+  "whisper_model": "Tools/Whisper/ggml-base.en.bin",
+  "ollama_url": "http://127.0.0.1:11434/api/generate",
+  "ollama_model": "qwen3:1.7b",
+  "paths": {
+    "movies": "Movies",
+    "transcripts": "Transcripts",
+    "scenes": "Scenes",
+    "analysis": "Analysis",
+    "scripts": "Scripts",
+    "narration": "Narration",
+    "visuals": "Visuals",
+    "subtitles": "Subtitles",
+    "projects": "Projects",
+    "finished": "Finished",
+    "logs": "Logs",
+    "upload": "Upload"
+  },
+  "limits": {
+    "max_parallel_heavy_stages": 1,
+    "ram_priority": "strict"
+  }
 }
