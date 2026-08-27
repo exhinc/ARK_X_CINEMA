@@ -12,15 +12,11 @@ from movie_intelligence import build_intelligence_schema, build_scene_packets  #
 def test_packets_preserve_scene_provenance():
     timeline = {
         "scenes": [{
-            "scene_id": "movie_scene_0001",
-            "start": "00:00:01,000",
-            "end": "00:00:04,000",
-            "duration_ms": 3000,
-            "sources": ["ad", "subtitle"],
-            "cues": [
+            "scene_id": "movie_scene_0001", "start": "00:00:01,000", "end": "00:00:04,000", "duration_ms": 3000,
+            "sources": ["ad", "subtitle"], "cues": [
                 {"source": "subtitle", "start": "00:00:01,000", "end": "00:00:02,000", "text": "Run!"},
                 {"source": "ad", "start": "00:00:02,000", "end": "00:00:03,000", "text": "A man runs outside."},
-            ],
+            ]
         }]
     }
     packets = build_scene_packets(timeline)
@@ -29,16 +25,15 @@ def test_packets_preserve_scene_provenance():
     assert [x["source"] for x in packets[0]["evidence"]] == ["subtitle", "ad"]
 
 
-def test_packets_are_bounded():
+def test_packets_never_exceed_hard_limit_even_for_oversized_cue():
     timeline = {"scenes": [{
         "scene_id": "s1", "start": "00:00:00,000", "end": "00:01:00,000", "duration_ms": 60000,
-        "sources": ["ad"], "cues": [
-            {"source": "ad", "start": "00:00:00,000", "end": "00:00:01,000", "text": "x" * 2000},
-            {"source": "ad", "start": "00:00:02,000", "end": "00:00:03,000", "text": "y" * 5000},
-        ]
+        "sources": ["ad"], "cues": [{"source": "ad", "start": "00:00:00,000", "end": "00:00:01,000", "text": "x" * 5000}]
     }]}
-    packet = build_scene_packets(timeline, max_chars_per_packet=2500)[0]
-    assert packet["evidence_characters"] <= 2500
+    packets = build_scene_packets(timeline, max_chars_per_packet=2500)
+    assert len(packets) >= 2
+    assert all(packet["evidence_characters"] <= 2500 for packet in packets)
+    assert "".join(item["text"] for packet in packets for item in packet["evidence"]) == "x" * 5000
 
 
 def test_schema_requires_unknown_and_provenance_safe_outputs():
