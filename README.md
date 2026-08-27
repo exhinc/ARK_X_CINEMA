@@ -1,0 +1,681 @@
+# ARK X Cinema
+
+### Stories Beyond the Screen
+
+**A local-first, low-resource movie-recap production engine for Windows.**
+
+ARK X Cinema is an automated YouTube movie-recap production system designed to transform a legally obtained movie/source package into the structured assets required for an original recap video.
+
+The system is being engineered around three principles:
+
+- **Maximum practical automation**
+- **$0/month software and infrastructure**
+- **Human final QA and approval**
+
+The long-term production target is **3 different recap videos per day** while remaining practical on a low-RAM Windows laptop.
+
+> **Project status:** Active development  
+> **Current architecture:** Locked  
+> **Current milestone:** Production-engineering buildout  
+> **Default branch:** `master`
+
+---
+
+## What ARK X Cinema Does
+
+The system is designed to automate the production chain from source ingestion through final-video preparation:
+
+```text
+LEGAL MOVIE SOURCE PACKAGE
+          │
+          ▼
+    SOURCE INSPECTION
+          │
+          ▼
+  SUBTITLE / AUDIO DISCOVERY
+          │
+          ├───────────────┐
+          ▼               ▼
+   MOVIE SUBTITLES     AD AUDIO
+                          │
+                          ▼
+                     whisper.cpp
+                          │
+                          ▼
+                       AD SRT
+                          │
+          ┌───────────────┴───────────────┐
+          ▼                               ▼
+    SPOKEN CONTENT                 VISUAL / ACTION
+          │                               │
+          └───────────────┬───────────────┘
+                          ▼
+                 MOVIE INTELLIGENCE
+                          │
+                          ▼
+                  RECAP GENERATION
+                          │
+                          ▼
+                    NARRATION
+                          │
+                          ▼
+                  SCENE SELECTION
+                          │
+                          ▼
+                       FFmpeg
+                          │
+                          ▼
+                    FINAL VIDEO
+                          │
+                          ▼
+                    HUMAN QA
+                          │
+                          ▼
+                    UPLOAD READY
+```
+
+The architecture is intentionally staged so heavy AI workloads can be processed sequentially rather than simultaneously.
+
+---
+
+# Core Architecture
+
+## 1. Source Package Inspection
+
+ARK X Cinema accepts a movie as either:
+
+```text
+Movies/
+└── Movie Name/
+    ├── movie.mkv
+    ├── subtitles.srt
+    └── audio_description.mp3
+```
+
+or a standalone movie file.
+
+The engine discovers available video, subtitle, and audio assets and uses FFprobe to inspect media properties.
+
+The primary movie is selected from valid video candidates, with the largest valid video generally preferred to avoid accidentally selecting trailers, samples, or previews.
+
+---
+
+## 2. Subtitle Handling
+
+The engine can work with:
+
+- External subtitle files
+- Embedded subtitle streams
+- SRT and other supported subtitle formats
+
+Subtitle data is normalized toward SRT for downstream processing.
+
+English subtitle streams are preferred when multiple embedded streams are available.
+
+---
+
+# 3. Audio Description Pipeline
+
+### This is a locked architectural decision.
+
+ARK X Cinema does **not** require the user to supply an existing AD SRT.
+
+The actual input is the separately supplied Audio Description audio:
+
+```text
+AD MP3 / M4A / WAV / etc.
+             │
+             ▼
+        whisper.cpp
+             │
+             ▼
+    Timestamped AD SRT
+             │
+             ▼
+      Movie Intelligence
+```
+
+The AD transcript is treated as a **primary intelligence source**.
+
+This matters because Audio Description can contain information that ordinary dialogue subtitles do not provide, including:
+
+- Visual descriptions
+- Character actions
+- Physical movements
+- Scene context
+- Environmental information
+- Spoken dialogue/information
+- Timing information
+
+Therefore, AD data must not be discarded after transcription.
+
+### Locked rule
+
+> **Never assume an AD SRT already exists when the source package contains AD audio.**
+
+The AD audio must be capable of being converted into its timestamped SRT representation by the pipeline.
+
+---
+
+# 4. Movie Intelligence
+
+The movie-intelligence layer combines timestamped information from available sources.
+
+Conceptually:
+
+```text
+Movie subtitles ───────┐
+                       │
+AD transcript ─────────┤
+                       │
+Scene information ─────┤
+                       ▼
+                Movie Intelligence
+                       │
+                       ▼
+             Timestamped factual notes
+```
+
+The objective is to create a structured understanding of the movie that can support original recap generation and downstream scene selection.
+
+---
+
+# 5. Recap Generation
+
+The recap-generation layer transforms structured movie information into a recap representation suitable for narration and editing.
+
+The project currently includes dedicated testing around recap JSON validation.
+
+The intended direction is:
+
+```text
+Movie Intelligence
+        │
+        ▼
+Recap Generator
+        │
+        ▼
+Validated structured recap
+        │
+        ├───────────────┐
+        ▼               ▼
+   Narration        Timestamps
+```
+
+Structured intermediate data is preferred over passing unstructured text directly between every stage.
+
+---
+
+# 6. Narration
+
+The narration stage is designed to convert the approved recap script into spoken audio.
+
+The architecture is intentionally modular so the narration implementation can evolve without redesigning the movie-intelligence pipeline.
+
+---
+
+# 7. Scene Selection & Video Assembly
+
+Timestamped recap information provides the basis for selecting appropriate portions of the legally obtained source material.
+
+FFmpeg is the primary media-processing engine.
+
+The intended production flow is:
+
+```text
+Recap timestamps
+       │
+       ▼
+Scene selection
+       │
+       ▼
+Source clips
+       │
+       ├── Narration
+       ├── Subtitles
+       ├── Music
+       └── SFX / additional assets
+              │
+              ▼
+          FFmpeg
+              │
+              ▼
+         Final Video
+```
+
+---
+
+# 8. Quality Assurance
+
+ARK X Cinema is designed around **human final approval**.
+
+Automation should perform as much deterministic QA as practical, but a video is not considered production-ready merely because the script completed without an exception.
+
+Final human QA is responsible for confirming:
+
+- Story accuracy
+- Narration quality
+- Scene synchronization
+- Visual relevance
+- Audio balance
+- Subtitle quality
+- Rendering integrity
+- Overall viewer quality
+- Copyright/compliance considerations
+
+---
+
+# Resource-Constrained Design
+
+ARK X Cinema is being developed for a low-resource Windows machine rather than assuming access to a cloud GPU.
+
+Current audited baseline includes approximately:
+
+- Windows 11
+- Intel Core i3-1115G4
+- 2 physical CPU cores / 4 logical processors
+- Approximately 7.65 GB usable RAM
+- Intel UHD Graphics
+- Approximately 475.6 GB system storage
+- Approximately 143 GB free storage at the recorded audit
+
+The system therefore follows a strict resource philosophy:
+
+```text
+ONE HEAVY AI STAGE
+       │
+       ▼
+     RUN
+       │
+       ▼
+RELEASE RESOURCES
+       │
+       ▼
+NEXT HEAVY AI STAGE
+```
+
+The current target is approximately **≤2 GB additional RAM for the AI workload** where practical.
+
+Configuration explicitly limits concurrent heavy stages:
+
+```json
+{
+  "max_parallel_heavy_stages": 1,
+  "ram_priority": "strict"
+}
+```
+
+---
+
+# Current Software Baseline
+
+The recorded environment includes:
+
+| Component | Current baseline |
+|---|---|
+| Operating System | Windows 11 |
+| Python | 3.14.6 |
+| FFmpeg | 9.0 |
+| FFprobe | Available |
+| Ollama | 0.33.0 |
+| Qwen | `qwen3:1.7b` |
+| Llama | `llama3.2:1b` |
+| Whisper | whisper.cpp |
+| Version Control | Git |
+| Node.js | Installed |
+
+The repository configuration points to the local Whisper installation and Qwen model. Configuration is kept separately in `Config/config.json`.
+
+---
+
+# Repository Structure
+
+```text
+ARK_X_CINEMA/
+│
+├── Analysis/                  # Movie intelligence / analysis outputs
+├── Backups/                   # Historical development backups
+├── Config/                    # Runtime configuration
+│   └── config.json
+│
+├── Control/                   # User-facing production control
+│   ├── ark_cinema.py
+│   └── Launch_ARK_X_Cinema.vbs
+│
+├── Engine/                    # Core production engine
+│   ├── orchestrator.py
+│   └── Tests/
+│
+├── Finished/                  # Completed video outputs
+├── Logs/                      # Runtime logs
+├── Movies/                    # Legally obtained source packages
+├── Music/                     # Music assets
+├── Narration/                 # Generated narration
+├── Projects/                  # Per-movie project state
+├── Research/                  # Research material
+├── Scenes/                    # Scene-selection assets/data
+├── Scripts/                   # Generated recap scripts
+├── SFX/                       # Sound effects
+├── Subtitles/                 # Final subtitle assets
+├── Thumbnails/                # Thumbnail assets
+├── Transcripts/               # Transcript and transcription outputs
+├── Upload/                    # Upload-ready packages
+└── Visuals/                   # Visual assets
+│
+├── Project_Control/
+│   ├── PROJECT_STATE.md
+│   ├── CURRENT_TASK.md
+│   ├── DECISIONS.md
+│   ├── CHANGELOG.md
+│   └── TEST_RESULTS.md
+│
+└── RUN_ARK_X_CINEMA.bat
+```
+
+---
+
+# Project Control System
+
+ARK X Cinema does not rely on chat history as its permanent source of truth.
+
+The repository contains a dedicated project-control layer.
+
+### `PROJECT_STATE.md`
+
+Defines the current authoritative project state.
+
+### `CURRENT_TASK.md`
+
+Defines what is being worked on now and what must happen next.
+
+### `DECISIONS.md`
+
+Contains architecture decisions that must not be silently reversed.
+
+### `CHANGELOG.md`
+
+Records significant implementation and architecture changes.
+
+### `TEST_RESULTS.md`
+
+Records test inputs, expected results, actual results, PASS/FAIL status, and observations.
+
+### AI handoff rule
+
+Any AI agent working on ARK X Cinema should read:
+
+```text
+Project_Control/PROJECT_STATE.md
+Project_Control/CURRENT_TASK.md
+Project_Control/DECISIONS.md
+Project_Control/CHANGELOG.md
+Project_Control/TEST_RESULTS.md
+```
+
+before making architectural or production-code changes.
+
+The repository is the long-term source of truth.
+
+---
+
+# Current Test Evidence
+
+## Full Audio Description Transcription
+
+Tested against:
+
+```text
+The Platform (2019)
+Audio Description (AD).mp3
+```
+
+Approximate input size:
+
+```text
+135.8 MB
+```
+
+Result:
+
+```text
+PASS
+```
+
+The complete AD audio successfully passed through:
+
+```text
+AD AUDIO
+   ↓
+whisper.cpp
+   ↓
+TIMESTAMPED SRT
+```
+
+This validates the fundamental AD transcription architecture.
+
+Additional historical Whisper test artifacts are stored under:
+
+```text
+Transcripts/Tests/
+Engine/Tests/Whisper/
+```
+
+---
+
+# Example Project
+
+The repository contains a working project-state package for:
+
+```text
+The Platform — Sci-Fi — 2019
+```
+
+Current tracked artifacts include:
+
+```text
+Projects/
+└── The_Platform_-_Sci-Fi_2019/
+    ├── pipeline_state.json
+    ├── production.srt
+    ├── source.json
+    └── source_manifest.json
+```
+
+This project serves as an engineering test case rather than evidence that the complete end-to-end production pipeline is finished.
+
+---
+
+# Running ARK X Cinema
+
+The primary user-facing launcher is:
+
+```text
+RUN_ARK_X_CINEMA.bat
+```
+
+The control interface launches the production engine and provides:
+
+- Source detection
+- Production start/stop controls
+- Pipeline-stage display
+- Live production logging
+- Movie/finished/project folder access
+- QA report access
+- Runtime information
+
+The underlying production engine is:
+
+```text
+Engine/orchestrator.py
+```
+
+---
+
+# Development Philosophy
+
+ARK X Cinema follows several non-negotiable engineering principles.
+
+### 1. Verify before assuming
+
+An asset appearing in an architecture diagram does not mean the file actually exists.
+
+Always inspect the filesystem.
+
+### 2. Preserve architecture decisions
+
+A new implementation must not silently invalidate a locked architecture decision.
+
+Superseding an architecture decision requires an explicit new decision.
+
+### 3. Test before scaling
+
+The development progression is:
+
+```text
+Stage A
+1 finished video reliably
+        ↓
+Stage B
+1 video/day reliably
+        ↓
+Stage C
+2 videos/day reliably
+        ↓
+Stage D
+3 videos/day reliably
+```
+
+### 4. One heavy AI stage at a time
+
+Memory pressure is a first-class engineering constraint.
+
+### 5. Preserve failure history
+
+Failed tests are recorded rather than deleted.
+
+A later successful test does not erase earlier evidence.
+
+### 6. Human QA remains mandatory
+
+Automation increases throughput.
+
+It does not eliminate final editorial responsibility.
+
+---
+
+# Legal & Copyright Boundary
+
+ARK X Cinema is intended for content production using **legally obtained source material**.
+
+The project does not authorize or implement:
+
+- Piracy
+- DRM circumvention
+- Unauthorized acquisition
+- Copyright infringement
+
+Users are responsible for obtaining and using source material lawfully and for ensuring that resulting content complies with applicable copyright law and platform policies.
+
+The system's purpose is production automation—not circumvention.
+
+---
+
+# Roadmap
+
+## Phase 1 — Foundation
+
+- [x] System audit
+- [x] Repository established
+- [x] Project-control system established
+- [x] AD architecture locked
+- [x] Full AD transcription test
+- [x] Whisper output validation
+- [x] Source-package discovery
+- [x] Media inspection
+- [x] Initial recap JSON validation tests
+
+## Phase 2 — Production Engine
+
+- [ ] Complete movie-intelligence pipeline
+- [ ] Harden source ingestion
+- [ ] Harden scene detection
+- [ ] Complete recap generation
+- [ ] Complete narration pipeline
+- [ ] Complete scene-selection pipeline
+- [ ] Complete FFmpeg production rendering
+- [ ] Automated QA
+- [ ] End-to-end test movie
+
+## Phase 3 — Reliability
+
+- [ ] Repeatable one-video production
+- [ ] Failure recovery
+- [ ] Pipeline resume support
+- [ ] Resource/RAM measurements
+- [ ] Output validation
+- [ ] Production logging
+- [ ] Human-QA checkpoint
+
+## Phase 4 — Throughput
+
+- [ ] 1 video/day
+- [ ] 2 videos/day
+- [ ] 3 videos/day
+
+Throughput is increased only after the previous stage is reliable.
+
+---
+
+# Current Status
+
+### Architecture
+
+**LOCKED**
+
+### AD Audio → whisper.cpp → AD SRT
+
+**TESTED / SUCCESSFUL**
+
+### Source discovery
+
+**IMPLEMENTED**
+
+### Media inspection
+
+**IMPLEMENTED**
+
+### Project state tracking
+
+**IMPLEMENTED**
+
+### Production control GUI
+
+**IMPLEMENTED**
+
+### Recap structured-data testing
+
+**IMPLEMENTED / IN DEVELOPMENT**
+
+### Complete autonomous end-to-end production
+
+**NOT YET DECLARED PRODUCTION-READY**
+
+### Target
+
+**3 recap videos/day**
+
+---
+
+# The ARK X Cinema Principle
+
+> **Automate the production. Preserve the intelligence. Verify the output.**
+
+ARK X Cinema is being built as a production system—not merely a collection of scripts.
+
+Every stage should be:
+
+**observable → testable → recoverable → replaceable → scalable**
+
+The goal is not to make one impressive demo.
+
+The goal is to build a repeatable production machine.
