@@ -20,7 +20,6 @@ def test_stage_runner_uses_configured_model_and_writes_artifact(monkeypatch, tmp
         ollama_url = "http://127.0.0.1:11434/api/generate"
 
     monkeypatch.setattr(runner, "load_config", lambda: Config())
-    monkeypatch.setattr(runner, "validate_runtime", lambda config: [])
     monkeypatch.setattr(runner, "analyze_timeline", lambda timeline, model, base_url: {
         "status": "complete", "model": model, "processed_packets": 0, "total_packets": 0
     })
@@ -41,11 +40,30 @@ def test_stage_runner_does_not_override_explicit_model(monkeypatch, tmp_path):
         ollama_url = "http://127.0.0.1:11434/api/generate"
 
     monkeypatch.setattr(runner, "load_config", lambda: Config())
-    monkeypatch.setattr(runner, "validate_runtime", lambda config: [])
+
     def fake_analyze(timeline, model, base_url):
         seen["model"] = model
         return {"status": "complete", "model": model, "processed_packets": 0, "total_packets": 0}
+
     monkeypatch.setattr(runner, "analyze_timeline", fake_analyze)
 
     runner.run_stage(timeline_path, output_path, model="test-model")
     assert seen["model"] == "test-model"
+
+
+def test_stage_runner_fails_clearly_when_timeline_is_missing(monkeypatch, tmp_path):
+    class Config:
+        ollama_model = "qwen3:1.7b"
+        ollama_url = "http://127.0.0.1:11434/api/generate"
+
+    monkeypatch.setattr(runner, "load_config", lambda: Config())
+
+    missing = tmp_path / "missing.json"
+    output = tmp_path / "intelligence.json"
+
+    try:
+        runner.run_stage(missing, output)
+    except FileNotFoundError as exc:
+        assert "Canonical timeline not found" in str(exc)
+    else:
+        raise AssertionError("Missing timeline should fail explicitly")
