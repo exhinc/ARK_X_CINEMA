@@ -1,4 +1,4 @@
-﻿# ARK X CINEMA — CURRENT TASK
+# ARK X CINEMA — CURRENT TASK
 
 **Last Updated:** 2026-08-27
 
@@ -6,64 +6,80 @@
 
 ## CURRENT PHASE
 
-PROJECT CONTROL / ARCHITECTURE LOCK
+PHASE 2 — PRODUCTION ENGINE FOUNDATION
 
 ---
 
-## OBJECTIVE
+## PHASE 1 STATUS
 
-Create a permanent project record so the exact project state can be
-recovered by the user or another AI agent in a future chat/session.
+**COMPLETE — FULL REPOSITORY / CODE AUDIT ESTABLISHED**
 
----
+Authoritative audit:
 
-## COMPLETED
+`Project_Control/IMPLEMENTATION_STATUS.md`
 
-[X] Project directory established
-
-[X] System/environment audit performed
-
-[X] FFmpeg verified
-
-[X] Ollama verified
-
-[X] Git verified
-
-[X] Separate AD audio identified
-
-[X] Full AD MP3 successfully processed by whisper.cpp
-
-[X] AD audio -> timestamped SRT path validated
-
-[X] AD visual/action descriptions recognized as valuable intelligence
-
-[X] AD architecture locked
+Phase 1 established the actual implementation state of the repository and identified the exact blockers between the current foundation and a validated first-movie production run.
 
 ---
 
-## CURRENT
+## CURRENT OBJECTIVE
 
-[>] Initialize permanent project-control files
+Build the first-movie production pipeline in GitHub before running a real movie on the Windows PC.
 
-[>] Initialize Git repository
+Immediate priority:
 
-[>] Create initial commit
+1. Fix configuration/runtime portability.
+2. Establish canonical per-movie project/artifact paths.
+3. Harden source/subtitle/AD ingestion.
+4. Establish canonical scene/timeline data.
+5. Build validated movie intelligence.
+6. Fix and harden local LLM structured output.
+7. Build recap generation.
+8. Integrate and validate local TTS.
+9. Build script-to-scene edit mapping.
+10. Build final FFmpeg rendering.
+11. Build final narration subtitles.
+12. Build automated QA gate.
+13. Build validated resume/recovery behavior.
+14. Only then run Movie #1 on the PC.
 
 ---
 
-## NEXT
+## COMPLETED / PROVEN
 
-After control-system initialization:
-
-1. Verify Git status.
-2. Verify project-control files.
-3. Create initial commit.
-4. Establish the next production-engineering checkpoint.
-5. Continue production work without altering locked AD architecture.
+[X] Repository established
+[X] Project-control system established
+[X] Architecture decisions recorded
+[X] Source discovery foundation
+[X] FFprobe media inspection foundation
+[X] Subtitle discovery/extraction/conversion foundation
+[X] SRT validation foundation
+[X] Whisper.cpp environment validation
+[X] Full AD audio -> whisper.cpp -> timestamped SRT test
+[X] Basic project state artifact
+[X] Tkinter production-control foundation
+[X] Gitignore protection for large source media
+[X] Full Phase 1 implementation audit
 
 ---
 
-## DO NOT CHANGE
+## CURRENT BLOCKERS
+
+[ ] Hard-coded runtime paths
+[ ] Canonical project workspace integration
+[ ] Full scene/timeline index
+[ ] Production movie intelligence
+[ ] Reliable structured LLM output
+[ ] Production TTS integration
+[ ] Script-to-scene synchronization
+[ ] Complete final renderer
+[ ] Final narration subtitles
+[ ] Automated final QA
+[ ] Full resume/recovery state machine
+
+---
+
+## LOCKED ARCHITECTURE — DO NOT CHANGE
 
 Do NOT:
 
@@ -74,18 +90,31 @@ Do NOT:
 - Remove visual/action descriptions from the intelligence pipeline.
 - Redesign the locked architecture without recording a new decision.
 
+The locked path remains:
+
+AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
+
+---
+
+## DEVELOPMENT RULE
+
+All implementation should be developed and reviewed in GitHub first whenever practical.
+
+The PC is the execution/validation environment for local dependencies, RAM, media processing and final end-to-end behavior.
+
+Do not declare a component production-ready until its required test passes.
+
 ---
 
 ## HANDOFF
 
-Before future development:
-
-Read:
+Before future development, read:
 
 Project_Control/PROJECT_STATE.md
 Project_Control/CURRENT_TASK.md
 Project_Control/DECISIONS.md
 Project_Control/CHANGELOG.md
 Project_Control/TEST_RESULTS.md
+Project_Control/IMPLEMENTATION_STATUS.md
 
-Then inspect actual files before making assumptions.
+Then inspect the actual code/files before making assumptions.
