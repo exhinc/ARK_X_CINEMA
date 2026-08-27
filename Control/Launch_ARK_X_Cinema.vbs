@@ -1,4 +1,12 @@
 Set shell = CreateObject("WScript.Shell")
-shell.CurrentDirectory = "C:\Users\owena\Desktop\ARK_X_CINEMA"
-shell.Run "pythonw.exe ""C:\Users\owena\Desktop\ARK_X_CINEMA\Control\ark_cinema.py""", 0, False
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+repoRoot = fso.GetParentFolderName(WScript.ScriptFullName)
+shell.CurrentDirectory = repoRoot
+
+pythonw = "pythonw.exe"
+script = fso.BuildPath(repoRoot, "Control\ark_cinema.py")
+shell.Run pythonw & " """ & script & """", 0, False
+
+Set fso = Nothing
 Set shell = Nothing
