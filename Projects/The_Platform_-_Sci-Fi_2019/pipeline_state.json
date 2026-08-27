@@ -1,0 +1,13 @@
+﻿{
+    "stage":  "subtitle_ingestion",
+    "status":  "complete",
+    "updated":  "2026-08-27T05:35:42.112599",
+    "details":  {
+                    "source":  "external_subtitle",
+                    "source_file":  "Movies/The Platform (2019)/The Platform - Sci-Fi 2019 English.srt",
+                    "entries":  863,
+                    "characters":  28843,
+                    "production_srt":  "Projects/The_Platform_-_Sci-Fi_2019/production.srt",
+                    "transcript_copy":  null
+                }
+}
