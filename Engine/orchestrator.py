@@ -16,7 +16,7 @@ from typing import Any
 
 from project_workspace import build_source_manifest, create_workspace
 from runtime_config import load_config, validate_runtime
-from subtitle_pipeline import find_ad_audio, normalize_srt, transcribe_ad_to_srt
+from subtitle_pipeline import normalize_srt, transcribe_ad_to_srt
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = load_config()
@@ -49,7 +49,11 @@ def log(message: str) -> None:
 def run(cmd: list[Any], capture: bool = True) -> subprocess.CompletedProcess[str]:
     command = [str(item) for item in cmd]
     log("RUN: " + " ".join(command))
-    return subprocess.run(command, text=True, capture_output=capture, encoding="utf-8", errors="replace", check=False)
+    result = subprocess.run(command, text=True, capture_output=capture, encoding="utf-8", errors="replace", check=False)
+    if capture and result.stderr:
+        with LOG_FILE.open("a", encoding="utf-8") as handle:
+            handle.write(result.stderr[-15000:])
+    return result
 
 
 def safe_name(name: str) -> str:
