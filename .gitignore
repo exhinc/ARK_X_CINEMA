@@ -52,3 +52,7 @@ Movies/
 # ================================
 # Projects/ contains intentional production metadata,
 # manifests, state files, and production subtitle artifacts.
+
+# Movie source directory — structure only; all contents remain local
+Movies/*
+!Movies/.gitkeep
