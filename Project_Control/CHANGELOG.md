@@ -4,6 +4,27 @@ All significant project changes are recorded here in chronological order.
 
 ---
 
+## 2026-08-27 — Phase 2 Runtime Foundation Started
+
+### Added
+- `Engine/runtime_config.py`
+- `Engine/Tests/test_runtime_config.py`
+
+### Changed
+- Removed the user-specific repository root from `Config/config.json`.
+- Added repository-relative Whisper configuration fields.
+- Added explicit Ollama API configuration.
+- Made the BAT launcher resolve the repository from `%~dp0`.
+- Made the VBS launcher resolve the repository from its own script location.
+
+### Important
+The new runtime configuration layer is intentionally not yet declared the authoritative runtime for the production orchestrator. The orchestrator still contains legacy hard-coded Whisper constants and must be wired to the new configuration layer in the next Phase 2 step.
+
+### Result
+Phase 2 has begun. The first build target—portable runtime configuration foundation—is implemented; integration remains pending.
+
+---
+
 ## 2026-08-27 — Phase 1 Implementation Audit Completed
 
 ### Added
