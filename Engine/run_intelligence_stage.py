@@ -2,6 +2,8 @@
 
 This is intentionally a separate stage runner: it does not replace the main
 orchestrator and therefore cannot accidentally remove existing ingestion logic.
+The intelligence stage requires configuration, a timeline, and Ollama; it does
+not require Whisper because transcription has already happened upstream.
 """
 
 from __future__ import annotations
@@ -11,19 +13,24 @@ import json
 from pathlib import Path
 
 from intelligence_pipeline import analyze_timeline, write_intelligence_artifact
-from runtime_config import load_config, validate_runtime
+from runtime_config import load_config
 
 
 def load_timeline(path: Path) -> dict:
+    if not path.exists():
+        raise FileNotFoundError(f"Canonical timeline not found: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def run_stage(timeline_path: Path, output_path: Path, model: str | None = None) -> dict:
-    config = load_config()
-    problems = validate_runtime(config)
-    if problems:
-        raise RuntimeError("Runtime validation failed:\n- " + "\n- ".join(problems))
+    """Run intelligence against an existing timeline.
 
+    Whisper is intentionally not validated here: it belongs to the upstream
+    ingestion/transcription stage and must already have produced the timeline.
+    This keeps the stage independently testable and prevents an unrelated
+    missing Whisper installation from blocking movie intelligence.
+    """
+    config = load_config()
     selected_model = model or config.ollama_model
     artifact = analyze_timeline(
         load_timeline(timeline_path),
