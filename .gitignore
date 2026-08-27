@@ -1,4 +1,8 @@
-﻿# Python
+﻿# ================================
+# ARK X CINEMA — GITIGNORE
+# ================================
+
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -13,22 +17,21 @@ env/
 *.temp
 *.bak
 *.swp
+*.cache
 
 # OS files
 Thumbs.db
 .DS_Store
 desktop.ini
 
-# Logs generated during operation
+# Logs / runtime output
+Logs/
 *.log
 
-# Temporary whisper test directories
+# Whisper test/runtime directories
 Engine/_whisper_test/
 
-# Runtime/cache files
-*.cache
-
-# Large generated media should generally not be committed to Git
+# Large source media — NEVER commit
 *.mp4
 *.mkv
 *.mov
@@ -37,5 +40,15 @@ Engine/_whisper_test/
 *.mp3
 *.m4a
 
-# Generated subtitle/transcription outputs can be committed selectively,
-# but do not automatically commit every generated artifact.
+# Movie working directory
+# Keep legally obtained source media and temporary movie artifacts out of Git.
+Movies/
+
+# Windows shortcuts
+*.lnk
+
+# ================================
+# Project artifacts are allowed
+# ================================
+# Projects/ contains intentional production metadata,
+# manifests, state files, and production subtitle artifacts.
