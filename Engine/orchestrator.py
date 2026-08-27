@@ -16,6 +16,7 @@ from typing import Any
 
 from project_workspace import build_source_manifest, create_workspace
 from runtime_config import load_config, validate_runtime
+from subtitle_pipeline import find_ad_audio, normalize_srt, transcribe_ad_to_srt
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = load_config()
@@ -25,23 +26,13 @@ OLLAMA_URL = CONFIG.ollama_url
 MODELS = {"qwen": CONFIG.ollama_model, "llama": "llama3.2:1b"}
 
 DIRS = {
-    "movies": ROOT / "Movies",
-    "projects": ROOT / "Projects",
-    "analysis": ROOT / "Analysis",
-    "scenes": ROOT / "Scenes",
-    "scripts": ROOT / "Scripts",
-    "narration": ROOT / "Narration",
-    "visuals": ROOT / "Visuals",
-    "subtitles": ROOT / "Subtitles",
-    "transcripts": ROOT / "Transcripts",
-    "finished": ROOT / "Finished",
-    "logs": ROOT / "Logs",
-    "upload": ROOT / "Upload",
+    "movies": ROOT / "Movies", "projects": ROOT / "Projects", "analysis": ROOT / "Analysis",
+    "scenes": ROOT / "Scenes", "scripts": ROOT / "Scripts", "narration": ROOT / "Narration",
+    "visuals": ROOT / "Visuals", "subtitles": ROOT / "Subtitles", "transcripts": ROOT / "Transcripts",
+    "finished": ROOT / "Finished", "logs": ROOT / "Logs", "upload": ROOT / "Upload",
 }
-
 for directory in DIRS.values():
     directory.mkdir(parents=True, exist_ok=True)
-
 LOG_FILE = DIRS["logs"] / "orchestrator.log"
 VIDEO_EXTENSIONS = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v", ".ts", ".mts", ".m2ts", ".wmv", ".flv", ".ogv"}
 SUBTITLE_EXTENSIONS = {".srt", ".vtt", ".ass", ".ssa", ".sub", ".sbv", ".dfxp", ".ttml"}
@@ -90,12 +81,7 @@ def discover_files(package: Path) -> dict[str, list[Path]]:
     files = [package] if package.is_file() else [p for p in package.rglob("*") if p.is_file()]
     if package.is_file() and package.suffix.lower() not in VIDEO_EXTENSIONS:
         raise RuntimeError(f"Unsupported movie format: {package.suffix}")
-    return {
-        "all": files,
-        "videos": [p for p in files if p.suffix.lower() in VIDEO_EXTENSIONS],
-        "subtitles": [p for p in files if p.suffix.lower() in SUBTITLE_EXTENSIONS],
-        "audios": [p for p in files if p.suffix.lower() in AUDIO_EXTENSIONS],
-    }
+    return {"all": files, "videos": [p for p in files if p.suffix.lower() in VIDEO_EXTENSIONS], "subtitles": [p for p in files if p.suffix.lower() in SUBTITLE_EXTENSIONS], "audios": [p for p in files if p.suffix.lower() in AUDIO_EXTENSIONS]}
 
 
 def filename_looks_like_ad(path: Path) -> bool:
@@ -113,19 +99,11 @@ def inspect_media(path: Path) -> dict[str, Any]:
     audio_streams = [s for s in streams if s.get("codec_type") == "audio"]
     subtitle_streams = [s for s in streams if s.get("codec_type") == "subtitle"]
     fmt = probe.get("format", {})
-    return {
-        "exists": True, "path": str(path), "name": path.name, "extension": path.suffix.lower(),
-        "size_bytes": int(fmt.get("size", 0) or 0), "duration_seconds": float(fmt.get("duration", 0) or 0),
-        "video_streams": len(video_streams), "audio_streams": len(audio_streams), "subtitle_streams": len(subtitle_streams),
-        "has_video": bool(video_streams), "has_audio": bool(audio_streams), "has_subtitles": bool(subtitle_streams), "probe": probe,
-    }
+    return {"exists": True, "path": str(path), "name": path.name, "extension": path.suffix.lower(), "size_bytes": int(fmt.get("size", 0) or 0), "duration_seconds": float(fmt.get("duration", 0) or 0), "video_streams": len(video_streams), "audio_streams": len(audio_streams), "subtitle_streams": len(subtitle_streams), "has_video": bool(video_streams), "has_audio": bool(audio_streams), "has_subtitles": bool(subtitle_streams), "probe": probe}
 
 
 def find_embedded_subtitles(probe: dict[str, Any]) -> list[dict[str, Any]]:
-    return [
-        {"index": s.get("index"), "language": str((s.get("tags") or {}).get("language", "")).lower(), "title": str((s.get("tags") or {}).get("title", "")).lower()}
-        for s in probe.get("streams", []) if s.get("codec_type") == "subtitle"
-    ]
+    return [{"index": s.get("index"), "language": str((s.get("tags") or {}).get("language", "")).lower(), "title": str((s.get("tags") or {}).get("title", "")).lower()} for s in probe.get("streams", []) if s.get("codec_type") == "subtitle"]
 
 
 def find_embedded_ad_audio(probe: dict[str, Any]) -> list[dict[str, Any]]:
@@ -155,7 +133,6 @@ def identify_package(package: Path) -> dict[str, Any]:
             candidates.append(info)
     if len(candidates) != 1:
         raise RuntimeError(f"Expected exactly one usable movie video; found {len(candidates)}")
-
     movie = Path(candidates[0]["path"])
     workspace = create_workspace(movie.stem)
     manifest = build_source_manifest(package, workspace)
@@ -165,6 +142,30 @@ def identify_package(package: Path) -> dict[str, Any]:
     (workspace / "source_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     project_state(workspace, "SOURCE_DISCOVERED", "complete", {"manifest": str(workspace / "source_manifest.json")})
     return manifest
+
+
+def ingest_subtitles_and_ad(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Materialize canonical movie subtitles and transcribe external AD audio.
+
+    AD audio is mandatory input when present; an existing AD SRT is never used as
+    a replacement for the AD audio transcription path.
+    """
+    workspace = Path(manifest["workspace"])
+    output: dict[str, Any] = {"subtitle": None, "ad_srt": None, "ad_audio": manifest.get("ad_audio", [])}
+    subtitles = manifest.get("subtitles", [])
+    if subtitles:
+        source = Path(subtitles[0]["path"])
+        destination = workspace / "subtitles" / "movie.srt"
+        normalize_srt(source, destination)
+        output["subtitle"] = str(destination)
+    ad_audio = [Path(item["path"]) for item in manifest.get("ad_audio", [])]
+    if ad_audio:
+        destination = workspace / "transcripts" / "ad.srt"
+        transcribe_ad_to_srt(ad_audio[0], destination, WHISPER, WHISPER_MODEL)
+        output["ad_srt"] = str(destination)
+    (workspace / "ingestion_manifest.json").write_text(json.dumps(output, indent=2, ensure_ascii=False), encoding="utf-8")
+    project_state(workspace, "INGESTION_READY", "complete", output)
+    return output
 
 
 def validate_runtime_or_raise() -> None:
