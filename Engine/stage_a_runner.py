@@ -13,13 +13,15 @@ from pathlib import Path
 from typing import Any, Callable
 
 from intelligence_stage_adapter import run_intelligence_stage
+from movie_intelligence import build_scene_packets
+from ollama_intelligence import infer_scene
+from orchestrator_stage_adapter import StageBinding, run_bound_stage
 from project_workspace import build_source_manifest, create_workspace
 from recap_script_engine import generate_recap_text
 from runtime_config import RuntimeConfig, load_config, validate_runtime
 from script_stage_adapter import run_script_stage
 from timeline_stage_adapter import bind_timeline
 from transcription_stage_adapter import bind_ad_transcription
-from orchestrator_stage_adapter import StageBinding, run_bound_stage
 
 
 class StageARunnerError(RuntimeError):
@@ -58,7 +60,7 @@ def run_stage_a_core(
     *,
     config: RuntimeConfig | None = None,
     validate_dependencies: bool = True,
-    infer: Callable[..., Any] | None = None,
+    infer: Callable[..., Any] = infer_scene,
     generate: Callable[[list[dict[str, Any]]], str] | None = None,
 ) -> Path:
     """Run ingestion through script generation using existing stage boundaries.
@@ -76,13 +78,14 @@ def run_stage_a_core(
         if problems:
             raise StageARunnerError("Runtime validation failed:\n- " + "\n- ".join(problems))
 
-    # We need the selected movie filename before creating its canonical workspace.
+    # Identify the single movie without changing the source package.
+    video_extensions = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v", ".ts", ".mts", ".m2ts", ".wmv", ".flv", ".ogv"}
     if source_package.is_file():
         movie_path = source_package
     else:
         videos = sorted(
             p for p in source_package.rglob("*")
-            if p.is_file() and p.suffix.lower() in {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v", ".ts", ".mts", ".m2ts", ".wmv", ".flv", ".ogv"}
+            if p.is_file() and p.suffix.lower() in video_extensions
         )
         if len(videos) != 1:
             raise StageARunnerError(f"Expected exactly one movie video; found {len(videos)}")
@@ -91,24 +94,21 @@ def run_stage_a_core(
     workspace = create_workspace(movie_path.stem)
     movie_id = workspace.name
 
-    ingestion_artifact = "source_manifest.json"
-
     manifest_holder: dict[str, Any] = {}
 
     def ingestion_work() -> None:
-        manifest = build_source_manifest(source_package, workspace)
-        manifest_holder.update(manifest)
+        manifest_holder.update(build_source_manifest(source_package, workspace))
 
-    ingestion_result = run_bound_stage(
+    ingestion = run_bound_stage(
         workspace,
         movie_id,
-        StageBinding("ingestion", ingestion_artifact, ingestion_work),
+        StageBinding("ingestion", "source_manifest.json", ingestion_work),
     )
-    if ingestion_result.status == "failed":
-        raise StageARunnerError(ingestion_result.error or "Ingestion failed")
+    if ingestion.status == "failed":
+        raise StageARunnerError(ingestion.error or "Ingestion failed")
 
     if not manifest_holder:
-        loaded = _load_json(workspace / ingestion_artifact)
+        loaded = _load_json(workspace / "source_manifest.json")
         if not isinstance(loaded, dict):
             raise StageARunnerError("Source manifest is not an object")
         manifest_holder = loaded
@@ -118,7 +118,7 @@ def run_stage_a_core(
     subtitle_srt = _find_subtitle(manifest)
     ad_srt = workspace / "transcripts" / "ad.srt"
 
-    transcription_result = bind_ad_transcription(
+    transcription = bind_ad_transcription(
         root=workspace,
         movie_id=movie_id,
         ad_audio=ad_audio,
@@ -126,8 +126,8 @@ def run_stage_a_core(
         whisper_executable=cfg.whisper_executable,
         whisper_model=cfg.whisper_model,
     )
-    if transcription_result.status == "failed":
-        raise StageARunnerError(transcription_result.error or "AD transcription failed")
+    if transcription.status == "failed":
+        raise StageARunnerError(transcription.error or "AD transcription failed")
 
     timeline_path = workspace / "scenes" / "timeline.json"
     timeline_result = bind_timeline(
@@ -150,12 +150,12 @@ def run_stage_a_core(
         timeline=timeline,
         model=cfg.ollama_model,
         base_url=cfg.ollama_url,
-        infer=infer if infer is not None else None or __import__("ollama_intelligence").infer_scene,
+        infer=infer,
     )
 
     intelligence_path = workspace / "intelligence" / "intelligence.json"
-    if not intelligence_path.is_file():
-        raise StageARunnerError("Intelligence stage completed without intelligence artifact")
+    if not intelligence_path.is_file() or intelligence_path.stat().st_size == 0:
+        raise StageARunnerError("Intelligence stage completed without a valid artifact")
 
     generator = generate
     if generator is None:
