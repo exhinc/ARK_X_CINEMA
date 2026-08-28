@@ -96,7 +96,7 @@ or a standalone movie file.
 
 The engine discovers available video, subtitle, and audio assets and uses FFprobe to inspect media properties.
 
-The primary movie is selected from valid video candidates, with the largest valid video generally preferred to avoid accidentally selecting trailers, samples, or previews.
+The current canonical source-manifest implementation requires **exactly one usable movie video** in a source package and rejects ambiguous multi-video packages rather than silently selecting one. `project_workspace.py` is the authoritative implementation for that rule.
 
 ---
 
@@ -184,7 +184,7 @@ The objective is to create a structured understanding of the movie that can supp
 
 The recap-generation layer transforms structured movie information into a recap representation suitable for narration and editing.
 
-The project currently includes dedicated testing around recap JSON validation.
+The current master includes dedicated structured-output validation and an evidence-grounded recap script engine.
 
 The intended direction is:
 
@@ -211,6 +211,8 @@ Structured intermediate data is preferred over passing unstructured text directl
 The narration stage is designed to convert the approved recap script into spoken audio.
 
 The architecture is intentionally modular so the narration implementation can evolve without redesigning the movie-intelligence pipeline.
+
+The current master contains the TTS stage boundary, but a real production TTS engine remains subject to subsequent validation and is not yet claimed as Stage-A complete.
 
 ---
 
@@ -243,6 +245,8 @@ Source clips
          Final Video
 ```
 
+The current master contains the video-stage boundary, while complete production rendering remains a later implementation/validation gate.
+
 ---
 
 # 8. Quality Assurance
@@ -269,7 +273,7 @@ Final human QA is responsible for confirming:
 
 ARK X Cinema is being developed for a low-resource Windows machine rather than assuming access to a cloud GPU.
 
-Current audited baseline includes approximately:
+Current recorded baseline includes approximately:
 
 - Windows 11
 - Intel Core i3-1115G4
@@ -311,7 +315,7 @@ Configuration explicitly limits concurrent heavy stages:
 
 The recorded environment includes:
 
-| Component | Current baseline |
+| Component | Recorded baseline |
 |---|---|
 | Operating System | Windows 11 |
 | Python | 3.14.6 |
@@ -323,6 +327,8 @@ The recorded environment includes:
 | Whisper | whisper.cpp |
 | Version Control | Git |
 | Node.js | Installed |
+
+These are recorded environment observations, not current GitHub-executed runtime validations.
 
 The repository configuration points to the local Whisper installation and Qwen model. Configuration is kept separately in `Config/config.json`.
 
@@ -348,7 +354,7 @@ ARK_X_CINEMA/
 │
 ├── Finished/                  # Completed video outputs
 ├── Logs/                      # Runtime logs
-├── Movies/                    # Legally obtained source packages
+├── Movies/                    # Legally obtained source packages (local; ignored by Git)
 ├── Music/                     # Music assets
 ├── Narration/                 # Generated narration
 ├── Projects/                  # Per-movie project state
@@ -356,19 +362,24 @@ ARK_X_CINEMA/
 ├── Scenes/                    # Scene-selection assets/data
 ├── Scripts/                   # Generated recap scripts
 ├── SFX/                       # Sound effects
-├── Subtitles/                 # Final subtitle assets
+├── Subtitles/                 # Subtitle assets
 ├── Thumbnails/                # Thumbnail assets
 ├── Transcripts/               # Transcript and transcription outputs
 ├── Upload/                    # Upload-ready packages
-└── Visuals/                   # Visual assets
+├── Visuals/                   # Visual assets
 │
-├── Project_Control/
+├── Project_Control/           # Persistent project governance/evidence
+│   ├── AUDIT_LEDGER.md
 │   ├── PROJECT_STATE.md
 │   ├── CURRENT_TASK.md
 │   ├── DECISIONS.md
 │   ├── CHANGELOG.md
-│   └── TEST_RESULTS.md
+│   ├── TEST_RESULTS.md
+│   ├── IMPLEMENTATION_STATUS.md
+│   └── MULTI_AI_STATUS.md
 │
+├── CLAUDE.md
+├── AGENTS.md
 └── RUN_ARK_X_CINEMA.bat
 ```
 
@@ -400,19 +411,21 @@ Records significant implementation and architecture changes.
 
 Records test inputs, expected results, actual results, PASS/FAIL status, and observations.
 
+### `IMPLEMENTATION_STATUS.md`
+
+Records implementation state and the distinction between repository evidence and PC-only validation. Its historical Phase 1 audit is not itself evidence that the newer exhaustive forensic audit has been completed.
+
+### `MULTI_AI_STATUS.md`
+
+Records multi-agent evidence, disagreements, consensus state, and validation requirements. Historical claims remain visible until reconciled by newer evidence.
+
+### `AUDIT_LEDGER.md`
+
+The permanent instrument used during a **new full forensic audit**. It records repository coverage, system reconstruction, findings, repairs, verification, and remaining `UNVERIFIED`/`BLOCKED` items. Its existence does not mean the audit has already been performed.
+
 ### AI handoff rule
 
-Any AI agent working on ARK X Cinema should read:
-
-```text
-Project_Control/PROJECT_STATE.md
-Project_Control/CURRENT_TASK.md
-Project_Control/DECISIONS.md
-Project_Control/CHANGELOG.md
-Project_Control/TEST_RESULTS.md
-```
-
-before making architectural or production-code changes.
+Any AI agent working on ARK X Cinema should read the project-control documents and `AGENTS.md` before making architectural or production-code changes.
 
 The repository is the long-term source of truth.
 
@@ -503,11 +516,19 @@ The control interface launches the production engine and provides:
 - QA report access
 - Runtime information
 
-The underlying production engine is:
+The underlying foundation engine is:
 
 ```text
 Engine/orchestrator.py
 ```
+
+The current Stage-A core composition path is:
+
+```text
+Engine/stage_a_runner.py
+```
+
+It currently reaches the script stage; downstream TTS, video, final subtitles, QA, and real-machine validation remain separate gates on `master`.
 
 ---
 
@@ -519,7 +540,7 @@ ARK X Cinema follows several non-negotiable engineering principles.
 
 An asset appearing in an architecture diagram does not mean the file actually exists.
 
-Always inspect the filesystem.
+Always inspect the repository/filesystem.
 
 ### 2. Preserve architecture decisions
 
@@ -584,7 +605,7 @@ The system's purpose is production automation—not circumvention.
 
 ## Phase 1 — Foundation
 
-- [x] System audit
+- [x] System audit protocol established
 - [x] Repository established
 - [x] Project-control system established
 - [x] AD architecture locked
@@ -593,27 +614,30 @@ The system's purpose is production automation—not circumvention.
 - [x] Source-package discovery
 - [x] Media inspection
 - [x] Initial recap JSON validation tests
+- [x] Permanent forensic audit protocol established
 
 ## Phase 2 — Production Engine
 
-- [ ] Complete movie-intelligence pipeline
-- [ ] Harden source ingestion
-- [ ] Harden scene detection
-- [ ] Complete recap generation
+- [x] Runtime/configuration foundation
+- [x] Canonical per-movie workspace/source manifest
+- [x] Evidence packets and structured-output handling
+- [x] Core recap script engine
+- [ ] Complete movie-intelligence runtime validation
 - [ ] Complete narration pipeline
-- [ ] Complete scene-selection pipeline
+- [ ] Complete scene-selection/edit pipeline
 - [ ] Complete FFmpeg production rendering
-- [ ] Automated QA
-- [ ] End-to-end test movie
+- [ ] Final narration subtitles
+- [ ] Automated final-media QA
+- [ ] Complete end-to-end test movie
 
 ## Phase 3 — Reliability
 
 - [ ] Repeatable one-video production
-- [ ] Failure recovery
-- [ ] Pipeline resume support
+- [ ] Failure recovery under real workload
+- [ ] Pipeline resume under real workload
 - [ ] Resource/RAM measurements
-- [ ] Output validation
-- [ ] Production logging
+- [ ] Output validation under real workload
+- [ ] Production logging verification
 - [ ] Human-QA checkpoint
 
 ## Phase 4 — Throughput
@@ -634,31 +658,35 @@ Throughput is increased only after the previous stage is reliable.
 
 ### AD Audio → whisper.cpp → AD SRT
 
-**TESTED / SUCCESSFUL**
+**REPOSITORY IMPLEMENTED / HISTORICAL FULL-AD TEST SUCCESS; CURRENT PC VALIDATION UNVERIFIED**
 
 ### Source discovery
 
-**IMPLEMENTED**
+**IMPLEMENTED / TESTED**
 
 ### Media inspection
 
 **IMPLEMENTED**
 
-### Project state tracking
+### Project state/checkpoint infrastructure
 
-**IMPLEMENTED**
+**IMPLEMENTED / TESTED**
 
 ### Production control GUI
 
-**IMPLEMENTED**
+**IMPLEMENTED FOUNDATION**
 
-### Recap structured-data testing
+### Structured-output handling
 
-**IMPLEMENTED / IN DEVELOPMENT**
+**IMPLEMENTED / REGRESSION-TESTED**
+
+### Recap script core
+
+**IMPLEMENTED / CONTRACT-TESTED**
 
 ### Complete autonomous end-to-end production
 
-**NOT YET DECLARED PRODUCTION-READY**
+**NOT YET PRODUCTION-READY**
 
 ### Target
 
