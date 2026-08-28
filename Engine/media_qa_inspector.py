@@ -31,11 +31,16 @@ def inspect_video(path: Path, *, ffprobe: str = "ffprobe") -> dict[str, Any]:
     except json.JSONDecodeError as exc:
         raise MediaQAError("ffprobe returned invalid JSON") from exc
     streams = probe.get("streams", [])
-    video = [stream for stream in streams if stream.get("codec_type") == "video"]
-    audio = [stream for stream in streams if stream.get("codec_type") == "audio"]
-    subtitle = [stream for stream in streams if stream.get("codec_type") == "subtitle"]
-    duration = float((probe.get("format") or {}).get("duration", 0) or 0)
-    valid = bool(video) and bool(audio) and duration > 0
+    if not isinstance(streams, list):
+        raise MediaQAError("ffprobe stream data must be an array")
+    video = [stream for stream in streams if isinstance(stream, dict) and stream.get("codec_type") == "video"]
+    audio = [stream for stream in streams if isinstance(stream, dict) and stream.get("codec_type") == "audio"]
+    subtitle = [stream for stream in streams if isinstance(stream, dict) and stream.get("codec_type") == "subtitle"]
+    try:
+        duration = float((probe.get("format") or {}).get("duration", 0) or 0)
+    except (TypeError, ValueError) as exc:
+        raise MediaQAError("ffprobe reported an invalid media duration") from exc
+    valid = bool(video) and bool(audio) and bool(subtitle) and duration > 0
     return {
         "valid": valid,
         "path": str(path),
