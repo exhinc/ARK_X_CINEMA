@@ -7,10 +7,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
+from resumable_orchestrator import StageResult
 
 
 class QAStageError(ValueError):
-    """Raised when required QA inputs are invalid."""
+    """Raised when required QA inputs are invalid or QA fails."""
 
 
 def _require_file(path: Path, label: str, *, nonempty: bool = True) -> None:
@@ -46,7 +47,6 @@ def run_qa_stage(
     destination = root / artifact
 
     def work() -> None:
-        video_path = Path(final_video)
         report: dict[str, Any] = {
             "movie_id": movie_id,
             "checks": {
@@ -56,7 +56,7 @@ def run_qa_stage(
                 "timeline_present": True,
                 "intelligence_present": True,
             },
-            "video": inspect_video(video_path),
+            "video": inspect_video(Path(final_video)),
             "passed": True,
         }
         if not isinstance(report["video"], dict):
@@ -68,5 +68,11 @@ def run_qa_stage(
         if not report["passed"]:
             raise QAStageError("QA checks failed")
 
-    run_bound_stage(root, movie_id, StageBinding("qa", artifact.as_posix(), work))
+    result: StageResult = run_bound_stage(
+        root, movie_id, StageBinding("qa", artifact.as_posix(), work)
+    )
+    if result.status == "failed":
+        raise QAStageError(result.error or "QA stage failed")
+    if not destination.is_file() or destination.stat().st_size == 0:
+        raise QAStageError("QA stage completed without a valid report")
     return json.loads(destination.read_text(encoding="utf-8"))
