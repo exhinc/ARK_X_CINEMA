@@ -47,15 +47,23 @@ def build_edit_manifest(
     timeline: dict[str, Any],
     movie_duration_seconds: float,
     *,
-    max_clip_seconds: float = 20.0,
+    segment_durations: list[float] | None = None,
+    max_clip_seconds: float = 120.0,
     padding_before_seconds: float = 1.0,
     padding_after_seconds: float = 1.0,
 ) -> dict[str, Any]:
-    """Map every narrated segment to a bounded source clip range."""
+    """Map every narrated segment to a bounded source clip range.
+
+    When narration durations are supplied, each source clip is sized to cover
+    the corresponding narration beat plus optional padding. Clip anchors are
+    the evidence timestamps; clips may cross a scene boundary when necessary.
+    """
     if movie_duration_seconds <= 0:
         raise EditManifestError("Movie duration must be positive")
     if max_clip_seconds <= 0 or padding_before_seconds < 0 or padding_after_seconds < 0:
         raise EditManifestError("Clip limits and padding must be non-negative and usable")
+    if segment_durations is not None and len(segment_durations) != len(segments):
+        raise EditManifestError("segment_durations must match segments length")
 
     scenes = _scene_index(timeline)
     if not scenes:
@@ -77,21 +85,31 @@ def build_edit_manifest(
         if point < scene_start or point > scene_end:
             raise EditManifestError(f"Recap segment {index} timestamp is outside scene: {scene_id}")
 
-        start = max(scene_start, point - padding_before_seconds)
-        end = min(scene_end, point + padding_after_seconds)
+        narration_duration = None
+        if segment_durations is not None:
+            narration_duration = float(segment_durations[index - 1])
+            if narration_duration <= 0:
+                raise EditManifestError(f"Narration duration must be positive for segment {index}")
+
+        if narration_duration is not None:
+            desired = narration_duration + padding_before_seconds + padding_after_seconds
+            desired = min(desired, max_clip_seconds) if desired < max_clip_seconds else desired
+            start = max(0.0, point - padding_before_seconds)
+            end = min(movie_duration_seconds, start + desired)
+            if end - start < narration_duration:
+                start = max(0.0, end - narration_duration)
+        else:
+            start = max(scene_start, point - padding_before_seconds)
+            end = min(scene_end, point + padding_after_seconds)
+
         if end <= start:
-            start = max(0.0, min(point, movie_duration_seconds - 0.01))
-            end = min(movie_duration_seconds, start + 0.01)
-        if end - start > max_clip_seconds:
-            center = point
-            start = max(scene_start, center - max_clip_seconds / 2)
-            end = min(scene_end, start + max_clip_seconds)
-            start = max(scene_start, end - max_clip_seconds)
+            raise EditManifestError(f"Unable to create a positive clip range for segment {index}")
         edits.append({
             "edit_index": index,
             "scene_id": scene_id,
             "timestamp": timestamp,
             "text": text,
+            "narration_duration_seconds": narration_duration,
             "source_start_seconds": round(start, 3),
             "source_end_seconds": round(end, 3),
         })
