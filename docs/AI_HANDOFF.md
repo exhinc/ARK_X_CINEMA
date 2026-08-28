@@ -115,7 +115,7 @@ Failed stages must propagate failure to callers. Do not read a missing or invali
 ## 8. CI truth
 GitHub Actions is the repository test authority for portable tests.
 
-A previously inspected failing run (`33139700610`) must not be described as green. A later corrected run (`33140883220`) completed successfully; its job result was verified as success. Continue to verify CI against the current commit after meaningful changes. Never infer green status from an old run or from local/mock tests.
+The earlier CI failure `33139700610` and the later corrected run `33140883220` are historical verification points. **Do not treat either as proof that the current commit is green.** A current-commit CI run must be checked after code changes. Never infer green status from an old run or from local/mock tests.
 
 A green repository test suite does not replace real Windows hardware validation.
 
@@ -152,9 +152,9 @@ Before modifying code:
 10. Record significant defects as GitHub Issues rather than relying only on chat history.
 
 ## 11. Multi-agent coordination
-Claude, Grok, ChatGPT, Copilot, and other agents may work on this repository. GitHub is the shared state.
+The primary AI development team is **ChatGPT, Claude, and Grok**. Other agents may participate only if explicitly added later.
 
-Before editing, read `AGENTS.md`, this handoff, and `docs/PROJECT_STATUS.md`; inspect the current source/tests and recent changes relevant to the task.
+GitHub is the shared state. Before editing, every agent must read `AGENTS.md`, this handoff, and `docs/PROJECT_STATUS.md`; inspect the current source/tests and recent changes relevant to the task.
 
 Do not revert another agent's work merely because it differs from an older chat plan. Verify the current code and tests first. If a defect is found, make the smallest corrective change and document why.
 
@@ -164,7 +164,7 @@ After editing, leave tests and documentation synchronized with the change. Never
 The recap script must be original prose generated from structured intelligence. Do not design a workflow that simply reproduces movie subtitles or dialogue. Keep source evidence separate from generated narration.
 
 ## 13. Scaling target
-Do not jump directly to 3 movies/day.
+Use concrete validation milestones instead of the vague label “production-ready”:
 
 ```text
 Stage A: 1 finished video reliably
@@ -182,17 +182,17 @@ When information conflicts, use this order:
 2. Current tests and verified GitHub Actions results
 3. `docs/PROJECT_STATUS.md`
 4. `docs/AI_HANDOFF.md`
-5. `AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`
+5. `AGENTS.md` / `CLAUDE.md`
 6. GitHub Issues and commit history
 7. Older chat messages
 
 If this document becomes stale, update it as part of the repository change that makes it stale.
 
 ## 15. Current status
-**Overall:** active development; not production-ready.
+**Overall:** GitHub architecture substantially established; real-machine Stage A validation has not yet been completed.
 
-**GitHub architecture:** substantially established and repository-tested.
+**GitHub architecture:** repository-tested boundaries and checkpoint infrastructure are established.
 
 **Real-machine integration:** pending.
 
-**Immediate next milestone:** preserve the verified GitHub baseline, then validate the real Windows environment component-by-component before processing the first movie.
+**Immediate next milestone:** preserve the verified GitHub baseline, verify CI on the current commit after documentation changes, then validate the real Windows environment component-by-component before processing the first movie.
