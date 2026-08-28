@@ -1,7 +1,7 @@
 # ARK X Cinema — Shared AI Agent Instructions
 
 ## 1. Purpose
-ARK X Cinema is a $0/month, automation-first YouTube movie-recap production system. It is designed to run from a Windows 11 laptop with limited RAM and to automate as much of the workflow as practical while retaining final human QA/approval.
+ARK X Cinema is a $0/month, automation-first YouTube movie-recap production system. It is designed to run on a Windows 11 laptop with limited RAM and to automate as much of the workflow as practical while retaining final human QA/approval.
 
 Movies/source files must be legally obtained. Do not add piracy, DRM bypass, or unauthorized acquisition workflows.
 
@@ -21,8 +21,6 @@ The authoritative current status is `docs/PROJECT_STATUS.md` plus the actual cod
 - Real hardware performance is not proven by repository tests. Whisper.cpp, Ollama/Qwen, TTS, FFmpeg rendering, RAM usage, and end-to-end processing require Windows-machine validation.
 
 ## 4. Canonical movie pipeline
-The intended architecture is:
-
 Legal movie/source files
 → subtitle + separate AD audio ingestion
 → AD audio converted to timestamped SRT using whisper.cpp
@@ -76,20 +74,26 @@ When changing code:
 
 Do not report guessed test counts, guessed SHAs, or guessed runtime behavior.
 
-## 9. Current production-validation boundary
-The repository architecture has boundaries for ingestion, AD transcription, timeline, intelligence, script, TTS, video, and QA. Some boundaries intentionally inject the actual heavy/external implementation for CI testing.
+## 9. Current validation boundary
+The repository contains stage boundaries for ingestion, AD transcription, timeline, intelligence, script, TTS, video, and QA. Some boundaries intentionally inject the actual heavy/external implementation for CI testing.
 
-Do not describe an injected boundary as a fully implemented production engine. In particular, actual local TTS engine selection, production FFmpeg assembly, real media inspection, Whisper.cpp execution, and hardware/RAM validation remain separate concerns unless the current code proves otherwise.
+Do not describe an injected boundary as a fully implemented production engine. Actual Whisper.cpp execution, Ollama/Qwen runtime, TTS engine selection/runtime, production FFmpeg assembly, real media inspection, RAM behavior, and end-to-end movie processing require Windows validation unless the current code and evidence prove otherwise.
+
+Use concrete milestones instead of the vague label “production-ready”:
+- Stage A: one real finished video processed reliably.
+- Stage B: one real video/day reliably.
+- Stage C: two real videos/day reliably.
+- Stage D: three different movies/day reliably.
 
 ## 10. Script/copyright discipline
 The recap script must be original prose generated from structured intelligence. Do not design a workflow that simply reproduces movie subtitles, dialogue, or copyrighted source text. Keep source evidence separate from generated narration.
 
-## 11. Collaboration with other AI agents
-Claude, Grok, ChatGPT, Copilot, and other agents may all work on this repository. Treat GitHub as the shared state.
+## 11. Collaboration with the user's AI team
+The primary AI development team is ChatGPT, Claude, and Grok. Other agents may participate if explicitly added later.
 
-Before modifying anything:
+GitHub is the shared state. Before modifying anything:
 - inspect the latest `master`;
-- read `docs/PROJECT_STATUS.md`;
+- read `docs/PROJECT_STATUS.md` and `docs/AI_HANDOFF.md`;
 - inspect relevant tests and current APIs;
 - check recent commits/CI when relevant;
 - avoid duplicating or reverting another agent's work.
@@ -105,7 +109,7 @@ If another agent's change appears wrong, do not silently overwrite it. Verify th
 ## 12. Status honesty
 Use these meanings:
 - 🟢 Implemented / repository-tested
-- 🟡 Needs real-environment or CI verification
+- 🟡 Needs real-environment or current-commit CI verification
 - 🔵 Next
 - 🔴 Known defect
 
