@@ -64,11 +64,10 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
         return StageResult("movie", "transcription", "complete", artifact="transcripts/ad.srt")
     monkeypatch.setattr(runner, "bind_ad_transcription", fake_transcription)
 
-    def fake_timeline(**kwargs):
+    def fake_timeline(root, movie_id, subtitle_srt, ad_srt, output_json):
         calls.append("timeline")
-        output = kwargs["output_json"]
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(json.dumps({"scenes": []}), encoding="utf-8")
+        output_json.parent.mkdir(parents=True, exist_ok=True)
+        output_json.write_text(json.dumps({"scenes": []}), encoding="utf-8")
         return StageResult("movie", "timeline", "complete", artifact="scenes/timeline.json")
     monkeypatch.setattr(runner, "bind_timeline", fake_timeline)
 
