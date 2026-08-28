@@ -72,16 +72,17 @@ def _validate_segments(raw: Any, intelligence: list[dict[str, Any]]) -> list[Rec
     if not isinstance(raw, list) or not raw:
         raise RecapScriptError("Recap generation returned no segments")
 
-    scene_ranges = []
+    scene_ranges: list[tuple[str, float, float]] = []
     for item in intelligence:
         try:
             start = _timestamp_seconds(item["start"])
             end = _timestamp_seconds(item["end"])
+            scene_id = str(item["scene_id"])
         except (KeyError, TypeError, ValueError) as exc:
             raise RecapScriptError("Intelligence contains an invalid scene range") from exc
         if end < start:
             raise RecapScriptError("Intelligence contains a reversed scene range")
-        scene_ranges.append((item.get("scene_id"), start, end))
+        scene_ranges.append((scene_id, start, end))
 
     validated: list[RecapSegment] = []
     previous_time = -1.0
@@ -99,7 +100,10 @@ def _validate_segments(raw: Any, intelligence: list[dict[str, Any]]) -> list[Rec
             raise RecapScriptError(f"Recap segment {index} has an invalid timestamp") from exc
         if point < previous_time:
             raise RecapScriptError("Recap segment timestamps are not chronological")
-        matching = [start_end for sid, start_end in enumerate(scene_ranges) if sid[0] == scene_id and sid[1] <= point <= sid[2]]
+        matching = any(
+            scene_id == known_scene_id and start <= point <= end
+            for known_scene_id, start, end in scene_ranges
+        )
         if not matching:
             raise RecapScriptError(
                 f"Recap segment {index} timestamp is outside its declared scene evidence"
