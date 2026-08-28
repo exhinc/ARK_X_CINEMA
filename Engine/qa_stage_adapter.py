@@ -20,9 +20,25 @@ def _require_file(path: Path, label: str, *, nonempty: bool = True) -> None:
         raise QAStageError(f"Empty {label}: {path}")
 
 
-def run_qa_stage(root: Path, movie_id: str, *, source_video: Path, narration: Path, script: Path, timeline: Path, intelligence: Path, inspect_video: Callable[[Path], dict[str, Any]]) -> dict[str, Any]:
-    """Run deterministic artifact checks and persist a QA report."""
-    required = ((source_video, "source video"), (narration, "narration"), (script, "script"), (timeline, "timeline"), (intelligence, "intelligence"))
+def run_qa_stage(
+    root: Path,
+    movie_id: str,
+    *,
+    final_video: Path,
+    narration: Path,
+    script: Path,
+    timeline: Path,
+    intelligence: Path,
+    inspect_video: Callable[[Path], dict[str, Any]],
+) -> dict[str, Any]:
+    """Run deterministic artifact checks against the actual final video."""
+    required = (
+        (final_video, "final video"),
+        (narration, "narration"),
+        (script, "script"),
+        (timeline, "timeline"),
+        (intelligence, "intelligence"),
+    )
     for path, label in required:
         _require_file(Path(path), label)
 
@@ -30,10 +46,16 @@ def run_qa_stage(root: Path, movie_id: str, *, source_video: Path, narration: Pa
     destination = root / artifact
 
     def work() -> None:
-        video_path = Path(source_video)
+        video_path = Path(final_video)
         report: dict[str, Any] = {
             "movie_id": movie_id,
-            "checks": {"source_video_present": True, "narration_present": True, "script_present": True, "timeline_present": True, "intelligence_present": True},
+            "checks": {
+                "final_video_present": True,
+                "narration_present": True,
+                "script_present": True,
+                "timeline_present": True,
+                "intelligence_present": True,
+            },
             "video": inspect_video(video_path),
             "passed": True,
         }
