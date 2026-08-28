@@ -1,9 +1,4 @@
-"""Optional local Ollama adapter for ARK X Cinema intelligence inference.
-
-The core pipeline remains dependency-free: Ollama is contacted only when this
-adapter is explicitly invoked. Network access is local-only by default and the
-adapter requests one non-streaming JSON response at a time.
-"""
+"""Optional local Ollama adapter for ARK X Cinema intelligence inference."""
 
 from __future__ import annotations
 
@@ -28,9 +23,7 @@ class OllamaError(RuntimeError):
 
 def _endpoint(base_url: str) -> str:
     base = base_url.rstrip("/")
-    if base.endswith("/api/generate"):
-        return base
-    return f"{base}/api/generate"
+    return base if base.endswith("/api/generate") else f"{base}/api/generate"
 
 
 def _validate_intelligence(data: dict[str, Any]) -> None:
@@ -58,12 +51,26 @@ def infer_scene(packet: dict[str, Any], model: str, base_url: str = "http://127.
     if timeout_seconds <= 0:
         raise ValueError("timeout_seconds must be positive")
 
+    schema = {
+        "summary": "string",
+        "characters": ["string"],
+        "location": "string or null",
+        "actions": ["string"],
+        "dialogue_points": ["string"],
+        "visual_description_points": ["string"],
+        "cause_effect": ["string"],
+        "importance": "string",
+        "confidence": "number 0..1",
+        "unsupported_claims": ["string"],
+    }
+    schema_text = json.dumps(schema, ensure_ascii=False)
+    packet_text = json.dumps(packet, ensure_ascii=False)
     prompt = (
         "You are the ARK X Cinema evidence-first movie intelligence engine.\n"
         "Use ONLY the evidence supplied below. Never invent facts. If evidence does not support a fact, "
         "leave it out or put it in unsupported_claims. Return ONLY one JSON object matching the requested fields.\n\n"
-        f"REQUESTED SCHEMA:\n{json.dumps({\n            'summary': 'string', 'characters': ['string'], 'location': 'string or null',\n            'actions': ['string'], 'dialogue_points': ['string'],\n            'visual_description_points': ['string'], 'cause_effect': ['string'],\n            'importance': 'string', 'confidence': 'number 0..1', 'unsupported_claims': ['string']\n        }, ensure_ascii=False)}\n\n"
-        f"EVIDENCE PACKET:\n{json.dumps(packet, ensure_ascii=False)}"
+        f"REQUESTED SCHEMA:\n{schema_text}\n\n"
+        f"EVIDENCE PACKET:\n{packet_text}"
     )
     payload = json.dumps({"model": model, "prompt": prompt, "stream": False, "format": "json"}).encode("utf-8")
     request = Request(_endpoint(base_url), data=payload, headers={"Content-Type": "application/json"}, method="POST")
@@ -87,8 +94,5 @@ def infer_scene(packet: dict[str, Any], model: str, base_url: str = "http://127.
         raise OllamaError("Ollama intelligence output must be a JSON object")
     _validate_intelligence(parsed)
     duration_ms = envelope.get("total_duration")
-    if isinstance(duration_ms, int):
-        duration_ms //= 1_000_000
-    else:
-        duration_ms = None
+    duration_ms = duration_ms // 1_000_000 if isinstance(duration_ms, int) else None
     return OllamaResult(model=model, response=text, parsed=parsed, duration_ms=duration_ms)
