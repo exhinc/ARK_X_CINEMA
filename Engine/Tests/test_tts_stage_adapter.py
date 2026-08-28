@@ -26,6 +26,7 @@ def test_empty_script_is_rejected(tmp_path):
 def test_empty_tts_output_is_recorded_as_failed(tmp_path):
     _complete_prerequisites(tmp_path)
     def synthesize(_, destination): destination.write_bytes(b"")
-    run_tts_stage(tmp_path, "movie-001", "Valid script.", synthesize)
+    with pytest.raises(TTSStageError, match="TTS engine produced no audio artifact"):
+        run_tts_stage(tmp_path, "movie-001", "Valid script.", synthesize)
     state = load_state(tmp_path, "movie-001")
     assert state.failed == "tts"
