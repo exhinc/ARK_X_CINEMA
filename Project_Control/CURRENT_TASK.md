@@ -12,13 +12,13 @@ PHASE 2 — PRODUCTION ENGINE FOUNDATION
 
 ## PHASE 1 STATUS
 
-**COMPLETE — FORENSIC AUDIT PROTOCOL ESTABLISHED; EXHAUSTIVE AUDIT NOT YET PERFORMED**
+**COMPLETE — FORENSIC AUDIT PROTOCOL ESTABLISHED; NEW EXHAUSTIVE FORENSIC AUDIT COMPLETED**
 
-The repository now contains the permanent forensic-audit protocol and ledger mechanism required for a future full repository audit. Establishing the protocol does **not** mean that a new exhaustive forensic audit has already been completed.
+The repository contains the permanent forensic-audit protocol and ledger mechanism. The new controlled forensic audit was executed as a separate operation and is recorded in:
 
-Authoritative audit record:
+`Project_Control/AUDIT_LEDGER.md`
 
-`Project_Control/IMPLEMENTATION_STATUS.md`
+The historical Phase 1 implementation/status audit remains historical evidence and is not being used as proof of completion of the new forensic audit.
 
 ---
 
@@ -73,9 +73,23 @@ Completed:
 - Added `Project_Control/AUDIT_LEDGER.md` for formal audit coverage and uncertainty tracking.
 - Updated this task record so future agents use the ledger during full audits.
 
-The audit protocol requires complete repository accounting, system reconstruction, repository-wide defect-pattern searches, configuration/security review, root-cause repair, changed-file blast-radius checks, and a second audit after repair.
+### Build #5 — Controlled Forensic Audit & Repair
 
-Important distinction: **the protocol is established; the exhaustive forensic audit is a separate operation and has not yet been declared complete.**
+**PASS — completed 2026-08-28**
+
+Completed:
+
+- Fresh repository-wide forensic discovery from current `master`.
+- Repository census and inspection ledger population.
+- System reconstruction across launchers, engine, adapters, state/checkpoints, tests, CI, configuration, documentation, and historical material.
+- Configuration and applicable security review.
+- Repository-wide defect-pattern investigation.
+- Confirmed documentation/control inconsistencies repaired surgically.
+- Historical/manual material preserved.
+- Second-pass re-scan performed.
+- Current `master` CI re-verified successfully for the final audited commit.
+
+The final forensic record is `Project_Control/AUDIT_LEDGER.md`.
 
 ---
 
