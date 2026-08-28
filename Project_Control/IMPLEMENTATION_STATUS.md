@@ -1,9 +1,11 @@
 # ARK X CINEMA — IMPLEMENTATION STATUS
 
-**Audit date:** 2026-08-28  
-**Branch audited:** `master`  
-**Audit type:** Phase 1 repository/code audit with permanent forensic audit protocol upgrade  
-**Purpose:** Establish the actual implementation state and the permanent method future AI agents must use to audit, repair, and re-verify the repository before further production engineering.
+**Historical audit date:** 2026-08-28  
+**Branch represented:** `master`  
+**Audit type:** Phase 1 repository/code implementation audit with permanent forensic audit protocol upgrade  
+**Purpose:** Establish the implementation state at the time of that audit and record the permanent method future AI agents must use to audit, repair, and re-verify the repository.
+
+> **Important:** This document records the historical Phase 1 implementation audit and the establishment of the permanent forensic-audit method. It is **not** evidence that the new exhaustive forensic audit has already been executed. The current exhaustive forensic audit is a separate operation and is tracked in `Project_Control/AUDIT_LEDGER.md`.
 
 ---
 
@@ -75,7 +77,7 @@ The required repair sequence is:
 | Resumable stage state/checkpoints | 🟢 | Implemented and unit-tested |
 | Full end-to-end production runner | 🟠 | Core runner reaches script stage; complete real-media runner not yet verified on `master` |
 | GUI/control center | 🟡 | Functional foundation; stage display is not yet driven directly from canonical stage state |
-| CI | 🟢 | Repository test suite is wired into GitHub Actions |
+| CI | 🟢 | Repository test suite is wired into GitHub Actions and current master has a successful run |
 | Real Windows validation | 🔴 | Not yet performed for current production chain |
 
 ---
@@ -98,7 +100,7 @@ Do not delete these solely because they appear obsolete. Classify their role and
 # 5. CURRENT MAJOR RISKS / NEXT ENGINEERING GATES
 
 1. Keep the master architecture stable and avoid unnecessary rewrites.
-2. Reconcile stale Project_Control status language with actual master implementation.
+2. Keep historical implementation/status records distinct from the current forensic audit.
 3. Finish the remaining Stage-A production implementations on `master`.
 4. Ensure one authoritative end-to-end production runner.
 5. Validate actual local engines on the Windows machine before declaring Stage A complete.
