@@ -9,8 +9,10 @@ from checkpoint import Checkpoint, CheckpointError, artifact_is_intact, artifact
 
 STAGES = ("ingestion", "transcription", "timeline", "intelligence", "script", "tts", "video", "qa")
 
+
 class StageStateError(ValueError):
     """Raised when a stage transition is unsafe."""
+
 
 @dataclass(frozen=True)
 class StageState:
@@ -18,31 +20,69 @@ class StageState:
     completed: tuple[str, ...]
     failed: str | None = None
 
+
 def _validate_stage(stage: str) -> None:
     if stage not in STAGES:
         raise StageStateError(f"Unknown stage: {stage}")
 
+
 def checkpoint_path(root: Path, movie_id: str) -> Path:
+    """Legacy single-checkpoint location retained for compatibility."""
     if not movie_id.strip():
         raise StageStateError("movie_id must not be empty")
     return root / "state" / movie_id / "checkpoint.json"
 
+
+def stage_checkpoint_path(root: Path, movie_id: str, stage: str) -> Path:
+    _validate_stage(stage)
+    if not movie_id.strip():
+        raise StageStateError("movie_id must not be empty")
+    return root / "state" / movie_id / "stages" / f"{stage}.json"
+
+
+def _load_stage_checkpoints(root: Path, movie_id: str) -> dict[str, Checkpoint]:
+    checkpoints: dict[str, Checkpoint] = {}
+    for stage in STAGES:
+        checkpoint = load_checkpoint(stage_checkpoint_path(root, movie_id, stage))
+        if checkpoint is not None:
+            if checkpoint.movie_id != movie_id or checkpoint.stage != stage:
+                raise StageStateError(f"Invalid checkpoint identity: {stage}")
+            checkpoints[stage] = checkpoint
+    return checkpoints
+
+
 def load_state(root: Path, movie_id: str) -> StageState:
-    checkpoint = load_checkpoint(checkpoint_path(root, movie_id))
-    if checkpoint is None:
+    checkpoints = _load_stage_checkpoints(root, movie_id)
+    if checkpoints:
+        completed: list[str] = []
+        failed: str | None = None
+        for stage in STAGES:
+            checkpoint = checkpoints.get(stage)
+            if checkpoint is None:
+                break
+            if checkpoint.status == "complete":
+                if not artifact_is_intact(root, checkpoint):
+                    raise StageStateError(f"Completed stage artifact is missing or invalid: {stage}")
+                completed.append(stage)
+                continue
+            if checkpoint.status == "failed":
+                failed = stage
+            break
+        return StageState(movie_id, tuple(completed), failed)
+
+    legacy = load_checkpoint(checkpoint_path(root, movie_id))
+    if legacy is None:
         return StageState(movie_id, ())
-    if checkpoint.movie_id != movie_id:
+    if legacy.movie_id != movie_id:
         raise StageStateError("Checkpoint movie_id does not match requested movie")
-    if checkpoint.status == "complete":
-        if not artifact_is_intact(root, checkpoint):
-            raise StageStateError(f"Completed stage artifact is missing or invalid: {checkpoint.stage}")
-        if checkpoint.stage not in STAGES:
-            raise StageStateError(f"Unknown checkpoint stage: {checkpoint.stage}")
-        return StageState(movie_id, tuple(STAGES[: STAGES.index(checkpoint.stage) + 1]))
-    if checkpoint.stage not in STAGES:
-        raise StageStateError(f"Unknown checkpoint stage: {checkpoint.stage}")
-    completed = tuple(STAGES[: STAGES.index(checkpoint.stage)]) if checkpoint.status == "failed" else ()
-    return StageState(movie_id, completed, checkpoint.stage if checkpoint.status == "failed" else None)
+    if legacy.stage not in STAGES:
+        raise StageStateError(f"Unknown checkpoint stage: {legacy.stage}")
+    if legacy.status == "complete":
+        if not artifact_is_intact(root, legacy):
+            raise StageStateError(f"Completed stage artifact is missing or invalid: {legacy.stage}")
+        return StageState(movie_id, tuple(STAGES[: STAGES.index(legacy.stage) + 1]))
+    return StageState(movie_id, tuple(STAGES[: STAGES.index(legacy.stage)]) if legacy.status == "failed" else (), legacy.stage if legacy.status == "failed" else None)
+
 
 def mark_running(root: Path, movie_id: str, stage: str) -> StageState:
     _validate_stage(stage)
@@ -52,8 +92,9 @@ def mark_running(root: Path, movie_id: str, stage: str) -> StageState:
     index = STAGES.index(stage)
     if index and STAGES[index - 1] not in state.completed:
         raise StageStateError(f"Cannot start {stage}; prerequisite {STAGES[index - 1]} is incomplete")
-    save_checkpoint(checkpoint_path(root, movie_id), Checkpoint(movie_id, stage, "running"))
+    save_checkpoint(stage_checkpoint_path(root, movie_id, stage), Checkpoint(movie_id, stage, "running"))
     return state
+
 
 def mark_complete(root: Path, movie_id: str, stage: str, artifact: str | None = None) -> StageState:
     _validate_stage(stage)
@@ -67,12 +108,13 @@ def mark_complete(root: Path, movie_id: str, stage: str, artifact: str | None = 
         digest = artifact_sha256(root / artifact)
     except CheckpointError as exc:
         raise StageStateError(str(exc)) from exc
-    save_checkpoint(checkpoint_path(root, movie_id), Checkpoint(movie_id, stage, "complete", artifact=artifact, artifact_sha256=digest))
+    save_checkpoint(stage_checkpoint_path(root, movie_id, stage), Checkpoint(movie_id, stage, "complete", artifact=artifact, artifact_sha256=digest))
     return load_state(root, movie_id)
+
 
 def mark_failed(root: Path, movie_id: str, stage: str, error: str) -> StageState:
     _validate_stage(stage)
     if not error.strip():
         raise StageStateError("Failure reason must not be empty")
-    save_checkpoint(checkpoint_path(root, movie_id), Checkpoint(movie_id, stage, "failed", error=error))
+    save_checkpoint(stage_checkpoint_path(root, movie_id, stage), Checkpoint(movie_id, stage, "failed", error=error))
     return load_state(root, movie_id)
