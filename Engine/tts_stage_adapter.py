@@ -1,28 +1,18 @@
-"""Resumable TTS stage boundary for ARK X Cinema.
-
-The actual TTS engine is injected so the orchestration contract can be tested
-without installing a voice model in CI. Production can supply Piper, Kokoro,
-or another approved local engine without changing checkpoint behavior.
-"""
+"""Resumable TTS stage boundary for ARK X Cinema."""
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Callable
 
-from orchestrator_stage_adapter import run_existing_stage
+from orchestrator_stage_adapter import StageBinding, run_bound_stage
 
 
 class TTSStageError(ValueError):
     """Raised when TTS input or output is invalid."""
 
 
-def run_tts_stage(
-    root: Path,
-    movie_id: str,
-    script: str,
-    synthesize: Callable[[str, Path], None],
-) -> Path:
+def run_tts_stage(root: Path, movie_id: str, script: str, synthesize: Callable[[str, Path], None]) -> Path:
     """Synthesize narration into a single audio artifact and checkpoint it."""
     if not isinstance(script, str) or not script.strip():
         raise TTSStageError("Script must contain non-empty text")
@@ -36,5 +26,5 @@ def run_tts_stage(
         if not destination.is_file() or destination.stat().st_size == 0:
             raise TTSStageError("TTS engine produced no audio artifact")
 
-    run_existing_stage(root, movie_id, "tts", work, artifact=artifact.as_posix())
+    run_bound_stage(root, movie_id, StageBinding("tts", artifact.as_posix(), work))
     return destination
