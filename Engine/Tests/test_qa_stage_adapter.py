@@ -25,7 +25,7 @@ def test_missing_required_artifact_is_rejected(tmp_path):
     _complete_prerequisites(tmp_path); paths = _inputs(tmp_path); paths["script"].unlink()
     with pytest.raises(QAStageError): run_qa_stage(tmp_path, "movie-001", **paths, inspect_video=lambda _: {"valid": True})
 
-def test_failed_video_inspection_is_recorded_as_failed(tmp_path):
+def test_failed_video_inspection_is_recorded_and_raised(tmp_path):
     _complete_prerequisites(tmp_path); paths = _inputs(tmp_path)
-    result = run_qa_stage(tmp_path, "movie-001", **paths, inspect_video=lambda _: {"valid": False})
-    assert result["passed"] is False
+    with pytest.raises(QAStageError, match="QA checks failed"):
+        run_qa_stage(tmp_path, "movie-001", **paths, inspect_video=lambda _: {"valid": False})
