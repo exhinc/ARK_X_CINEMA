@@ -1,11 +1,8 @@
-"""Crash-safe stage checkpointing for ARK X Cinema.
-
-Checkpoints are small JSON state files written atomically so a failed run can
-resume from the last completed stage without pretending incomplete work is done.
-"""
+"""Crash-safe, artifact-aware stage checkpointing for ARK X Cinema."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from dataclasses import dataclass
@@ -14,7 +11,7 @@ from tempfile import NamedTemporaryFile
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 class CheckpointError(ValueError):
@@ -28,6 +25,7 @@ class Checkpoint:
     status: str
     schema_version: int = SCHEMA_VERSION
     artifact: str | None = None
+    artifact_sha256: str | None = None
     error: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
@@ -37,6 +35,7 @@ class Checkpoint:
             "stage": self.stage,
             "status": self.status,
             "artifact": self.artifact,
+            "artifact_sha256": self.artifact_sha256,
             "error": self.error,
         }
 
@@ -46,36 +45,42 @@ def _validate(data: dict[str, Any]) -> Checkpoint:
     missing = [key for key in required if not isinstance(data.get(key), str) or not data[key].strip()]
     if missing:
         raise CheckpointError(f"Missing checkpoint fields: {', '.join(missing)}")
-    if data.get("schema_version", SCHEMA_VERSION) != SCHEMA_VERSION:
+    if data.get("schema_version", 1) not in {1, SCHEMA_VERSION}:
         raise CheckpointError("Unsupported checkpoint schema version")
     if data["status"] not in {"running", "complete", "failed"}:
         raise CheckpointError(f"Invalid checkpoint status: {data['status']}")
-    return Checkpoint(
-        movie_id=data["movie_id"],
-        stage=data["stage"],
-        status=data["status"],
-        schema_version=SCHEMA_VERSION,
-        artifact=data.get("artifact"),
-        error=data.get("error"),
-    )
+    digest = data.get("artifact_sha256")
+    if digest is not None and (not isinstance(digest, str) or len(digest) != 64):
+        raise CheckpointError("Invalid artifact SHA-256")
+    return Checkpoint(data["movie_id"], data["stage"], data["status"], SCHEMA_VERSION, data.get("artifact"), digest, data.get("error"))
+
+
+def artifact_sha256(path: Path) -> str:
+    """Return the SHA-256 digest of an artifact file."""
+    if not path.is_file():
+        raise CheckpointError(f"Artifact does not exist: {path}")
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def save_checkpoint(path: Path, checkpoint: Checkpoint) -> Path:
     """Atomically replace a checkpoint file."""
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps(checkpoint.to_dict(), indent=2, ensure_ascii=False) + "\n"
+    temporary: Path | None = None
     try:
         with NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as temp:
+            temporary = Path(temp.name)
             temp.write(payload)
             temp.flush()
             os.fsync(temp.fileno())
-            temporary = Path(temp.name)
         os.replace(temporary, path)
     except OSError as exc:
-        try:
+        if temporary is not None:
             temporary.unlink(missing_ok=True)
-        except UnboundLocalError:
-            pass
         raise CheckpointError(f"Unable to save checkpoint: {exc}") from exc
     return path
 
@@ -91,3 +96,14 @@ def load_checkpoint(path: Path) -> Checkpoint | None:
     if not isinstance(data, dict):
         raise CheckpointError("Checkpoint root must be an object")
     return _validate(data)
+
+
+def artifact_is_intact(root: Path, checkpoint: Checkpoint) -> bool:
+    """Verify a completed checkpoint's artifact exists and matches its digest."""
+    if checkpoint.status != "complete" or not checkpoint.artifact or not checkpoint.artifact_sha256:
+        return False
+    path = root / checkpoint.artifact
+    try:
+        return artifact_sha256(path) == checkpoint.artifact_sha256
+    except CheckpointError:
+        return False
