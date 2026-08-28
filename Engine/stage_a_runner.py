@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any, Callable
 
 from intelligence_stage_adapter import run_intelligence_stage
-from movie_intelligence import build_scene_packets
 from ollama_intelligence import infer_scene
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
 from project_workspace import build_source_manifest, create_workspace
