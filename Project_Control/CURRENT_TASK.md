@@ -1,6 +1,6 @@
 # ARK X CINEMA — CURRENT TASK
 
-**Last Updated:** 2026-08-27
+**Last Updated:** 2026-08-28
 
 ---
 
@@ -37,9 +37,41 @@ Completed:
 
 Remaining local validation is intentionally deferred to the Windows PC because GitHub cannot execute the user's installed Whisper/FFmpeg/Ollama environment.
 
-### Build #2 — Next
+### Build #2 — Canonical Workspace / Source Manifest
 
-Establish the canonical per-movie workspace and make source discovery produce a deterministic, validated source manifest without relying on global/historical output files.
+**PASS — implemented and integrated**
+
+Completed:
+
+- Canonical per-movie workspace.
+- Deterministic source manifest.
+- Source hashing/provenance.
+- Explicit single-video selection policy.
+- Source package discovery tests.
+
+### Build #3 — Evidence / Intelligence / Script Core
+
+**PASS — implemented on `master`; real runtime validation remains outstanding**
+
+Completed:
+
+- Bounded evidence packets.
+- Structured-output extraction and validation.
+- Ollama intelligence adapter.
+- Recap script engine and stage adapter.
+- Regression tests for structured-output handling.
+
+### Build #4 — Permanent Forensic Audit Protocol
+
+**PASS — implemented 2026-08-28**
+
+Completed:
+
+- Extended `AGENTS.md` with a repository-wide forensic audit protocol.
+- Added `Project_Control/AUDIT_LEDGER.md` for formal audit coverage and uncertainty tracking.
+- Updated this task record so future agents use the ledger during full audits.
+
+The audit protocol requires complete repository accounting, system reconstruction, repository-wide defect-pattern searches, configuration/security review, root-cause repair, changed-file blast-radius checks, and a second audit after repair.
 
 ---
 
@@ -92,15 +124,25 @@ Do not declare a component production-ready until its required test passes.
 
 ---
 
+## FULL-AUDIT RULE
+
+Whenever a future task calls for a full repository audit, use `Project_Control/AUDIT_LEDGER.md` together with `AGENTS.md` and the other Project_Control records.
+
+Do not declare full coverage until the ledger accounts for the repository and significant items are classified as INSPECTED, PARTIALLY INSPECTED, NOT APPLICABLE, UNVERIFIED, or BLOCKED.
+
+---
+
 ## HANDOFF
 
 Before future development, read:
 
+AGENTS.md
 Project_Control/PROJECT_STATE.md
 Project_Control/CURRENT_TASK.md
 Project_Control/DECISIONS.md
 Project_Control/CHANGELOG.md
 Project_Control/TEST_RESULTS.md
 Project_Control/IMPLEMENTATION_STATUS.md
+Project_Control/AUDIT_LEDGER.md
 
 Then inspect the actual code/files before making assumptions.
