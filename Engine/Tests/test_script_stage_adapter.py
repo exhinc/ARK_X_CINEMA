@@ -1,6 +1,8 @@
 """Tests for the evidence-grounded recap script stage."""
 
+from dataclasses import dataclass
 from pathlib import Path
+import json
 import sys
 
 import pytest
@@ -35,6 +37,22 @@ def test_script_uses_only_structured_intelligence_and_is_resumable(tmp_path):
     assert first == second
     assert len(calls) == 1
     assert (tmp_path / "script" / "recap.txt").is_file()
+
+
+def test_script_persists_generator_segment_metadata(tmp_path):
+    _complete_prerequisites(tmp_path)
+
+    @dataclass(frozen=True)
+    class Segment:
+        text: str
+        timestamp: str
+        scene_id: str
+
+    result = Segment("Alice opens the door.", "00:00:01", "scene_001")
+    run_script_stage(tmp_path, "movie-001", _intelligence(), lambda _: type("Generated", (), {"text": result.text, "segments": [result]})())
+
+    metadata = json.loads((tmp_path / "script" / "recap_segments.json").read_text(encoding="utf-8"))
+    assert metadata == [{"text": "Alice opens the door.", "timestamp": "00:00:01", "scene_id": "scene_001"}]
 
 
 def test_missing_unsupported_claim_contract_is_rejected(tmp_path):
