@@ -86,7 +86,7 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
         return intelligence
     monkeypatch.setattr(runner, "run_intelligence_stage", fake_intelligence)
 
-    def fake_script(**kwargs):
+    def fake_script(root, movie_id, intelligence, generate):
         calls.append("script")
         output = workspace / "script" / "recap.txt"
         output.parent.mkdir(parents=True, exist_ok=True)
