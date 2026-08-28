@@ -74,7 +74,61 @@ Before modifying anything, inspect current `master` and recent commits. Prefer s
 
 When another agent has already changed a component, reconcile with its current code rather than recreating or overwriting it.
 
+## Permanent forensic audit protocol
+A full repository audit must account for the entire repository, not only obvious application code. The audit must include repository structure, source, tests, configuration, scripts, CI/CD, GitHub configuration, project-control records, documentation, generated/state artifacts, historical/legacy material, and external integrations. Database/schema/migration and deployment material must also be inspected when applicable.
+
+Do not silently ignore an item because it appears unused, obsolete, duplicated, generated, hidden, old, unrelated, or outside the main source directory. Determine its type, purpose, references, consumers, and relevance before classifying it. For binary, generated, cached, or extremely large artifacts, inspect metadata, references, generation mechanisms, consumers, and relevance with appropriate tooling instead of blindly consuming the entire contents.
+
+A full audit must maintain an inspection ledger at `Project_Control/AUDIT_LEDGER.md`. The ledger must account for every repository directory and every important repository item and classify each as `INSPECTED`, `PARTIALLY INSPECTED`, `NOT APPLICABLE`, `UNVERIFIED`, or `BLOCKED`. A full audit must not be declared complete while significant items remain unaccounted for or unverified.
+
+A full audit must reconstruct the actual system, not review files in isolation. Trace entry points, imports, callers, consumers, dependencies, data flow, control flow, configuration flow, APIs, persistence, external integrations, authentication, authorization, error handling, testing, build, and deployment as applicable.
+
+Whenever a significant defect is discovered, search the repository for other occurrences of the same underlying defect pattern. Fix confirmed related instances when appropriate rather than treating the first occurrence as necessarily isolated.
+
+Configuration is part of the software system. Cross-check environment variables, `.env`/example configuration, package scripts, build/test configuration, CI/CD, GitHub Actions, Docker/container configuration, deployment configuration, database configuration, and runtime configuration against the actual implementation.
+
+A full audit must explicitly consider applicable security areas including secrets, credentials, authentication, authorization, input validation, injection, XSS, CSRF, SSRF, path traversal, command execution, unsafe file operations, sensitive-information leakage, dependency risks, CORS, session/cookie security, and privilege boundaries. Report only what can actually be verified.
+
+## Root-cause repair protocol
+When a confirmed defect is discovered:
+
+1. Identify the symptom.
+2. Reproduce it when possible.
+3. Trace the relevant execution path.
+4. Identify the root cause.
+5. Search for related occurrences.
+6. Implement the correct fix.
+7. Update tests where appropriate.
+8. Validate the fix.
+9. Check its blast radius.
+10. Re-check related functionality.
+
+Do not substitute recommendations for actual fixes when repository modification access is available and the fix is safe within the established architecture.
+
+## Changed-file blast-radius check
+After significant modifications, inspect the changed file, its imports, callers, consumers, types/interfaces, tests, configuration, related implementations, and build/deployment implications. Search for assumptions affected by the change.
+
+## Second audit after repair
+A repair cycle is not complete immediately after tests pass. Use this sequence:
+
+AUDIT
+→ DISCOVER
+→ ROOT-CAUSE ANALYSIS
+→ FIX
+→ TEST
+→ RE-SCAN
+→ CROSS-FILE REGRESSION AUDIT
+→ TEST AGAIN
+→ FINAL VERIFICATION
+
+The second audit must specifically search for additional occurrences of discovered defect patterns, regressions, stale references, broken imports, interface mismatches, configuration inconsistencies, related security issues, and unintended architectural consequences.
+
+## Autonomous fixing with architectural safety
+Agents should automatically fix confirmed defects that can be safely fixed within the existing architecture. Do not silently overturn ARK X Cinema established or locked architectural decisions. If a defect cannot be correctly fixed without changing a locked decision, identify and document the conflict and escalate the architectural decision instead of silently replacing the architecture.
+
 ## Completion discipline
 Do not add new architecture merely because a stage exists as an adapter. An adapter is not the same as a production implementation. The actual external/runtime integration must be explicitly verified before it is described as complete.
 
-When reporting progress, give the repository-backed state, what was actually tested, what remains, and what must be tested on the Windows machine.
+A full audit cannot be declared complete merely because the application builds, tests pass, obvious files were inspected, or major bugs were fixed. Before declaring completion, establish repository coverage, system understanding, findings, fixes, validation performed, remaining unknowns, environmental limitations, and unresolved issues. Do not claim 100% correctness, security, or bug-free status.
+
+When reporting progress or audit completion, give the repository-backed state, what was actually inspected/tested, what was fixed, what remains unknown, and what must be tested on the Windows machine.
