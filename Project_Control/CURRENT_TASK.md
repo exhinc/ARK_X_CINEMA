@@ -12,9 +12,11 @@ PHASE 2 — PRODUCTION ENGINE FOUNDATION
 
 ## PHASE 1 STATUS
 
-**COMPLETE — FULL REPOSITORY / CODE AUDIT ESTABLISHED**
+**COMPLETE — FORENSIC AUDIT PROTOCOL ESTABLISHED; EXHAUSTIVE AUDIT NOT YET PERFORMED**
 
-Authoritative audit:
+The repository now contains the permanent forensic-audit protocol and ledger mechanism required for a future full repository audit. Establishing the protocol does **not** mean that a new exhaustive forensic audit has already been completed.
+
+Authoritative audit record:
 
 `Project_Control/IMPLEMENTATION_STATUS.md`
 
@@ -73,6 +75,8 @@ Completed:
 
 The audit protocol requires complete repository accounting, system reconstruction, repository-wide defect-pattern searches, configuration/security review, root-cause repair, changed-file blast-radius checks, and a second audit after repair.
 
+Important distinction: **the protocol is established; the exhaustive forensic audit is a separate operation and has not yet been declared complete.**
+
 ---
 
 ## FIRST-MOVIE OBJECTIVE
@@ -129,6 +133,8 @@ Do not declare a component production-ready until its required test passes.
 Whenever a future task calls for a full repository audit, use `Project_Control/AUDIT_LEDGER.md` together with `AGENTS.md` and the other Project_Control records.
 
 Do not declare full coverage until the ledger accounts for the repository and significant items are classified as INSPECTED, PARTIALLY INSPECTED, NOT APPLICABLE, UNVERIFIED, or BLOCKED.
+
+The actual exhaustive audit must populate the ledger with repository paths/items, statuses, evidence, findings, fixes, verification notes, and remaining UNVERIFIED/BLOCKED items. The ledger itself must never be treated as evidence that those inspections have already occurred.
 
 ---
 
