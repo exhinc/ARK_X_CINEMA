@@ -60,6 +60,22 @@ def test_infer_scene_uses_non_streaming_json(monkeypatch):
     assert "A person runs." in captured["body"]["prompt"]
 
 
+def test_infer_scene_fails_closed_on_malformed_structured_output(monkeypatch):
+    class FakeResponse:
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def read(self):
+            return json.dumps({"response": '{"summary" "broken"}'}).encode()
+
+    monkeypatch.setattr(oi, "urlopen", lambda *args, **kwargs: FakeResponse())
+    try:
+        oi.infer_scene({"scene_id": "s1", "evidence": []}, "qwen3:1.7b")
+    except oi.OllamaError as exc:
+        assert "JSON parsing failed" in str(exc)
+    else:
+        raise AssertionError("malformed structured output was accepted")
+
+
 def test_infer_scene_reports_connection_failure(monkeypatch):
     def fake_urlopen(*args, **kwargs):
         from urllib.error import URLError
