@@ -90,10 +90,16 @@ def build_edit_manifest(
             narration_duration = float(segment_durations[index - 1])
             if narration_duration <= 0:
                 raise EditManifestError(f"Narration duration must be positive for segment {index}")
+            if narration_duration > max_clip_seconds:
+                raise EditManifestError(
+                    f"Narration duration exceeds max clip length for segment {index}"
+                )
 
         if narration_duration is not None:
-            desired = narration_duration + padding_before_seconds + padding_after_seconds
-            desired = min(desired, max_clip_seconds) if desired < max_clip_seconds else desired
+            desired = min(
+                narration_duration + padding_before_seconds + padding_after_seconds,
+                max_clip_seconds,
+            )
             start = max(0.0, point - padding_before_seconds)
             end = min(movie_duration_seconds, start + desired)
             if end - start < narration_duration:
@@ -104,6 +110,8 @@ def build_edit_manifest(
 
         if end <= start:
             raise EditManifestError(f"Unable to create a positive clip range for segment {index}")
+        if end - start > max_clip_seconds + 1e-9:
+            raise EditManifestError(f"Clip range exceeds maximum length for segment {index}")
         edits.append({
             "edit_index": index,
             "scene_id": scene_id,
