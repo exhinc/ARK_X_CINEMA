@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Callable
 
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
+from resumable_orchestrator import StageResult
 
 
 class TTSStageError(ValueError):
@@ -26,5 +27,11 @@ def run_tts_stage(root: Path, movie_id: str, script: str, synthesize: Callable[[
         if not destination.is_file() or destination.stat().st_size == 0:
             raise TTSStageError("TTS engine produced no audio artifact")
 
-    run_bound_stage(root, movie_id, StageBinding("tts", artifact.as_posix(), work))
+    result: StageResult = run_bound_stage(
+        root, movie_id, StageBinding("tts", artifact.as_posix(), work)
+    )
+    if result.status == "failed":
+        raise TTSStageError(result.error or "TTS stage failed")
+    if not destination.is_file() or destination.stat().st_size == 0:
+        raise TTSStageError("TTS stage completed without a valid artifact")
     return destination
