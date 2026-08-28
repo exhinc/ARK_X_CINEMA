@@ -57,19 +57,17 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
     for path in (tmp_path / "movie.srt", tmp_path / "movie_ad.mp3"):
         path.write_bytes(b"input")
 
-    def fake_transcription(**kwargs):
+    def fake_transcription(root, movie_id, ad_audio, output_srt, whisper_executable, whisper_model, ffmpeg_executable="ffmpeg"):
         calls.append("transcription")
-        output = kwargs["output_srt"]
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text("1\n00:00:00,000 --> 00:00:01,000\nDescription.\n", encoding="utf-8")
+        output_srt.parent.mkdir(parents=True, exist_ok=True)
+        output_srt.write_text("1\n00:00:00,000 --> 00:00:01,000\nDescription.\n", encoding="utf-8")
         return StageResult("movie", "transcription", "complete", artifact="transcripts/ad.srt")
     monkeypatch.setattr(runner, "bind_ad_transcription", fake_transcription)
 
-    def fake_timeline(**kwargs):
+    def fake_timeline(root, movie_id, subtitle_srt, ad_srt, output_json):
         calls.append("timeline")
-        output = kwargs["output_json"]
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(json.dumps({"scenes": []}), encoding="utf-8")
+        output_json.parent.mkdir(parents=True, exist_ok=True)
+        output_json.write_text(json.dumps({"scenes": []}), encoding="utf-8")
         return StageResult("movie", "timeline", "complete", artifact="scenes/timeline.json")
     monkeypatch.setattr(runner, "bind_timeline", fake_timeline)
 
@@ -80,7 +78,7 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
         "intelligence": {"summary": "Description.", "unsupported_claims": []},
     }]
 
-    def fake_intelligence(**kwargs):
+    def fake_intelligence(root, movie_id, timeline, model, base_url="http://127.0.0.1:11434/api/generate", infer=runner.infer_scene):
         calls.append("intelligence")
         output = workspace / "intelligence" / "intelligence.json"
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -88,7 +86,7 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
         return intelligence
     monkeypatch.setattr(runner, "run_intelligence_stage", fake_intelligence)
 
-    def fake_script(**kwargs):
+    def fake_script(root, movie_id, intelligence, generate):
         calls.append("script")
         output = workspace / "script" / "recap.txt"
         output.parent.mkdir(parents=True, exist_ok=True)
