@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any, Callable
 
-from orchestrator_stage_adapter import run_existing_stage
+from orchestrator_stage_adapter import StageBinding, run_bound_stage
 
 
 class QAStageError(ValueError):
@@ -20,29 +20,9 @@ def _require_file(path: Path, label: str, *, nonempty: bool = True) -> None:
         raise QAStageError(f"Empty {label}: {path}")
 
 
-def run_qa_stage(
-    root: Path,
-    movie_id: str,
-    *,
-    source_video: Path,
-    narration: Path,
-    script: Path,
-    timeline: Path,
-    intelligence: Path,
-    inspect_video: Callable[[Path], dict[str, Any]],
-) -> dict[str, Any]:
-    """Run deterministic artifact checks and persist a QA report.
-
-    ``inspect_video`` is injected because actual media probing is environment
-    dependent. CI can therefore exercise the QA contract without media tools.
-    """
-    required = (
-        (source_video, "source video"),
-        (narration, "narration"),
-        (script, "script"),
-        (timeline, "timeline"),
-        (intelligence, "intelligence"),
-    )
+def run_qa_stage(root: Path, movie_id: str, *, source_video: Path, narration: Path, script: Path, timeline: Path, intelligence: Path, inspect_video: Callable[[Path], dict[str, Any]]) -> dict[str, Any]:
+    """Run deterministic artifact checks and persist a QA report."""
+    required = ((source_video, "source video"), (narration, "narration"), (script, "script"), (timeline, "timeline"), (intelligence, "intelligence"))
     for path, label in required:
         _require_file(Path(path), label)
 
@@ -50,16 +30,11 @@ def run_qa_stage(
     destination = root / artifact
 
     def work() -> None:
+        video_path = Path(source_video)
         report: dict[str, Any] = {
             "movie_id": movie_id,
-            "checks": {
-                "source_video_present": True,
-                "narration_present": True,
-                "script_present": True,
-                "timeline_present": True,
-                "intelligence_present": True,
-            },
-            "video": inspect_video(Path(root / source_video) if not Path(source_video).is_absolute() else Path(source_video)),
+            "checks": {"source_video_present": True, "narration_present": True, "script_present": True, "timeline_present": True, "intelligence_present": True},
+            "video": inspect_video(video_path),
             "passed": True,
         }
         if not isinstance(report["video"], dict):
@@ -71,5 +46,5 @@ def run_qa_stage(
         if not report["passed"]:
             raise QAStageError("QA checks failed")
 
-    run_existing_stage(root, movie_id, "qa", work, artifact=artifact.as_posix())
+    run_bound_stage(root, movie_id, StageBinding("qa", artifact.as_posix(), work))
     return json.loads(destination.read_text(encoding="utf-8"))
