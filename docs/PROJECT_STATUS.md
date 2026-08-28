@@ -21,10 +21,12 @@
 | Ollama adapter | 🟢 | Structured JSON contract + failure handling |
 | Intelligence pipeline | 🟢 | Evidence → Ollama → validated intelligence |
 | Intelligence runner | 🟢 | Standalone stage runner; Whisper is upstream, not required here |
-| Checkpoints | 🟢 | Atomic JSON persistence |
+| Checkpoints | 🟢 | Atomic persistence with artifact SHA-256 verification |
 | Stage state | 🟢 | Ordered pipeline state policy |
-| Checkpoint-aware orchestration | 🔵 | Next GitHub build |
-| GitHub CI | 🟡 | Workflow exists; regression investigation remains open |
+| Resumable execution | 🟢 | Safe skip, failure recording, and retry boundary |
+| Orchestrator adapter | 🟢 | Thin integration boundary; existing orchestrator remains unchanged |
+| Ingestion adapter tests | 🟢 | Existing identify→ingest flow verified through resumable boundary |
+| GitHub CI | 🟡 | Workflow exists; latest result still needs verified run data |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | First real movie | 🟡 | Deliberately not started |
@@ -38,6 +40,12 @@ Issue #1 tracks the CI regression. Do not close until a successful real CI run h
 
 Do not treat architecture-only implementation as production validation. Real dependencies, RAM, movie inputs, and rendering must be tested on the Windows machine before production use.
 
+## Current integration boundary
+
+`Engine/orchestrator_stage_adapter.py` bridges existing orchestrator stage functions into the resumable execution layer. The existing `Engine/orchestrator.py` has not been replaced or rewritten for this integration.
+
+The ingestion adapter specifically preserves the existing `identify → ingest` call sequence while requiring the expected ingestion artifact for checkpoint completion.
+
 ## Next build
 
-Implement a checkpoint-aware orchestration wrapper without replacing the existing orchestrator. Add tests for ordering, idempotence, resume, failure recovery, and artifact integrity.
+Extend the same adapter pattern to the next canonical stage only after its existing inputs/outputs and tests have been inspected. Do not bulk-wire every stage at once.
