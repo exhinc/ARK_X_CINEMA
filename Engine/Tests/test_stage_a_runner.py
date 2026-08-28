@@ -78,7 +78,7 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
         "intelligence": {"summary": "Description.", "unsupported_claims": []},
     }]
 
-    def fake_intelligence(**kwargs):
+    def fake_intelligence(root, movie_id, timeline, model, base_url="http://127.0.0.1:11434/api/generate", infer=runner.infer_scene):
         calls.append("intelligence")
         output = workspace / "intelligence" / "intelligence.json"
         output.parent.mkdir(parents=True, exist_ok=True)
