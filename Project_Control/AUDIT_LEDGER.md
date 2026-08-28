@@ -3,7 +3,7 @@
 **Audit type:** Controlled forensic audit & repair  
 **Audit branch:** `master`  
 **Audit baseline:** `b431fe1ac4036aec85fc3dc51f534a22e4fc4126`  
-**Final audited master:** `e13366f82a8ef8f57eac632e1eeacdf14e37260e`  
+**Final audited master:** `2526a0eb636eb35d4f56a99fde47a97714e08729`  
 **Audit started:** 2026-08-28  
 **Audit status:** COMPLETE — controlled discovery, repair, re-scan, and final verification completed
 
@@ -25,7 +25,7 @@
 | `.gitignore` | INSPECTED | Protects source media/runtime outputs from Git; no destructive change justified. |
 | `AGENTS.md` | INSPECTED | Authoritative AI engineering contract; forensic protocol integrated and preserved. |
 | `CLAUDE.md` | INSPECTED | Claude entry-point; consistent with shared rules. |
-| `README.md` | INSPECTED | Reconciled source-selection/status wording with current master implementation. |
+| `README.md` | INSPECTED | Source-selection and current-status wording reconciled with master implementation. |
 | `ARK_X_Cinema_Current_State.txt` | INSPECTED | Historical workstation snapshot; not current configuration. |
 | `RUN_ARK_X_CINEMA.bat` | INSPECTED | Repository-relative CLI launcher to `Engine/orchestrator.py`. |
 | `Control/` | INSPECTED | Tkinter control center + VBS launcher; GUI stage display is not canonical checkpoint state. |
@@ -34,8 +34,8 @@
 | `Engine/Tests/` | INSPECTED | Full test inventory reviewed; portable contract tests plus manual/legacy fixtures identified. |
 | `Backups/` | INSPECTED | Historical archive; preserved, not treated as production execution. |
 | `Project_Control/` | INSPECTED | All control records reviewed and reconciled where evidence required. |
-| `docs/` | INSPECTED | AI handoff, build history, CI checkpoint, project status all reviewed. |
-| `Projects/` | INSPECTED | Current example project artifacts reviewed; state is not evidence of full end-to-end completion. |
+| `docs/` | INSPECTED | AI handoff, build history, CI checkpoint, project status reviewed. |
+| `Projects/` | INSPECTED | Current example project artifacts reviewed; not evidence of complete production. |
 | `Movies/` | INSPECTED | Source-media directory; media intentionally excluded from Git. |
 | `Analysis/`, `Finished/`, `Logs/`, `Music/`, `Narration/`, `Research/`, `Scenes/`, `Scripts/`, `SFX/`, `Subtitles/`, `Thumbnails/`, `Transcripts/`, `Upload/`, `Visuals/` | INSPECTED | Runtime/output/asset directories accounted for; empty or auxiliary where not currently connected to production. |
 
@@ -81,25 +81,25 @@ The active `Engine/Tests` suite contains checkpoint, ingestion, intelligence, Ol
 
 ## CI evidence
 
-Latest audited master CI:
+Latest final-master CI:
 
 - Workflow: `ARK X Cinema Tests`
-- Run: #113
-- Commit: `e13366f82a8ef8f57eac632e1eeacdf14e37260e`
+- Run: #116
+- Commit: `2526a0eb636eb35d4f56a99fde47a97714e08729`
 - Status: completed
 - Conclusion: success
 - Job: `tests` — success
 - Engine test step — success
 
-CI success proves the repository test contract for the current commit. It does not prove Windows runtime behavior, model output quality, RAM, TTS, FFmpeg production rendering, or a full movie run. fileciteturn276file0L2-L2
+CI success proves the repository test contract for the final audited commit. It does not prove Windows runtime behavior, model output quality, RAM, TTS, FFmpeg production rendering, or a full movie run. fileciteturn289file0L2-L2
 
 ## Findings and repairs
 
 ### Confirmed defect — README source-selection contradiction
 
-**Finding:** README described the largest valid video as generally preferred, while the current workspace implementation requires exactly one usable video and rejects ambiguous multi-video packages.
+**Finding:** README described the largest valid video as generally preferred, while current workspace implementation requires exactly one usable video and rejects ambiguous multi-video packages.
 
-**Repair:** README updated to match the authoritative current implementation.
+**Repair:** README updated to match the authoritative implementation.
 
 **Evidence:** commit `d71e684cba082a5b9c0ee1307744c07216583df8` records the surgical documentation correction. fileciteturn282file0L3-L7
 
@@ -115,7 +115,7 @@ CI success proves the repository test contract for the current commit. It does n
 
 ### False positive closed — supposedly missing docs
 
-The fresh audit verified that `docs/AI_HANDOFF.md` and `docs/PROJECT_STATUS.md` do exist on current master. The earlier “missing file” concern was stale evidence, not a current repository defect. No duplicate replacement was created.
+The fresh audit verified that `docs/AI_HANDOFF.md` and `docs/PROJECT_STATUS.md` exist on current master. The earlier “missing file” concern was stale evidence, not a current defect. No duplicate replacement was created.
 
 **Final status:** CLOSED AS FALSE POSITIVE.
 
@@ -145,9 +145,9 @@ Current branch inventory:
 - `master` — authoritative default branch.
 - `github-only/structured-output-and-ci` — branch exists; current repository state does not show the reported structured-output work as a distinct merged branch state. Treat the original report as historical unless independently verified from a diverging branch.
 - `stage-a/final-ci-validation` — validation branch, not master.
-- `stage-a/pre-pc-integration` — unmerged development branch; PR #6 remains open, 25 commits, 20 changed files, base `master`, head `c5f9f235b53b3720a8f407c2ed7caf1685b55b78`. It contains later TTS/edit/FFmpeg/QA integration and is explicitly not counted as current-master completion. fileciteturn284file0L4-L13
+- `stage-a/pre-pc-integration` — unmerged development branch; PR #6 remains open with 25 commits and 20 changed files, base `master`, head `c5f9f235b53b3720a8f407c2ed7caf1685b55b78`. It contains later TTS/edit/FFmpeg/QA integration and is explicitly not counted as current-master completion. fileciteturn284file0L4-L13
 
-The audited final master contains no wholesale replacement of `Engine/orchestrator.py` as part of the controlled forensic repair pass.
+The audited master contains no wholesale replacement of `Engine/orchestrator.py` as part of the controlled forensic repair pass.
 
 ## Remaining UNVERIFIED items
 
@@ -169,4 +169,4 @@ The new controlled forensic audit is **COMPLETE for the GitHub repository scope*
 
 It does **not** mean the application is bug-free, secure in every possible respect, production-ready, or fully validated on Windows.
 
-The repository is now in a verified state for the next controlled engineering decision, with confirmed defects repaired, historical material preserved, CI evidence current for the audited commit, and remaining environment-dependent questions explicitly recorded as `UNVERIFIED`.
+The repository is now in a verified state for the next controlled engineering decision, with confirmed defects repaired, historical material preserved, CI evidence current for the final audited commit, and remaining environment-dependent questions explicitly recorded as `UNVERIFIED`.
