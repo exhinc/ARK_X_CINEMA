@@ -8,23 +8,16 @@ import pytest
 ENGINE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ENGINE))
 
-from orchestrator_stage_adapter import run_existing_stage
+from orchestrator_stage_adapter import StageBinding, run_bound_stage
 from video_stage_adapter import VideoStageError, run_video_stage
 
 
 def _complete_prerequisites(tmp_path):
-    for stage, artifact in (
-        ("ingestion", "ingestion.txt"),
-        ("transcription", "ad.srt"),
-        ("timeline", "timeline.json"),
-        ("intelligence", "intelligence/intelligence.json"),
-        ("script", "script/recap.txt"),
-        ("tts", "audio/narration.wav"),
-    ):
+    for stage, artifact in (("ingestion", "ingestion.txt"), ("transcription", "ad.srt"), ("timeline", "timeline.json"), ("intelligence", "intelligence/intelligence.json"), ("script", "script/recap.txt"), ("tts", "audio/narration.wav")):
         path = tmp_path / artifact
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(stage.encode())
-        run_existing_stage(tmp_path, "movie-001", stage, lambda: None, artifact=artifact)
+        run_bound_stage(tmp_path, "movie-001", StageBinding(stage, artifact, lambda: None))
 
 
 def test_video_assembly_is_resumable(tmp_path):
@@ -40,7 +33,6 @@ def test_video_assembly_is_resumable(tmp_path):
 
     first = run_video_stage(tmp_path, "movie-001", source, narration, assemble)
     second = run_video_stage(tmp_path, "movie-001", source, narration, assemble)
-
     assert first == second
     assert len(calls) == 1
     assert first.read_bytes() == b"final-mp4"
