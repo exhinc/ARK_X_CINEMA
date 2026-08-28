@@ -26,5 +26,6 @@ def test_missing_source_is_rejected(tmp_path):
 def test_empty_output_is_recorded_as_failed(tmp_path):
     _complete_prerequisites(tmp_path); source = tmp_path / "movie.mp4"; narration = tmp_path / "audio" / "narration.wav"; source.write_bytes(b"source")
     def assemble(_, __, destination): destination.write_bytes(b"")
-    run_video_stage(tmp_path, "movie-001", source, narration, assemble)
+    with pytest.raises(VideoStageError, match="Video assembler produced no output"):
+        run_video_stage(tmp_path, "movie-001", source, narration, assemble)
     assert load_state(tmp_path, "movie-001").failed == "video"
