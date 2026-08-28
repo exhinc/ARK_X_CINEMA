@@ -30,20 +30,18 @@
 | Stage state | 🟢 | Ordered pipeline state policy with per-stage checkpoints |
 | Resumable execution | 🟢 | Safe skip, failure recording, retry, and artifact validation |
 | Orchestrator adapter | 🟢 | Thin integration boundary; existing production orchestrator remains unchanged |
-| GitHub CI | 🟢* | Corrected test run `33140883220` completed successfully; verify again after future code changes |
+| GitHub CI | 🟡 | Historical run `33140883220` was verified successful; current-commit status must be checked after these documentation changes |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | Real TTS test | 🟡 | Requires Windows PC |
 | Real FFmpeg render | 🟡 | Requires Windows PC and production assembly command |
 | First real movie | 🟡 | Deliberately not started |
 
-\* The green CI result proves the repository test suite for that verified run. It does not prove real Windows runtime behavior.
-
 ## Verification rule
 
-Architecture-only implementation is not production validation. Real dependencies, RAM, movie inputs, rendering, and end-to-end behavior must be tested on the Windows machine before production use.
+Architecture-only implementation is not real-machine validation. Real dependencies, RAM, movie inputs, rendering, and end-to-end behavior must be tested on the Windows machine before production use.
 
-GitHub CI is considered green only when an actual Actions run on the relevant current code completes successfully. Run `33140883220` was verified successful after the integration fixes. Documentation-only commits after that run do not change runtime behavior; the next code change must receive its own CI verification.
+GitHub CI is considered green only when an actual Actions run for the relevant current commit completes successfully. Historical runs are evidence about historical commits only; they must not be used to claim the current tree is green.
 
 ## Current integration boundary
 
@@ -53,14 +51,14 @@ The canonical timeline consumes timed subtitle cues and the generated AD SRT, pr
 
 ## Multi-agent coordination
 
-The repository contains shared AI-agent instructions in `AGENTS.md`, a Claude entry point in `CLAUDE.md`, repository-wide Copilot instructions in `.github/copilot-instructions.md`, and the persistent multi-agent handoff in `docs/AI_HANDOFF.md`.
+The primary AI development team is **ChatGPT, Claude, and Grok**. Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`.
 
-All agents must treat current code, tests, and verified CI as authoritative and must not claim real-machine validation without evidence.
+All agents must treat current code, tests, and verified current-commit CI as authoritative. Do not claim real-machine validation without evidence.
 
 ## Immediate next step
 
-Freeze the GitHub architecture baseline. When the Windows machine is available, validate Whisper.cpp, Ollama/Qwen, TTS, FFmpeg, RAM behavior, and the full pipeline one heavy stage at a time. Do not begin the first production movie until those checks pass.
+Freeze the GitHub architecture after current-commit CI verification. When the Windows machine is available, validate Whisper.cpp, Ollama/Qwen, TTS, FFmpeg, RAM behavior, and the full pipeline one heavy stage at a time. Do not begin the first production movie until those checks pass.
 
 ## Resolved issue
 
-Issue #1 (CI regression) is closed after the corrected regression suite run `33140883220` completed successfully. Future regressions should be recorded as new issues rather than reopening historical context without a new failure.
+Issue #1 (historical CI regression) is closed after its corrected regression suite run completed successfully. Future regressions should be recorded as new issues rather than reopening historical context without a new failure.
