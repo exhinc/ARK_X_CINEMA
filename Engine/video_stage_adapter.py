@@ -1,30 +1,18 @@
-"""Resumable video assembly boundary for ARK X Cinema.
-
-The actual FFmpeg invocation is injected. This keeps orchestration and
-checkpoint behavior testable in CI without requiring a movie or FFmpeg.
-"""
+"""Resumable video assembly boundary for ARK X Cinema."""
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Callable, Sequence
+from typing import Callable
 
-from orchestrator_stage_adapter import run_existing_stage
+from orchestrator_stage_adapter import StageBinding, run_bound_stage
 
 
 class VideoStageError(ValueError):
     """Raised when video-stage inputs or output are invalid."""
 
 
-def run_video_stage(
-    root: Path,
-    movie_id: str,
-    source_video: Path,
-    narration: Path,
-    assemble: Callable[[Path, Path, Path], None],
-    *,
-    subtitle: Path | None = None,
-) -> Path:
+def run_video_stage(root: Path, movie_id: str, source_video: Path, narration: Path, assemble: Callable[[Path, Path, Path], None], *, subtitle: Path | None = None) -> Path:
     """Assemble the final video and checkpoint its output."""
     source_video = Path(source_video)
     narration = Path(narration)
@@ -44,5 +32,5 @@ def run_video_stage(
         if not destination.is_file() or destination.stat().st_size == 0:
             raise VideoStageError("Video assembler produced no output")
 
-    run_existing_stage(root, movie_id, "video", work, artifact=artifact.as_posix())
+    run_bound_stage(root, movie_id, StageBinding("video", artifact.as_posix(), work))
     return destination
