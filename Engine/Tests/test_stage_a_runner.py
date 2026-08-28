@@ -57,11 +57,10 @@ def test_run_stage_a_core_connects_existing_stages_in_order(tmp_path, monkeypatc
     for path in (tmp_path / "movie.srt", tmp_path / "movie_ad.mp3"):
         path.write_bytes(b"input")
 
-    def fake_transcription(**kwargs):
+    def fake_transcription(root, movie_id, ad_audio, output_srt, whisper_executable, whisper_model, ffmpeg_executable="ffmpeg"):
         calls.append("transcription")
-        output = kwargs["output_srt"]
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text("1\n00:00:00,000 --> 00:00:01,000\nDescription.\n", encoding="utf-8")
+        output_srt.parent.mkdir(parents=True, exist_ok=True)
+        output_srt.write_text("1\n00:00:00,000 --> 00:00:01,000\nDescription.\n", encoding="utf-8")
         return StageResult("movie", "transcription", "complete", artifact="transcripts/ad.srt")
     monkeypatch.setattr(runner, "bind_ad_transcription", fake_transcription)
 
