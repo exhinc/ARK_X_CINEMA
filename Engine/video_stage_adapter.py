@@ -6,13 +6,22 @@ from pathlib import Path
 from typing import Callable
 
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
+from resumable_orchestrator import StageResult
 
 
 class VideoStageError(ValueError):
     """Raised when video-stage inputs or output are invalid."""
 
 
-def run_video_stage(root: Path, movie_id: str, source_video: Path, narration: Path, assemble: Callable[[Path, Path, Path], None], *, subtitle: Path | None = None) -> Path:
+def run_video_stage(
+    root: Path,
+    movie_id: str,
+    source_video: Path,
+    narration: Path,
+    assemble: Callable[[Path, Path, Path], None],
+    *,
+    subtitle: Path | None = None,
+) -> Path:
     """Assemble the final video and checkpoint its output."""
     source_video = Path(source_video)
     narration = Path(narration)
@@ -32,5 +41,11 @@ def run_video_stage(root: Path, movie_id: str, source_video: Path, narration: Pa
         if not destination.is_file() or destination.stat().st_size == 0:
             raise VideoStageError("Video assembler produced no output")
 
-    run_bound_stage(root, movie_id, StageBinding("video", artifact.as_posix(), work))
+    result: StageResult = run_bound_stage(
+        root, movie_id, StageBinding("video", artifact.as_posix(), work)
+    )
+    if result.status == "failed":
+        raise VideoStageError(result.error or "Video stage failed")
+    if not destination.is_file() or destination.stat().st_size == 0:
+        raise VideoStageError("Video stage completed without a valid artifact")
     return destination
