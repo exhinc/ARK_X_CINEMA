@@ -1,9 +1,4 @@
-"""Resumable, evidence-grounded recap script stage.
-
-This stage converts validated scene intelligence into an original recap-script
-input contract. It does not call an LLM itself; the generation callable is
-injected so CI can test the stage without Ollama.
-"""
+"""Resumable, evidence-grounded recap script stage."""
 
 from __future__ import annotations
 
@@ -11,10 +6,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
+from resumable_orchestrator import StageResult
 
 
 class ScriptStageError(ValueError):
-    """Raised when intelligence is unsuitable for script generation."""
+    """Raised when intelligence or generated script is invalid."""
 
 
 def _validate_intelligence(items: list[dict[str, Any]]) -> None:
@@ -46,5 +42,11 @@ def run_script_stage(
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(script.strip() + "\n", encoding="utf-8")
 
-    run_bound_stage(root, movie_id, StageBinding("script", artifact.as_posix(), work))
+    result: StageResult = run_bound_stage(
+        root, movie_id, StageBinding("script", artifact.as_posix(), work)
+    )
+    if result.status == "failed":
+        raise ScriptStageError(result.error or "Script stage failed")
+    if not destination.is_file() or destination.stat().st_size == 0:
+        raise ScriptStageError("Script stage completed without a valid artifact")
     return destination.read_text(encoding="utf-8")
