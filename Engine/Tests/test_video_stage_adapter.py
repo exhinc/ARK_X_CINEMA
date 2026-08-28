@@ -5,6 +5,7 @@ import pytest
 ENGINE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ENGINE))
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
+from stage_state import load_state
 from video_stage_adapter import VideoStageError, run_video_stage
 
 def _complete_prerequisites(tmp_path):
@@ -25,5 +26,5 @@ def test_missing_source_is_rejected(tmp_path):
 def test_empty_output_is_recorded_as_failed(tmp_path):
     _complete_prerequisites(tmp_path); source = tmp_path / "movie.mp4"; narration = tmp_path / "audio" / "narration.wav"; source.write_bytes(b"source")
     def assemble(_, __, destination): destination.write_bytes(b"")
-    result = run_video_stage(tmp_path, "movie-001", source, narration, assemble)
-    assert result.status == "failed"
+    run_video_stage(tmp_path, "movie-001", source, narration, assemble)
+    assert load_state(tmp_path, "movie-001").failed == "video"
