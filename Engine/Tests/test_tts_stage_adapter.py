@@ -5,6 +5,7 @@ import pytest
 ENGINE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ENGINE))
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
+from stage_state import load_state
 from tts_stage_adapter import TTSStageError, run_tts_stage
 
 def _complete_prerequisites(tmp_path):
@@ -25,5 +26,6 @@ def test_empty_script_is_rejected(tmp_path):
 def test_empty_tts_output_is_recorded_as_failed(tmp_path):
     _complete_prerequisites(tmp_path)
     def synthesize(_, destination): destination.write_bytes(b"")
-    result = run_tts_stage(tmp_path, "movie-001", "Valid script.", synthesize)
-    assert result.status == "failed"
+    run_tts_stage(tmp_path, "movie-001", "Valid script.", synthesize)
+    state = load_state(tmp_path, "movie-001")
+    assert state.failed == "tts"
