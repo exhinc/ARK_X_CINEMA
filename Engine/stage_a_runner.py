@@ -20,6 +20,7 @@ from ollama_intelligence import infer_scene
 from orchestrator_stage_adapter import StageBinding, run_bound_stage
 from piper_tts_engine import synthesize_segments
 from project_workspace import build_source_manifest, create_workspace
+from qa_stage_adapter import run_qa_stage
 from recap_script_engine import generate_recap
 from recap_subtitle_engine import write_recap_srt
 from runtime_config import RuntimeConfig, load_config, validate_runtime
@@ -269,7 +270,7 @@ def run_stage_a(
     if not video_result.is_file() or video_result.stat().st_size == 0:
         raise StageARunnerError("Video stage completed without a valid final video")
 
-    qa_result = __import__("qa_stage_adapter").run_qa_stage(
+    qa_result = run_qa_stage(
         root=workspace,
         movie_id=movie_id,
         final_video=final_video,
