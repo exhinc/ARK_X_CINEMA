@@ -7,7 +7,6 @@ ENGINE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ENGINE))
 
 import pytest
-from checkpoint import Checkpoint, save_checkpoint
 from stage_state import StageStateError, load_state, mark_complete, mark_failed, mark_running
 
 
@@ -46,9 +45,23 @@ def test_completed_artifact_tampering_invalidates_resume(tmp_path):
         load_state(tmp_path, "movie-001")
 
 
-def test_failure_is_recorded_for_resume(tmp_path):
+def test_failure_preserves_previous_completed_stages(tmp_path):
     mark_running(tmp_path, "movie-001", "ingestion")
-    mark_failed(tmp_path, "movie-001", "ingestion", "input missing")
+    mark_complete(tmp_path, "movie-001", "ingestion", _artifact(tmp_path))
+    mark_running(tmp_path, "movie-001", "transcription")
+    mark_failed(tmp_path, "movie-001", "transcription", "input missing")
     state = load_state(tmp_path, "movie-001")
-    assert state.failed == "ingestion"
-    assert state.completed == ()
+    assert state.failed == "transcription"
+    assert state.completed == ("ingestion",)
+
+
+def test_failed_stage_can_be_retried_without_erasing_history(tmp_path):
+    mark_running(tmp_path, "movie-001", "ingestion")
+    mark_complete(tmp_path, "movie-001", "ingestion", _artifact(tmp_path))
+    mark_running(tmp_path, "movie-001", "transcription")
+    mark_failed(tmp_path, "movie-001", "transcription", "temporary error")
+    mark_running(tmp_path, "movie-001", "transcription")
+    artifact = _artifact(tmp_path, "Workspace/movie-001/ad.srt")
+    state = mark_complete(tmp_path, "movie-001", "transcription", artifact)
+    assert state.completed == ("ingestion", "transcription")
+    assert state.failed is None
