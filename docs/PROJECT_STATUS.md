@@ -24,17 +24,17 @@
 | Intelligence adapter | 🟢 | Resumable artifact boundary with explicit failure propagation |
 | Script adapter | 🟢 | Evidence-grounded original-script boundary with explicit failure propagation |
 | TTS adapter | 🟢 | Resumable audio boundary; actual engine/runtime still needs PC validation |
-| Video adapter | 🟢 | Resumable final-video boundary; production FFmpeg assembly still needs implementation/PC validation |
+| Video adapter | 🟢 | Resumable final-video boundary; actual production FFmpeg assembly still needs implementation/PC validation |
 | QA adapter | 🟢 | Required-artifact checks and final-video inspection boundary; real media inspector still needs implementation/PC validation |
 | Checkpoints | 🟢 | Atomic persistence with artifact SHA-256 verification |
 | Stage state | 🟢 | Ordered pipeline state policy with per-stage checkpoints |
 | Resumable execution | 🟢 | Safe skip, failure recording, retry, and artifact validation |
 | Orchestrator adapter | 🟢 | Thin integration boundary; existing production orchestrator remains unchanged |
-| GitHub CI | 🟡 | Historical run `33140883220` was verified successful; current-commit status must be checked after these documentation changes |
+| GitHub CI | 🟡 | Must verify an actual successful Actions run for the current post-documentation commit; historical success is not current proof |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | Real TTS test | 🟡 | Requires Windows PC |
-| Real FFmpeg render | 🟡 | Requires Windows PC and production assembly command |
+| Real FFmpeg render | 🟡 | Requires Windows PC and a production assembly implementation |
 | First real movie | 🟡 | Deliberately not started |
 
 ## Verification rule
@@ -57,7 +57,7 @@ All agents must treat current code, tests, and verified current-commit CI as aut
 
 ## Immediate next step
 
-Freeze the GitHub architecture after current-commit CI verification. When the Windows machine is available, validate Whisper.cpp, Ollama/Qwen, TTS, FFmpeg, RAM behavior, and the full pipeline one heavy stage at a time. Do not begin the first production movie until those checks pass.
+Verify GitHub Actions for the current documentation commit. Once that is successful, freeze the GitHub architecture. When the Windows machine is available, validate Whisper.cpp, Ollama/Qwen, TTS, FFmpeg, RAM behavior, and the full pipeline one heavy stage at a time. Do not begin the first production movie until those checks pass.
 
 ## Resolved issue
 
