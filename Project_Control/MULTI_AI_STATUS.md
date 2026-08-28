@@ -1,112 +1,119 @@
 # ARK X CINEMA — MULTI-AI STATUS
 
 **Repository:** https://github.com/exhinc/ARK_X_CINEMA  
-**Purpose:** Shared, evidence-based status document for all AI agents and the human operator.  
-**Rule:** No single AI may declare final truth. Claims move from “Open Disagreement” to “Agreed” only when every participating AI accepts the cited repository evidence. Unresolved disagreements remain visible. The human is the final arbiter only when AIs cannot reach consensus after evidence review.
+**Purpose:** Shared, evidence-based status document for all AI agents and the human operator.
 
-**Last updated:** 2026-08-28  
-**Participating assessments recorded:**
-- Grok assessment (conversation of 2026-08-27/28)
-- Second AI assessment (committed as `docs/REVIEW_2026-08-27.md`, commit 1fbd61e157b8b773a254aa97dba68f22a2bc0e4a)
+**Rule:** No single AI may declare final truth. Claims move from “Open Disagreement” to “Agreed” only when participating assessments accept the cited repository evidence. Unresolved disagreements remain visible. The human is the final arbiter when AIs cannot reach consensus after evidence review.
+
+**Last updated:** 2026-08-28
 
 ---
 
-## 1. Agreed Facts (supported by repository evidence)
+## 0. FORENSIC AUDIT DISTINCTION
 
-These points are accepted by both recorded assessments and are backed by files currently in the repository:
+The existing Phase 1 implementation/status audit is **historical evidence only**.
 
-- Project-control system exists and is in active use (`Project_Control/` containing PROJECT_STATE.md, CURRENT_TASK.md, DECISIONS.md, CHANGELOG.md, IMPLEMENTATION_STATUS.md, and related files).
-- Architecture decision DECISION-001 is locked: AD audio is transcribed by whisper.cpp into a timestamped AD SRT. The AD SRT is generated; it is not assumed to already exist.
-- A successful full AD transcription test for *The Platform (2019)* AD audio (~135.8 MB) has been recorded.
-- Source discovery, FFprobe media inspection, external/embedded subtitle handling, and SRT validation foundations exist.
-- Runtime configuration foundation exists (`Engine/runtime_config.py` + `Config/config.json`).
-- Checkpoint system with atomic writes and SHA-256 artifact verification exists (`Engine/checkpoint.py`).
-- Ordered stage-state / resume policy exists (`Engine/stage_state.py`).
-- Adapter / boundary scaffolding exists for ingestion, transcription, timeline, intelligence, script, TTS, video, and QA.
-- Evidence-packet / evidence-first intelligence design exists.
-- Tkinter control-center foundation exists (`Control/ark_cinema.py`).
-- Test project artifacts exist for *The Platform* (`Projects/The_Platform_-_Sci-Fi_2019/` containing production.srt, source_manifest.json, pipeline_state.json, etc.).
-- The current pipeline_state for *The Platform* records only subtitle_ingestion as complete.
-- Structured recap JSON test result is recorded as failed (`Engine/Tests/Recap/test_recap_json_result.json`: `"passed": false`, JSON parsing error).
-- The repository is not yet capable of reliably producing a finished recap video end-to-end.
-- Real Windows PC validation (RAM, actual whisper.cpp, Ollama/Qwen, TTS, FFmpeg, full-movie runs) is still required and cannot be completed solely on GitHub.
-- Jumping directly to a full 2–3 hour movie test is not recommended until additional GitHub integration work and short PC tests are completed.
+`Project_Control/IMPLEMENTATION_STATUS.md` records the scope and conclusions of the historical implementation audit and the establishment of the permanent forensic-audit protocol. It does **not** count as execution or completion of the new exhaustive forensic audit.
+
+The current exhaustive forensic audit is a separate operation tracked in:
+
+`Project_Control/AUDIT_LEDGER.md`
+
+The ledger must be populated with fresh repository evidence for the current audit. Its existence, and the existence of prior audits, must never be used to claim that the current forensic audit has already been completed.
 
 ---
 
-## 2. Open Disagreements
+## 1. Agreed Facts
 
-| Topic | Grok Position | Second AI Position | Key Evidence Cited by Each Side | Status |
-|-------|---------------|--------------------|----------------------------------|--------|
-| Overall project % complete (toward first finished video / ultimate 3-per-day goal) | ~38% (range mid-to-high 30s for first video; lower for full 3/day target) | ~55–65% (working estimate ~60%) | Grok weights remaining runtime engines, proven end-to-end, and structured LLM success more heavily. Second AI weights existing architecture, adapters, and control systems more heavily. Both cite IMPLEMENTATION_STATUS.md, PROJECT_STATE.md, adapter files, failed recap JSON test, and lack of end-to-end proof. | Open |
-| Time to Stage A (first reliable finished video) with AI-assisted GitHub work + PC testing | 2–4 weeks focused | 1–3 weeks focused | Both assume AI does most coding; human does PC validation; no major hardware blockers. Difference is mainly optimism about integration speed and structured-output fixing. | Open |
-| Time to full 3 different movies/day target | 2.5–4 months | 6–14 weeks | Same underlying uncertainties (hardware fit, TTS quality, render reliability, recovery). Different weighting of remaining risk. | Open |
-| How much of the existing “adapters / boundaries” should count as completed production work | Lower weight — adapters are not finished runtime engines | Higher weight — substantial infrastructure already present | Both acknowledge the distinction (adapters ≠ finished implementations). Difference is quantitative weighting. | Open |
+These points are supported by current repository evidence:
 
----
-
-## 3. Required Evidence to Resolve Open Disagreements
-
-The following concrete evidence would move items from “Open” toward “Agreed”:
-
-1. **Percentage complete**  
-   - A working end-to-end run on a short clip that produces a valid final video artifact with passing automated QA.  
-   - Successful structured JSON output from the production LLM path (current test is failing).  
-   - Measured peak RAM numbers for Whisper, Ollama, and TTS on the actual Windows machine.
-
-2. **Time estimates**  
-   - Actual elapsed calendar time for the next two completed builds (runtime wiring + canonical workspace, then structured-output fix).  
-   - Recorded PC validation results for the first short end-to-end test.
-
-3. **Adapter vs implementation weighting**  
-   - Explicit inventory in the repository listing every stage as either “boundary only”, “partial runtime”, or “production-ready with test evidence”.  
-   - Passing tests that exercise the real Whisper.cpp, Ollama, TTS, and FFmpeg invocations (not only mocked or injected functions).
-
-Until the above evidence exists, the percentage and time figures remain Open Disagreements.
+- Project-control system exists and is active.
+- `AGENTS.md` is the authoritative AI engineering contract.
+- `CLAUDE.md` is the Claude entry point and defers to `AGENTS.md`.
+- `docs/AI_HANDOFF.md` exists and defines the persistent multi-agent handoff.
+- `docs/PROJECT_STATUS.md` exists and records current architecture/status boundaries.
+- Architecture decision DECISION-001 is locked: separate AD audio → whisper.cpp → timestamped AD SRT → movie intelligence.
+- A historical full AD transcription test for *The Platform (2019)* AD audio (~135.8 MB) is recorded as successful.
+- Current master contains repository-relative runtime configuration, canonical workspace/source-manifest support, subtitle/AD ingestion, deterministic timeline processing, bounded evidence packets, local Ollama integration, structured-output handling, recap-script core, and ordered/resumable checkpoint infrastructure.
+- `Engine/orchestrator.py` remains the conservative foundation entrypoint.
+- `Engine/stage_a_runner.py` currently composes the core path through script generation but does not yet complete TTS/video/final-QA production on master.
+- The current master has a successful GitHub Actions run (#108) for commit `3138ebf8e9cc9394a9cb8dc552bcc486f30ac2b3`; the workflow runs `python -m pytest Engine/Tests -q` on Ubuntu/Python 3.11.
+- CI success does not prove real Windows execution, model behavior, TTS, FFmpeg rendering, RAM limits, or full-movie reliability.
+- Real Windows validation remains required before Stage A can be declared complete.
 
 ---
 
-## 4. Shared View of Remaining Work
+## 2. Historical / Open Disagreements
 
-Both assessments agree on the major categories still left:
+These older assessments remain visible as historical evidence and are not automatically current truth:
 
-**GitHub / engineering work still required before full-length movie testing**
-- Fully wire runtime configuration into the live orchestrator (remove remaining hard-coded paths).
-- Canonical per-movie workspace and deterministic source_manifest handling.
-- Harden structured LLM output validation (current recap JSON test fails).
-- Integrate stages so the real checkpoint/stage-state system drives the production path.
-- Real runtime implementations (or fully proven integrations) for Whisper.cpp, Ollama, TTS, FFmpeg, and media probing.
-- Long-movie considerations (large SRT, many scenes, interruption recovery, disk use).
-- Clear CI baseline (portable tests green; PC-only tests explicitly separated).
+| Topic | Historical positions | Status |
+|---|---|---|
+| Overall percentage complete | Grok ~38%; second AI ~55–65% | Replaced by current evidence-based working estimate outside this historical record |
+| Time to Stage A | Grok 2–4 focused weeks; second AI 1–3 focused weeks | Provisional until real runtime evidence exists |
+| Time to 3/day | Grok 2.5–4 months; second AI 6–14 weeks | Provisional |
+| Adapter vs production weighting | Lower vs higher weighting | Architectural distinction is agreed; numeric weighting remains contextual |
 
-**Work that can only be completed on the Windows PC**
-- Real whisper.cpp runs and peak RAM measurement.
-- Real Ollama + Qwen (or chosen model) structured-output quality and RAM measurement.
-- Real TTS generation, quality, and RAM measurement.
-- Real FFmpeg rendering of progressively longer clips.
-- End-to-end short-clip test, then medium test, then full 2–3 hour movie.
-- Resume-after-interruption testing.
+Do not use these historical estimates as evidence that current completion has been established.
+
+---
+
+## 3. Evidence Required for Production Claims
+
+To resolve remaining production uncertainty, the repository/PC must establish:
+
+1. A short real-media end-to-end run producing a valid final video and passing automated QA.
+2. Real structured-output behavior from the production local model.
+3. Measured peak RAM for Whisper.cpp, Ollama/model, and TTS on the target Windows machine.
+4. Real FFmpeg rendering and output inspection.
+5. Safe interrupted-run/resume behavior on real media.
+6. A full first-movie run followed by human QA.
+
+Until those exist, Stage-A production claims remain provisional.
+
+---
+
+## 4. Current Shared View of Remaining Work
+
+### GitHub / engineering
+
+- Complete the remaining Stage-A production implementations on `master`.
+- Preserve one authoritative architecture and avoid unnecessary rewrites.
+- Ensure stage outputs and interfaces remain compatible.
+- Finish TTS, scene/edit mapping, FFmpeg assembly, final recap subtitles, deterministic media QA, and the complete end-to-end runner on master.
+- Maintain CI and regression coverage.
+
+### Windows / runtime
+
+- Real whisper.cpp execution/performance and AD → SRT quality.
+- Real Ollama/Qwen structured-output behavior and RAM.
+- Real TTS generation/quality/RAM.
+- Real FFmpeg rendering/media inspection.
+- Real end-to-end short, medium, then full movie runs.
+- Real interruption/resume testing.
 - Final human quality judgment.
 
-**Scaling work (only after Stage A is proven)**
-- Reliable 1 video/day → 2/day → 3 different movies/day.
-- Queue and throughput tooling.
+### Scaling
+
+Only after Stage A is proven:
+
+- 1 video/day
+- 2 videos/day
+- 3 different movies/day
 
 ---
 
-## 5. Shared View of Target Pipeline
-
-Both assessments converge on essentially the same high-level production pipeline:
+## 5. Shared Target Pipeline
 
 ```text
 LEGAL MOVIE PACKAGE
         │
         ▼
-   INGESTION (source_manifest)
+   INGESTION / SOURCE MANIFEST
         │
         ├──────────────┐
         ▼              ▼
-   DIALOGUE SRT     AD AUDIO
+   MOVIE SUBTITLES   AD AUDIO
                        │
                        ▼
                   whisper.cpp
@@ -116,61 +123,53 @@ LEGAL MOVIE PACKAGE
         │              │
         └──────┬───────┘
                ▼
-        CANONICAL TIMELINE / SCENE INDEX
+      CANONICAL TIMELINE
                │
                ▼
-        EVIDENCE PACKETS (provenance preserved)
+       BOUNDED EVIDENCE
                │
                ▼
-        LOCAL LLM → VALIDATED INTELLIGENCE
+       LOCAL LLM INTELLIGENCE
                │
                ▼
-        ORIGINAL RECAP SCRIPT (timestamped)
+       ORIGINAL RECAP SCRIPT
                │
                ▼
-        LOCAL TTS → NARRATION AUDIO
+           LOCAL TTS
                │
                ▼
-        SCRIPT-TO-SCENE MAPPING → EDIT MANIFEST
+       SCRIPT / SCENE MAPPING
                │
                ▼
-        FFmpeg ASSEMBLY (clips + narration + subs)
+           FFmpeg
                │
                ▼
         AUTOMATED QA
                │
                ▼
-        HUMAN QA / APPROVAL
-               │
-               ▼
-        UPLOAD READY
+          HUMAN QA
 ```
 
-Underneath every stage: checkpointing, artifact hashing, resume, and one-heavy-AI-stage-at-a-time resource policy.
+Underlying the stages: checkpointing, artifact integrity, resumability, provenance, and one-heavy-AI-stage-at-a-time policy.
 
 ---
 
-## 6. Consensus Rules (binding for all AI agents)
+## 6. Multi-Agent Rules
 
-1. Before making any status claim, an AI must read this file and the current `Project_Control/` documents.
-2. New claims require direct repository evidence (file paths, test results, commit references).
-3. A claim becomes “Agreed” only when every recorded participating AI accepts the evidence.
-4. Disagreements stay in Section 2 until resolved by evidence or human decision.
-5. No AI may silently overwrite another AI’s recorded position.
-6. Percentage and calendar estimates remain provisional until the evidence listed in Section 3 exists.
-7. The human operator is the final authority when AIs cannot reach consensus after evidence has been examined.
-
----
-
-## 7. Current Working Summary (non-binding)
-
-- Substantial architecture and control infrastructure exists.
-- Core AD transcription path has been successfully tested.
-- The system is not yet able to produce a finished recap video.
-- Additional GitHub integration work remains before full-length movie testing is advisable.
-- Real hardware validation on the Windows PC is still required.
-- Exact percentage complete and exact calendar time to Stage A / Stage D are still Open Disagreements between the recorded AI assessments.
+1. Read `AGENTS.md` and current Project_Control records before making status claims or changes.
+2. Use current repository evidence, not old chat statements.
+3. Keep disagreements visible until resolved.
+4. Do not silently overwrite another agent's recorded position.
+5. Treat historical audits as historical evidence.
+6. Treat the current forensic audit ledger as the evidence record for the new audit.
+7. Never use a percentage or time estimate as proof of production readiness.
 
 ---
 
-**End of MULTI_AI_STATUS.md**
+## 7. Current Working Summary
+
+- Current master is a substantial production-engineering foundation, not a finished end-to-end movie producer.
+- The permanent forensic-audit protocol is established.
+- The current exhaustive forensic audit is a separate operation and must be evidenced in `AUDIT_LEDGER.md`.
+- CI is currently green for the latest master documentation commit, but CI is only repository-contract evidence.
+- Real Windows validation remains outstanding.
