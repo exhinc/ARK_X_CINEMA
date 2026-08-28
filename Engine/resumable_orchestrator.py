@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Any
 
-from stage_state import STAGES, StageState, StageStateError, load_state, mark_complete, mark_failed, mark_running
+from stage_state import STAGES, StageStateError, load_state, mark_complete, mark_failed, mark_running
 
 
 @dataclass(frozen=True)
@@ -30,11 +30,13 @@ def execute_stage(
     work: Callable[[], Any],
     artifact: str | None = None,
 ) -> StageResult:
-    """Execute one stage exactly once unless it has not completed.
+    """Execute a stage once unless a valid completed checkpoint exists.
 
     A callable is never invoked when the requested stage is already complete.
-    Failures are persisted and re-raised so callers cannot mistake them for
-    successful processing.
+    Exceptions raised by the stage work are persisted as a failed checkpoint
+    and returned as a ``StageResult``; transition/configuration errors remain
+    exceptions so callers cannot confuse an invalid pipeline state with a
+    stage failure.
     """
     state = load_state(root, movie_id)
     if stage not in STAGES:
@@ -44,10 +46,11 @@ def execute_stage(
 
     mark_running(root, movie_id, stage)
     try:
-        result = work()
+        work()
     except Exception as exc:
-        mark_failed(root, movie_id, stage, str(exc) or exc.__class__.__name__)
-        return StageResult(movie_id, stage, "failed", error=str(exc) or exc.__class__.__name__)
+        message = str(exc) or exc.__class__.__name__
+        mark_failed(root, movie_id, stage, message)
+        return StageResult(movie_id, stage, "failed", error=message)
 
     mark_complete(root, movie_id, stage, artifact=artifact)
     return StageResult(movie_id, stage, "complete", artifact=artifact)
