@@ -1,10 +1,10 @@
 # ARK X Cinema — Project Status
 
-**Last repository update:** 2026-08-28
+**Last repository update:** 2026-08-31
 
 ## Status legend
 - 🟢 Implemented / repository-tested
-- 🟡 Needs real-environment or current-commit CI verification
+- 🟡 Needs real-environment validation
 - 🔵 Next
 - 🔴 Known defect
 
@@ -12,53 +12,57 @@
 
 | Area | Status | Notes |
 |---|---|---|
-| Runtime/config | 🟢 | Repository-relative configuration and stage-policy foundation |
-| Movie workspace | 🟢 | Isolated per-movie workspace foundation |
+| Runtime/config | 🟢 | Repository-relative configuration and one-heavy-stage policy |
+| Movie workspace | 🟢 | Deterministic per-movie workspace and source manifest |
 | Subtitle + AD ingestion | 🟢 | AD remains separate audio; conversion to SRT is required |
-| AD transcription boundary | 🟢 | Resumable adapter for AD audio → whisper.cpp → timestamped SRT; real whisper.cpp still needs PC validation |
+| AD transcription boundary | 🟢 | Whisper.cpp adapter for AD audio -> timestamped SRT; real execution still needs PC validation |
 | Scene/timeline engine | 🟢 | Deterministic cue-based timeline preserving subtitle/AD provenance |
-| Timeline adapter | 🟢 | Resumable timeline artifact boundary; existing timeline engine unchanged |
 | Evidence packets | 🟢 | Bounded, provenance-preserving intelligence input |
-| Ollama adapter | 🟢 | Local endpoint + structured JSON validation/failure handling foundation |
-| Intelligence pipeline | 🟢 | Evidence → Ollama → intelligence contract; real model execution still needs PC validation |
-| Intelligence adapter | 🟢 | Resumable artifact boundary with explicit failure propagation |
-| Script adapter | 🟢 | Evidence-grounded original-script boundary with explicit failure propagation |
-| TTS adapter | 🟢 | Resumable audio boundary; actual engine/runtime still needs PC validation |
-| Video adapter | 🟢 | Resumable final-video boundary; actual production FFmpeg assembly still needs implementation/PC validation |
-| QA adapter | 🟢 | Required-artifact checks and final-video inspection boundary; real media inspector still needs implementation/PC validation |
-| Checkpoints | 🟢 | Atomic persistence with artifact SHA-256 verification |
-| Stage state | 🟢 | Ordered pipeline state policy with per-stage checkpoints |
+| Ollama adapter | 🟢 | Local endpoint + strict structured-output validation |
+| Intelligence pipeline | 🟢 | Evidence -> Ollama -> intelligence contract; real model execution still needs PC validation |
+| Script adapter | 🟢 | Evidence-grounded original recap script generation contract |
+| TTS engine + adapter | 🟢 | Piper engine with segment timing metadata; real runtime still needs PC validation |
+| Edit mapping | 🟢 | Deterministic script-to-source edit manifest with clip-length safeguards |
+| Recap subtitles | 🟢 | Deterministic narration-aligned recap SRT |
+| Video adapter + renderer | 🟢 | Deterministic FFmpeg assembly contract; real encoding still needs PC validation |
+| QA adapter + inspector | 🟢 | Required-artifact and media-stream validation; real media still needs PC validation |
+| Checkpoints | 🟢 | Atomic persistence with artifact integrity verification |
+| Stage state | 🟢 | Ordered pipeline state with prerequisite enforcement |
 | Resumable execution | 🟢 | Safe skip, failure recording, retry, and artifact validation |
-| Orchestrator adapter | 🟢 | Thin integration boundary; existing production orchestrator remains unchanged |
-| GitHub CI | 🟡 | Must verify an actual successful Actions run for the current post-documentation commit; historical success is not current proof |
+| Stage-A runner | 🟢 | Complete repository-side composition from ingestion through QA |
+| GitHub CI | 🟢 | Master Stage-A merge commit passed Actions run #123; subsequent docs-only commits are pending fresh CI evidence |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | Real TTS test | 🟡 | Requires Windows PC |
-| Real FFmpeg render | 🟡 | Requires Windows PC and a production assembly implementation |
-| First real movie | 🟡 | Deliberately not started |
+| Real FFmpeg render | 🟡 | Requires Windows PC and real media |
+| Full end-to-end movie | 🟡 | Requires controlled tiny -> medium -> full validation |
 
 ## Verification rule
 
 Architecture-only implementation is not real-machine validation. Real dependencies, RAM, movie inputs, rendering, and end-to-end behavior must be tested on the Windows machine before production use.
 
-GitHub CI is considered green only when an actual Actions run for the relevant current commit completes successfully. Historical runs are evidence about historical commits only; they must not be used to claim the current tree is green.
-
 ## Current integration boundary
 
-The adapter layer bridges existing stage implementations into resumable execution without replacing the production orchestrator. Adapters currently cover ingestion, AD transcription, timeline, intelligence, script, TTS, video, and QA boundaries.
+The canonical Stage-A path is composed by `Engine/stage_a_runner.py` and uses the existing stage adapters plus the existing checkpoint/state system. The conservative `Engine/orchestrator.py` remains preserved as the foundation entrypoint.
 
-The canonical timeline consumes timed subtitle cues and the generated AD SRT, preserving source labels and timestamps for the evidence-first intelligence stage.
+The locked AD path remains:
+
+```text
+AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
+```
+
+## Long-movie policy
+
+Long-movie safeguards and test sequencing are recorded in `Project_Control/LONG_MOVIE_READINESS.md`. The design requires movie-scoped artifacts, bounded evidence, explicit stage checkpoints, artifact validation, disk-space preflight, controlled cleanup, and tiny -> medium -> full validation.
 
 ## Multi-agent coordination
 
-The primary AI development team is **ChatGPT, Claude, and Grok**. Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`.
-
-All agents must treat current code, tests, and verified current-commit CI as authoritative. Do not claim real-machine validation without evidence.
+Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`. Current code and current verified CI evidence override stale historical claims.
 
 ## Immediate next step
 
-Verify GitHub Actions for the current documentation commit. Once that is successful, freeze the GitHub architecture. When the Windows machine is available, validate Whisper.cpp, Ollama/Qwen, TTS, FFmpeg, RAM behavior, and the full pipeline one heavy stage at a time. Do not begin the first production movie until those checks pass.
+Finish the GitHub-only gate with fresh CI for the current documentation baseline and obtain the required consensus/acceptance in Issue #3. Then freeze architecture and move to controlled Windows runtime validation.
 
 ## Resolved issue
 
-Issue #1 (historical CI regression) is closed after its corrected regression suite run completed successfully. Future regressions should be recorded as new issues rather than reopening historical context without a new failure.
+Issue #1 (historical CI regression) is closed after the corrected regression suite passed. PR #7 is merged into `master`; PR #6 is a historical superseded branch and is not part of the current production baseline.
