@@ -2,8 +2,8 @@
 
 **Project:** ARK X Cinema  
 **Purpose:** Automated YouTube movie-recap production system  
-**Current State:** Phase 2 — production engine foundation  
-**Last Updated:** 2026-08-28
+**Current State:** Stage-A GitHub implementation complete; PC validation gate pending  
+**Last Updated:** 2026-08-31
 
 ---
 
@@ -21,296 +21,148 @@ Target:
 
 ---
 
-## 2. PHASE 1 STATUS
+## 2. HARDWARE BASELINE
 
-The historical Phase 1 implementation audit is complete.
-
-Authoritative historical implementation record:
-
-`Project_Control/IMPLEMENTATION_STATUS.md`
-
-**Important distinction:** the historical Phase 1 implementation audit is not the new exhaustive forensic audit. The permanent forensic audit protocol is established, but a full forensic audit is a separate operation tracked in `Project_Control/AUDIT_LEDGER.md`.
-
----
-
-## 3. HARDWARE BASELINE
-
-System baseline recorded for the target workstation:
+Recorded target workstation baseline:
 - HP Laptop 15-dy2xxx
 - Windows 11
-- RAM: approximately 7.65 GB usable
-- CPU: 11th Gen Intel Core i3-1115G4
-- Cores: 2
-- Logical processors: 4
-- GPU: Intel UHD Graphics
-- Reported VRAM: 2 GB
-- Storage: approximately 475.6 GB C: drive
-- Free storage at recorded audit: approximately 143.2 GB
+- approximately 7.65 GB usable RAM
+- 11th Gen Intel Core i3-1115G4
+- Intel UHD Graphics
+- approximately 475.6 GB C: drive, with approximately 143.2 GB free at the recorded snapshot
 
-Important constraint:
-- Keep additional AI workload RAM as low as practical.
-- Target remains approximately <=2 GB additional RAM for AI workload.
-- Heavy AI stages should not run concurrently unless specifically tested.
+The approximate <=2 GB additional AI-workload RAM target remains a validation target, not a proven result.
 
 ---
 
-## 4. CURRENT TOOL BASELINE
-
-Recorded environment evidence includes:
-- Python 3.14.6
-- FFmpeg 9.0
-- FFprobe
-- Ollama 0.33.0
-- Git
-- Node.js
-- npm
-
-Ollama models recorded:
-- llama3.2:1b
-- qwen3:1.7b
-
-These are recorded workstation observations and are not substitutes for fresh PC validation.
-
----
-
-## 5. LOCKED AD ARCHITECTURE
+## 3. LOCKED AD ARCHITECTURE
 
 The Audio Description asset is supplied separately from the movie.
 
-We do NOT assume that an AD SRT already exists.
+We do not assume an AD SRT already exists.
 
-Current input:
+```text
+AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
+```
 
-AD Audio MP3 / supported audio
-    |
-    v
-whisper.cpp
-    |
-    v
-Timestamped AD SRT
-    |
-    v
-Movie Intelligence
-
-The AD SRT is GENERATED from the AD audio by whisper.cpp.
-
-The AD audio contains valuable information including:
-
-1. Spoken/dialogue information
-2. Visual descriptions
-3. Action descriptions
-4. Scene/context information
-
-Therefore the AD transcription is a primary movie-understanding source.
+The AD transcription is a primary movie-understanding source containing spoken/dialogue information, visual descriptions, action descriptions, and scene/context information.
 
 Do not replace this architecture without an explicit superseding decision.
 
 ---
 
-## 6. CURRENT VERIFIED TEST/IMPLEMENTATION STATUS
+## 4. CURRENT GITHUB IMPLEMENTATION STATUS
 
-### Full AD transcription
+### Stage-A implementation: COMPLETE on `master`
 
-Input:
-The Platform (2019) Audio Description (AD).mp3
+Current master contains the complete repository-side production composition:
 
-Size:
-Approximately 135.8 MB
+1. repository-relative runtime configuration
+2. canonical per-movie workspace and source manifest
+3. subtitle and external AD ingestion
+4. whisper.cpp integration boundary
+5. deterministic canonical timeline
+6. bounded evidence packets
+7. local Ollama intelligence adapter
+8. strict structured-output extraction/validation
+9. recap script engine + adapter
+10. Piper TTS engine + timing metadata
+11. deterministic script-to-scene edit mapping
+12. final recap subtitle generation
+13. deterministic FFmpeg recap assembly
+14. deterministic FFprobe final-media QA
+15. complete resumable Stage-A runner
+16. checkpoint/state integrity and prerequisite enforcement
+17. portable regression tests + GitHub Actions
 
-Result:
-SUCCESSFUL HISTORICAL FULL TRANSCRIPTION TEST
+PR #7 supplied the controlled current-master Stage-A integration and was merged as commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e`.
 
-Established path:
+### CI evidence
 
-AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT
+Master commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e` passed GitHub Actions run #123, job `tests`.
 
-### Current master code
-
-Current master contains:
-- repository-relative runtime configuration
-- canonical per-movie workspace/source manifest
-- subtitle and AD ingestion
-- whisper.cpp integration boundary
-- deterministic timeline engine
-- bounded evidence packets
-- Ollama intelligence adapter
-- structured-output extraction/validation
-- recap script engine and adapter
-- ordered/resumable checkpoint infrastructure
-
-Real Windows runtime validation remains outstanding.
-
-### Historical recap JSON checkpoint
-
-The stored historical test result is FAIL because the Llama 3.2 1B checkpoint produced malformed structured output.
-
-The current master has since added structured-output extraction/validation and regression coverage, but real local model behavior remains unverified until Windows testing.
+Issue #1, the historical CI regression, is closed with completed state.
 
 ---
 
-## 7. CURRENT IMPLEMENTATION STATE
+## 5. PC-ONLY VALIDATION STILL REQUIRED
 
-### Implemented / repository-tested foundations
+GitHub CI cannot prove the user's Windows environment. The following remain UNVERIFIED:
 
-- Repository-relative configuration foundation
-- Canonical per-movie workspace
-- Deterministic source manifest
-- Subtitle normalization/validation
-- External AD discovery
-- AD transcription integration boundary
-- Deterministic timeline
-- Bounded evidence packets
-- Local Ollama integration boundary
-- Structured-output extraction
-- Recap script engine/boundary
-- Stage-state/checkpoint infrastructure
-- Resumable execution boundaries
-- Test suite and GitHub Actions workflow
-- Permanent forensic audit protocol and ledger mechanism
+- real whisper.cpp execution, speed, RAM, and AD->SRT quality
+- real Ollama/Qwen execution, structured-output quality, speed, and RAM
+- real Piper execution, voice quality, speed, and RAM
+- real FFmpeg encoding and playback against real media
+- real final-media QA on produced media
+- interrupted-run/resume on real media
+- <=2 GB additional AI workload RAM target
+- first full-movie end-to-end success
+- final human editorial/quality judgment
 
-### Not yet verified as real production runtime
-
-- Actual Whisper.cpp execution/performance on target PC
-- Actual Ollama/Qwen behavior/performance on target PC
-- Production TTS engine/runtime
-- Production script-to-scene editing implementation
-- Production FFmpeg assembly
-- Final narration subtitles
-- Complete automated final-media QA
-- Full end-to-end first-movie processing
-- Multi-movie queue
-- 3-different-movies/day throughput
+Therefore the project is **not yet declared Stage-A production-ready**.
 
 ---
 
-## 8. IMPORTANT TECHNICAL RISKS / DEBT
+## 6. NEXT MILESTONE
 
-### Configuration/runtime validation
+The next milestone is controlled PC validation, not another architectural rewrite.
 
-`Engine/runtime_config.py` centralizes repository-relative configuration and validates the configured Whisper executable/model. Full external dependency validation remains a PC/runtime concern.
+```text
+TINY TEST
+   -> MEDIUM REAL-MEDIA TEST
+   -> FIRST FULL MOVIE
+   -> HUMAN QA
+   -> STAGE-A RELIABILITY
+   -> 1 VIDEO/DAY
+   -> 2 VIDEOS/DAY
+   -> 3 VIDEOS/DAY
+```
 
-### Test consistency
-
-`Engine/Tests/Whisper/test_whisper.py` is explicitly skipped as a portable CI test and uses faster-whisper with a historical local path. It is retained as legacy/manual evidence; the locked production transcription architecture remains whisper.cpp.
-
-### Patch-script history
-
-The repository retains ad-hoc patch scripts and historical orchestrator copies. These are historical development artifacts, not the primary production modification mechanism. Preserve them unless deliberate archival/deletion is justified by evidence.
-
-### GUI integration
-
-`Control/ark_cinema.py` still derives displayed stage progress primarily from console log keywords while launching the conservative `Engine/orchestrator.py`. The canonical checkpoint/state system is not yet the sole source for GUI stage display.
-
----
-
-## 9. CURRENT PROJECT STRUCTURE
-
-Core directories:
-
-- Analysis/
-- Backups/
-- Config/
-- Control/
-- Engine/
-- Finished/
-- Logs/
-- Movies/
-- Music/
-- Narration/
-- Projects/
-- Research/
-- Scenes/
-- Scripts/
-- SFX/
-- Subtitles/
-- Thumbnails/
-- Transcripts/
-- Upload/
-- Visuals/
-- Project_Control/
-- docs/
-
-Project control:
-
-- PROJECT_STATE.md
-- CURRENT_TASK.md
-- DECISIONS.md
-- CHANGELOG.md
-- TEST_RESULTS.md
-- IMPLEMENTATION_STATUS.md
-- MULTI_AI_STATUS.md
-- AUDIT_LEDGER.md
+No full-movie run should be the first runtime test.
 
 ---
 
-## 10. CURRENT DEVELOPMENT PLAN
+## 7. LONG-MOVIE SAFEGUARDS
 
-The first complete movie is the next major milestone.
+For long movies the design requires:
 
-Build in this order, using surgical changes and existing architecture:
+- movie-scoped artifacts under `Projects/<movie>/`
+- bounded evidence sent to the local model
+- explicit checkpointed stages
+- artifact integrity verification before resume/skip
+- deterministic intermediate manifests instead of hidden global state
+- explicit disk-space preflight before full rendering
+- cleanup rules that distinguish source media, reusable artifacts, temporary render files, and final outputs
+- safe interruption/resume without deleting earlier verified work
 
-1. Finish/verify movie-intelligence production path.
-2. Finish/verify recap-generation production path.
-3. Integrate a production TTS implementation.
-4. Build canonical script-to-scene edit mapping.
-5. Build production FFmpeg renderer.
-6. Build final narration subtitles.
-7. Build deterministic final-media QA.
-8. Connect all completed stages through one authoritative resumable Stage-A runner.
-9. Complete repository/CI regression checks.
-10. Validate real Whisper.cpp/Ollama/TTS/FFmpeg behavior on the Windows PC.
-11. Run a short real-media test.
-12. Run a medium test.
-13. Run the first full movie.
-14. Repeat until Stage A reliability is established.
-15. Scale to Stage B/C/D only after Stage A is proven.
+Actual performance and reliability remain PC validation items.
 
 ---
 
-## 11. AI AGENT HANDOFF RULE
+## 8. FORENSIC AUDIT STATUS
 
-Any AI agent working on ARK X Cinema should read:
+The controlled repository forensic audit recorded in `Project_Control/AUDIT_LEDGER.md` is complete for its GitHub scope.
 
-1. `AGENTS.md`
-2. `Project_Control/PROJECT_STATE.md`
-3. `Project_Control/CURRENT_TASK.md`
-4. `Project_Control/DECISIONS.md`
-5. `Project_Control/CHANGELOG.md`
-6. `Project_Control/TEST_RESULTS.md`
-7. `Project_Control/IMPLEMENTATION_STATUS.md`
-8. `Project_Control/AUDIT_LEDGER.md`
-9. `docs/AI_HANDOFF.md`
-10. `docs/PROJECT_STATUS.md`
-
-before modifying architecture or production code.
-
-The newest explicit recorded decision supersedes older decisions.
-
-Do not infer that an asset exists merely because a workflow diagram contains it.
-
-Treat historical audits/status records as evidence of their original scope, not proof that the new forensic audit has been completed.
+Historical implementation audits remain historical evidence only.
 
 ---
 
 ## STATUS
 
-HISTORICAL PHASE 1 IMPLEMENTATION AUDIT:
+GITHUB-SIDE STAGE-A IMPLEMENTATION:
 COMPLETE
 
-PERMANENT FORENSIC AUDIT PROTOCOL:
-ESTABLISHED
+GITHUB CI:
+GREEN
 
-CURRENT EXHAUSTIVE FORENSIC AUDIT:
-IN PROGRESS
+FORENSIC GITHUB AUDIT:
+COMPLETE
 
 ARCHITECTURE:
 LOCKED
 
 AD AUDIO -> whisper.cpp -> AD SRT:
-HISTORICAL TEST SUCCESS / CURRENT PC VALIDATION UNVERIFIED
+IMPLEMENTED / PC VALIDATION UNVERIFIED
 
 FIRST-MOVIE PRODUCTION:
-NOT READY
-
-CURRENT PHASE:
-PHASE 2 — PRODUCTION ENGINE FOUNDATION
+PC VALIDATION PENDING
