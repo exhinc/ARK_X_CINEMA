@@ -1,168 +1,129 @@
 # ARK X CINEMA — CURRENT TASK
 
-**Last Updated:** 2026-08-28
+**Last Updated:** 2026-08-31
 
 ---
 
 ## CURRENT PHASE
 
-PHASE 2 — PRODUCTION ENGINE FOUNDATION
+**PHASE 2 — STAGE-A IMPLEMENTATION COMPLETE / PC VALIDATION GATE**
+
+The GitHub-side Stage-A production composition is complete on `master`. The remaining work is controlled runtime validation on the target Windows machine, followed by reliability testing and scaling.
 
 ---
 
-## PHASE 1 STATUS
-
-**COMPLETE — FORENSIC AUDIT PROTOCOL ESTABLISHED; NEW EXHAUSTIVE FORENSIC AUDIT COMPLETED**
-
-The repository contains the permanent forensic-audit protocol and ledger mechanism. The new controlled forensic audit was executed as a separate operation and is recorded in:
-
-`Project_Control/AUDIT_LEDGER.md`
-
-The historical Phase 1 implementation/status audit remains historical evidence and is not being used as proof of completion of the new forensic audit.
-
----
-
-## PHASE 2 PROGRESS
+## COMPLETED GITHUB WORK
 
 ### Build #1 — Runtime / Configuration Foundation
+**PASS**
 
-**PASS — implemented and integrated**
-
-Completed:
-
-- Repository-relative runtime configuration.
-- Removed hard-coded Whisper paths from the active orchestrator.
-- Centralized Whisper and Ollama configuration.
-- Runtime dependency validation.
-- Locked one-heavy-stage resource policy.
-- Added orchestrator/runtime integration tests.
-
-Remaining local validation is intentionally deferred to the Windows PC because GitHub cannot execute the user's installed Whisper/FFmpeg/Ollama environment.
+Repository-relative runtime configuration is wired into the active orchestration foundation. Machine-specific Whisper paths are no longer required in the active repository configuration contract.
 
 ### Build #2 — Canonical Workspace / Source Manifest
+**PASS**
 
-**PASS — implemented and integrated**
-
-Completed:
-
-- Canonical per-movie workspace.
-- Deterministic source manifest.
-- Source hashing/provenance.
-- Explicit single-video selection policy.
-- Source package discovery tests.
+Per-movie workspace and deterministic source-manifest handling are implemented and tested.
 
 ### Build #3 — Evidence / Intelligence / Script Core
+**PASS**
 
-**PASS — implemented on `master`; real runtime validation remains outstanding**
-
-Completed:
-
-- Bounded evidence packets.
-- Structured-output extraction and validation.
-- Ollama intelligence adapter.
-- Recap script engine and stage adapter.
-- Regression tests for structured-output handling.
+Bounded evidence packets, Ollama integration, strict structured-output parsing/validation, recap generation, and stage adapters are implemented and covered by portable tests.
 
 ### Build #4 — Permanent Forensic Audit Protocol
+**PASS**
 
-**PASS — implemented 2026-08-28**
-
-Completed:
-
-- Extended `AGENTS.md` with a repository-wide forensic audit protocol.
-- Added `Project_Control/AUDIT_LEDGER.md` for formal audit coverage and uncertainty tracking.
-- Updated this task record so future agents use the ledger during full audits.
+The permanent audit rules and `Project_Control/AUDIT_LEDGER.md` are established.
 
 ### Build #5 — Controlled Forensic Audit & Repair
+**PASS**
 
-**PASS — completed 2026-08-28**
+The repository-wide controlled forensic audit was completed and recorded in the ledger. Confirmed documentation/control defects were repaired and the master tree was re-verified.
 
-Completed:
+### Build #6 — Stage-A Downstream Production Integration
+**PASS**
 
-- Fresh repository-wide forensic discovery from current `master`.
-- Repository census and inspection ledger population.
-- System reconstruction across launchers, engine, adapters, state/checkpoints, tests, CI, configuration, documentation, and historical material.
-- Configuration and applicable security review.
-- Repository-wide defect-pattern investigation.
-- Confirmed documentation/control inconsistencies repaired surgically.
-- Historical/manual material preserved.
-- Second-pass re-scan performed.
-- Current `master` CI re-verified successfully for the final audited commit.
+PR #7 was rebuilt from the current audited master and merged as `3fd4a87c2a68df98eff3652fbc65c4f2f972267e`.
 
-The final forensic record is `Project_Control/AUDIT_LEDGER.md`.
+Integrated on current master:
 
----
+- Piper TTS engine + timing metadata
+- deterministic script-to-scene edit manifest
+- final recap SRT generation
+- deterministic FFmpeg assembly
+- deterministic FFprobe final-media QA
+- complete Stage-A runner composition
+- focused regression coverage
 
-## FIRST-MOVIE OBJECTIVE
-
-Build the first-movie production pipeline in GitHub before running a real movie on the Windows PC.
-
-Priority order:
-
-1. Canonical per-movie workspace.
-2. Harden source/subtitle/AD ingestion.
-3. Establish canonical scene/timeline data.
-4. Build validated movie intelligence.
-5. Fix and harden local LLM structured output.
-6. Build recap generation.
-7. Integrate and validate local TTS.
-8. Build script-to-scene edit mapping.
-9. Build final FFmpeg rendering.
-10. Build final narration subtitles.
-11. Build automated QA gate.
-12. Build validated resume/recovery behavior.
-13. Only then run Movie #1 on the PC.
+Post-merge GitHub Actions run #123 for the merge commit completed successfully.
 
 ---
 
-## LOCKED ARCHITECTURE — DO NOT CHANGE
+## CURRENT GATE
+
+### GitHub gate
+
+**IMPLEMENTATION COMPLETE / CI GREEN**
+
+Current repository evidence is sufficient to stop architectural development and move to runtime validation.
+
+### PC gate
+
+**NOT YET COMPLETE**
+
+Required evidence:
+
+1. real whisper.cpp execution from the target PC
+2. AD audio -> timestamped SRT quality and timing inspection
+3. real Ollama/Qwen structured output and RAM measurement
+4. real Piper TTS execution, audio quality, and RAM measurement
+5. real FFmpeg rendering
+6. automated + human inspection of the produced video
+7. interrupted-run/resume test on real media
+8. short real-media end-to-end run
+9. medium real-media run
+10. first full-movie run
+11. final human QA
+
+Do not call Stage A production-ready until these runtime gates are passed.
+
+---
+
+## LOCKED ARCHITECTURE
 
 Do NOT:
 
-- Assume an AD SRT already exists.
-- Require the user to provide an AD SRT.
-- Replace AD audio transcription with an unrelated subtitle source.
-- Treat AD as merely secondary context.
-- Remove visual/action descriptions from the intelligence pipeline.
-- Redesign the locked architecture without recording a new decision.
+- assume an AD SRT already exists
+- require a user-supplied AD SRT
+- replace AD transcription with unrelated subtitles
+- discard visual/action descriptions from AD
+- redesign the architecture without a new recorded decision
 
-The locked path remains:
+Locked path:
 
+```text
 AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
+```
 
 ---
 
-## DEVELOPMENT RULE
+## NEXT EXECUTION ORDER
 
-All implementation should be developed and reviewed in GitHub first whenever practical.
+```text
+1. PC preflight
+2. Tiny test
+3. Medium test
+4. First full movie
+5. Human QA
+6. Reliability fixes only
+7. 1 video/day
+8. 2 videos/day
+9. 3 videos/day
+```
 
-The PC is the execution/validation environment for local dependencies, RAM, media processing and final end-to-end behavior.
-
-Do not declare a component production-ready until its required test passes.
-
----
-
-## FULL-AUDIT RULE
-
-Whenever a future task calls for a full repository audit, use `Project_Control/AUDIT_LEDGER.md` together with `AGENTS.md` and the other Project_Control records.
-
-Do not declare full coverage until the ledger accounts for the repository and significant items are classified as INSPECTED, PARTIALLY INSPECTED, NOT APPLICABLE, UNVERIFIED, or BLOCKED.
-
-The actual exhaustive audit must populate the ledger with repository paths/items, statuses, evidence, findings, fixes, verification notes, and remaining UNVERIFIED/BLOCKED items. The ledger itself must never be treated as evidence that those inspections have already occurred.
+No new architecture should be introduced during the runtime-validation gate unless testing exposes a concrete defect that requires it.
 
 ---
 
-## HANDOFF
+## HANDOFF RULE
 
-Before future development, read:
-
-AGENTS.md
-Project_Control/PROJECT_STATE.md
-Project_Control/CURRENT_TASK.md
-Project_Control/DECISIONS.md
-Project_Control/CHANGELOG.md
-Project_Control/TEST_RESULTS.md
-Project_Control/IMPLEMENTATION_STATUS.md
-Project_Control/AUDIT_LEDGER.md
-
-Then inspect the actual code/files before making assumptions.
+Future agents must read `AGENTS.md` plus the current Project_Control and docs status files before changing architecture or claiming completion. Current master is the source of truth; old PR #6 and historical audit wording must not override current evidence.
