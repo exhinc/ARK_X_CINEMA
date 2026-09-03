@@ -4,6 +4,19 @@ Significant project changes are recorded here so AI agents can reconstruct proje
 
 ---
 
+## 2026-09-03 — Core production completion goal correction
+
+- Replaced the arbitrary fixed target of 3 recap videos/day as the project's core completion criterion.
+- Locked the actual core criterion as reliable end-to-end processing of one real 3–4 hour movie on the target Windows PC, producing a finished recap that passes required automated and human QA.
+- Defined throughput as an empirical performance metric determined after one full-length movie is proven reliable.
+- Clarified that additional movies may be processed sequentially as hardware, storage, and processing time permit, with no fixed daily quota required for core project completion.
+- Added `DECISION-005` to `Project_Control/DECISIONS.md`.
+- Synchronized `PROJECT_STATE.md`, `CURRENT_TASK.md`, `EXECUTION_ARCHITECTURE_DECISION.md`, `AGENTS.md`, and `docs/PROJECT_STATUS.md` with the corrected goal.
+
+This is a project-goal correction only. It does not change the locked AD architecture or require any new production engine architecture.
+
+---
+
 ## 2026-09-03 — Final multi-AI audit gate state
 
 - Confirmed the multi-AI coordination layer has converged on one shared protocol, architecture decision record, project state, current task, status, handoff, and entry-point chain.
