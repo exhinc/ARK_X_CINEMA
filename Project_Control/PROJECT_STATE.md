@@ -2,37 +2,32 @@
 
 **Project:** ARK X Cinema  
 **Purpose:** Automated YouTube movie-recap production system  
-**Current State:** Stage-A GitHub implementation complete; PC validation gate pending  
+**Current State:** GitHub implementation complete; Windows validation pending  
 **Last Updated:** 2026-09-03
 
 ---
 
 ## 0. ACTIVE MULTI-AI COLLABORATION PROTOCOL
 
-The mandatory coordination procedure for ChatGPT, Claude, Grok, and future owner-authorized AI agents is recorded in:
+The mandatory coordination procedure for ChatGPT, Claude, Grok, and future owner-authorized AI agents is recorded in `Project_Control/AI_COLLABORATION_PROTOCOL.md`.
 
-`Project_Control/AI_COLLABORATION_PROTOCOL.md`
-
-It defines startup inspection, architectural-governance boundaries, implementation-evidence rules, current-commit CI verification, change recording, and handoff requirements. It does not replace this project-state record or the active architecture decision.
+It defines startup inspection, architectural governance, implementation evidence, current-commit CI verification, change recording, and handoff requirements.
 
 ---
 
-## 1. ACTIVE ARCHITECTURE DECISION
+## 1. ACTIVE EXECUTION ARCHITECTURE DECISION
 
-The current runtime and execution-architecture decisions are recorded in:
+The active runtime/execution architecture is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`.
 
-`Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
-
-That document is the active decision record for local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, runtime benchmarking, and monetization-oriented editing policy. It supplements this project-state record; it does not override the PC validation gate below.
+It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first runtime decisions, and monetization-oriented editing policy. It does not constitute Windows runtime validation.
 
 ---
 
 ## 2. PROJECT OBJECTIVE
 
-ARK X Cinema is a $0/month movie-recap production system designed to automate as much of the production workflow as practical while retaining final human QA/approval.
+ARK X Cinema is a $0/month movie-recap production system designed to automate as much of the production workflow as practical while retaining final human QA and approval.
 
-Primary completion criterion:
-- Reliably process one real, legally obtained 3–4 hour movie through the intended pipeline on the target Windows PC and produce a finished recap video that passes the required automated and human QA checks.
+**Core completion criterion:** Reliably process one real, legally obtained 3–4 hour movie through the intended pipeline on the target Windows PC and produce a finished recap video that passes the required automated and human QA checks.
 
 Supporting requirements:
 - Free/open-source-first tooling
@@ -41,7 +36,7 @@ Supporting requirements:
 - Legal movie/source acquisition
 - No piracy or DRM bypass
 
-Throughput is **not** a fixed project completion quota. Once reliable one-movie processing is achieved, practical throughput is measured empirically from actual end-to-end processing time, hardware limits, storage, and workload conditions. The system is not required to produce a predetermined number of movies per day for the core project to be considered complete.
+There is no fixed daily movie quota. After the core one-movie goal is achieved, throughput is measured and optimized from actual processing time, hardware limits, storage, and workload conditions.
 
 ---
 
@@ -55,15 +50,13 @@ Recorded target workstation baseline:
 - Intel UHD Graphics
 - approximately 475.6 GB C: drive, with approximately 143.2 GB free at the recorded snapshot
 
-The approximate <=2 GB additional AI-workload RAM target remains a validation target, not a proven result.
+The approximate ≤2 GB additional AI-workload RAM target remains a validation target, not a proven result.
 
 ---
 
 ## 4. LOCKED AD ARCHITECTURE
 
-The Audio Description asset is supplied separately from the movie.
-
-We do not assume an AD SRT already exists.
+The Audio Description asset is supplied separately from the movie. We do not assume an AD SRT already exists.
 
 ```text
 AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
@@ -79,7 +72,7 @@ Do not replace this architecture without an explicit superseding decision.
 
 ### Stage-A implementation: COMPLETE on `master`
 
-Current master contains the complete repository-side production composition:
+Current master contains the repository-side production composition, including:
 
 1. repository-relative runtime configuration
 2. canonical per-movie workspace and source manifest
@@ -99,52 +92,51 @@ Current master contains the complete repository-side production composition:
 16. checkpoint/state integrity and prerequisite enforcement
 17. portable regression tests + GitHub Actions
 
-PR #7 supplied the controlled current-master Stage-A integration and was merged as commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e`.
+PR #7 supplied the controlled Stage-A integration and was merged as commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e`.
 
-### CI evidence
+### Current CI evidence
 
-The latest coordination-hardening master commit `98625c2b5aa6ddb9cdb53f1318449e4feb7b8679` was manually run through GitHub Actions after the coordination audit and completed with **Status: Success** (workflow run #33721190514 / job #100540507339). The run produced one Node.js deprecation warning for actions/checkout@v4 and actions/setup-python@v5; the warning did not cause failure.
-
-Issue #1, the historical CI regression, is closed with completed state.
+The current master commit for this control record must be verified by GitHub Actions before it is described as CI-verified. Repository tests do not substitute for Windows runtime validation.
 
 ---
 
-## 6. PC-ONLY VALIDATION STILL REQUIRED
+## 6. WINDOWS-ONLY VALIDATION STILL REQUIRED
 
 GitHub CI cannot prove the user's Windows environment. The following remain UNVERIFIED:
 
-- real whisper.cpp execution, speed, RAM, and AD->SRT quality
-- real Ollama/Qwen execution, structured-output quality, speed, and RAM
-- real Piper execution, voice quality, speed, and RAM
+- real whisper.cpp execution, speed, resource use, and AD-to-SRT quality
+- real Ollama/Qwen execution, structured-output quality, speed, and resource use
+- real Piper execution, voice quality, speed, and resource use
 - real FFmpeg encoding and playback against real media
-- real final-media QA on produced media
+- real final-media QA
 - interrupted-run/resume on real media
-- <=2 GB additional AI workload RAM target
-- first full-movie end-to-end success
+- the approximately ≤2 GB additional AI-workload RAM target
+- one complete real 3–4 hour movie end-to-end
 - final human editorial/quality judgment
 
-Therefore the project is **not yet declared Stage-A production-ready**.
+Therefore the core production goal is not yet declared complete.
 
 ---
 
 ## 7. NEXT MILESTONE
 
-The next milestone is controlled PC validation, not another architectural rewrite.
+The next milestone is controlled Windows validation, not another architectural rewrite.
 
 ```text
-TINY TEST
+PC PREFLIGHT
+   -> TINY / SHORT TEST
    -> MEDIUM REAL-MEDIA TEST
    -> FIRST FULL 3–4 HOUR MOVIE
    -> HUMAN QA
-   -> STAGE-A RELIABILITY
+   -> CORE RELIABILITY
 ```
 
-After core reliability is established, throughput may be measured and optimized empirically. Additional movies may then be processed sequentially as system capacity allows; no fixed daily quota is required for project completion.
+After core reliability is established, throughput may be measured and optimized empirically. Additional movies may then be processed sequentially as system capacity allows.
 
-No full movie is to be used as the first runtime test.
+No fixed daily quota is required for project completion.
 
 ---
 
 ## 8. HANDOFF / CURRENT-STATE RULE
 
-`Project_Control/AI_COLLABORATION_PROTOCOL.md` is the mandatory multi-AI coordination procedure. `AGENTS.md` is the shared engineering contract. `Project_Control/DECISIONS.md` governs architectural permission. Current master code/tests and applicable current-commit CI establish what is implemented/verified. Historical files, including `ARK_X_Cinema_Current_State.txt`, are evidence only and must not override active Project_Control records or current master evidence.
+`Project_Control/AI_COLLABORATION_PROTOCOL.md` is the mandatory multi-AI coordination procedure. `AGENTS.md` is the shared engineering contract. `Project_Control/DECISIONS.md` governs architectural permission. Current master code/tests and applicable current-commit CI establish what is implemented and verified. Historical files, including `ARK_X_Cinema_Current_State.txt`, are evidence only and must not override active Project_Control records or current master evidence.

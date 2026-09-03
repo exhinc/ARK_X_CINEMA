@@ -3,24 +3,43 @@
 > Read this file before modifying the repository. It is the persistent handoff for future AI collaborators.
 
 ## 1. Mission
-ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The ultimate target is 3 distinct recap videos/day, with final human QA/approval. Movies/source material must be legally obtained. No piracy, DRM bypass, or unauthorized acquisition workflows.
+
+ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system with final human QA and approval.
+
+**Core project completion:** reliably process one real 3–4 hour movie end-to-end on the target Windows PC and produce a finished recap that passes the required automated and human QA.
+
+There is no fixed daily movie quota. After core completion, throughput is measured and optimized from actual system performance.
+
+Movies and source material must be legally obtained. No piracy, DRM bypass, or unauthorized acquisition workflows.
 
 ## 2. AI team and source of truth
-The owner has explicitly identified ChatGPT, Claude, and Grok as the primary AI development team. Do not assume additional AI tools are part of the workflow unless the owner explicitly adds them.
+
+The owner has identified ChatGPT, Claude, and Grok as the primary AI development team. Do not assume additional AI tools are part of the workflow unless the owner explicitly adds them.
 
 GitHub `master` is the shared engineering source of truth. Current code, tests, and current GitHub Actions results outrank historical chat statements.
 
 ## 3. Mandatory collaboration protocol
+
 The shared startup, authority, conflict-resolution, current-commit CI, and change-record rules are defined in `Project_Control/AI_COLLABORATION_PROTOCOL.md`.
 
-Before significant changes, agents must follow that protocol rather than relying on conversation memory. Grok's dedicated entry point is `GROK.md`; Claude's entry point is `CLAUDE.md`; both ultimately inherit `AGENTS.md` and the shared collaboration protocol.
+Before significant changes, agents must follow that protocol instead of relying on conversation memory. `GROK.md` and `CLAUDE.md` are dedicated entry points; both ultimately follow `AGENTS.md` and the shared protocol.
 
-## 4. Active execution architecture decision
-The broader runtime/execution strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first runtime decisions, and monetization-oriented editing policy.
+## 4. Active execution architecture
 
-Future agents must read that decision before proposing changes in those areas. It complements this handoff; it does not constitute PC runtime validation or production-readiness evidence.
+The broader runtime/execution strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`.
+
+The locked production path is:
+
+```text
+Legal source -> ingestion -> subtitle/AD evidence -> whisper.cpp -> AD SRT
+-> canonical timeline -> bounded evidence -> local intelligence -> recap script
+-> local TTS -> FFmpeg assembly -> automated QA -> human QA
+```
+
+The AD asset is separate audio. It is not assumed to be embedded in the movie or to already exist as an SRT.
 
 ## 5. Hard constraints
+
 - $0/month software/API budget.
 - Local/free/open-source first.
 - Windows 11 low-RAM target: approximately 7.65 GB usable RAM.
@@ -29,65 +48,64 @@ Future agents must read that decision before proposing changes in those areas. I
 - Human final QA is mandatory.
 - Do not silently replace or rewrite established production orchestration.
 
-## 6. Authoritative pipeline
-Legal movie/source files → movie workspace/ingestion → existing subtitles/transcript timing when available + separate AD audio → whisper.cpp converts AD audio to timestamped SRT → canonical timeline → bounded evidence packets → evidence-first local LLM intelligence → original recap script → local TTS → FFmpeg assembly → automated/deterministic media QA → human approval → upload preparation.
+## 6. Evidence-first intelligence
 
-The AD asset is separate audio (typically MP3). It is not assumed to be embedded in the movie and is not assumed to already be an SRT.
+The LLM must receive bounded evidence packets rather than an unrestricted movie. Preserve scene IDs, timestamps, source provenance, dialogue, visual/action evidence, and evidence limits. Claims must be traceable to supplied evidence. Unsupported facts must remain unknown or unsupported.
 
-## 7. Evidence-first intelligence
-The LLM must receive bounded evidence packets rather than an unrestricted movie. Preserve scene ID, timestamps, source (`subtitle` vs `ad`), dialogue, visual/action evidence, and evidence limits. Every claim must be traceable to supplied evidence. Unsupported facts must remain unknown/unsupported.
+## 7. Production stages and checkpoints
 
-## 8. What the repository establishes
-The repository contains foundations/boundaries for runtime/config, movie workspace, subtitle + AD ingestion, AD transcription, canonical timeline, bounded evidence packets, intelligence, script, TTS, video assembly, QA, ordered/resumable stage state, atomic checkpoints, artifact SHA-256 verification, and thin adapters.
-
-An adapter/boundary is not the same thing as a validated production engine. Do not claim real runtime validation merely because a mock/injected implementation passes CI.
-
-## 9. Stage order and checkpoints
 Stages are ordered:
+
 1. ingestion
 2. transcription
 3. timeline
 4. intelligence
 5. script
-6. tts
+6. TTS
 7. video
-8. qa
+8. QA
 
-Later stages require completed prerequisites. A stage is complete only when its required artifact succeeds and is checkpointed/verified according to the current implementation. Failed stages must propagate failure. Resume must safely skip only intact, verified completed work.
+Later stages require completed prerequisites. A stage is complete only when its required artifact succeeds and is checkpointed and verified according to the current implementation. Failed stages must propagate failure. Resume may skip only intact, verified completed work.
 
-## 10. CI truth
-Never call CI green without checking the GitHub Actions result for the current commit/tree. Historical runs are not current proof. Repository tests prove portable code contracts; they do not prove Windows runtime behavior.
+## 8. CI truth
 
-## 11. Still unverified until Windows testing
-- actual Whisper.cpp execution/performance and AD → SRT quality
-- actual Ollama/Qwen runtime and structured-output behavior under resource limits
-- actual TTS engine selection, quality, speed, and memory use
-- actual FFmpeg production rendering and media inspection
-- RAM target (≤2 GB additional AI workload)
-- interrupted-run recovery on real media
-- complete processing of a real 2–3 hour movie
-- Stage A end-to-end reliability
+A CI result proves the commit/tree that was actually tested. Historical runs do not prove later commits. Repository tests prove portable code contracts; they do not prove Windows runtime behavior.
 
-## 12. Concrete milestones
-Do not use vague “production-ready” status labels. Use:
-- Stage A: 1 real finished video reliably
-- Stage B: 1 real video/day reliably
-- Stage C: 2 real videos/day reliably
-- Stage D: 3 different movies/day reliably
+## 9. Windows validation still required
 
-## 13. Safe multi-agent modification procedure
-Before editing: complete `Project_Control/AI_COLLABORATION_PROTOCOL.md`, fetch current `master`, read `AGENTS.md`, this file, `docs/PROJECT_STATUS.md`, current project-control records, inspect affected code/tests, check relevant recent commits, and verify CI for the current commit.
+The following remain unverified until tested on the target Windows machine:
 
-After editing: make the smallest safe change, add/update focused tests when behavior changes, verify current-commit CI, synchronize documentation, and record significant project changes in `Project_Control/CHANGELOG.md` and architectural changes in `Project_Control/DECISIONS.md`. Never weaken tests or erase useful history to make a result look successful. Never revert another agent's work based only on old chat context.
+- actual whisper.cpp execution, performance, and AD-to-SRT quality;
+- actual Ollama/Qwen runtime and structured-output behavior under resource limits;
+- actual TTS execution, quality, speed, and memory use;
+- actual FFmpeg production rendering and media inspection;
+- the approximately ≤2 GB additional AI-workload RAM target;
+- interruption and resume on real media;
+- one complete real 3–4 hour movie run;
+- final human editorial QA.
 
-## 14. Copyright discipline
-Generated recap narration must be original prose derived from structured intelligence. Do not build a workflow that reproduces movie subtitles/dialogue as the narration. Keep source evidence separate from generated narration.
+## 10. Completion and throughput
 
-## 15. Current status language
+The core project is complete when one real 3–4 hour movie has passed the full pipeline reliably and the required QA has passed.
+
+Throughput is a performance metric, not a completion requirement. Once core completion is proven, additional movies may be processed sequentially as hardware, storage, and processing time allow.
+
+## 11. Safe multi-agent procedure
+
+Before editing: read `AGENTS.md`, `Project_Control/AI_COLLABORATION_PROTOCOL.md`, the current Project_Control records, `docs/PROJECT_STATUS.md`, this file, and the affected code/tests. Check recent changes and the current CI result.
+
+After editing: make the smallest safe change, add or update focused tests when behavior changes, synchronize affected documentation, and record significant changes in the changelog or decisions file as required. Never weaken tests, erase regression evidence, or revert another agent's work based only on old chat context.
+
+## 12. Copyright discipline
+
+Generated recap narration must be original prose derived from structured intelligence. Do not build a workflow that reproduces movie subtitles or dialogue as narration.
+
+## 13. Current status language
+
 Use:
 - 🟢 Implemented/repository-tested
-- 🟡 Requires current-commit CI or real-environment verification
+- 🟡 Requires Windows or current-commit verification
 - 🔵 Next
 - 🔴 Known defect
 
-Current project state: **GitHub architecture substantially established; real-machine Stage A validation has not been completed.**
+Current project state: **GitHub-side implementation and coordination controls are established; one full 3–4 hour movie has not yet been proven end-to-end on the target Windows PC.**

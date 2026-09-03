@@ -4,6 +4,16 @@ Significant project changes are recorded here so AI agents can reconstruct proje
 
 ---
 
+## 2026-09-03 — Wording and goal consistency audit
+
+- Audited the active project-control and documentation layer for contradictory completion criteria, obsolete throughput requirements, stale CI references, repetitive status language, and avoidable wording ambiguity.
+- Standardized the core completion criterion as one reliable real 3–4 hour movie end-to-end on the target Windows PC with required automated and human QA.
+- Standardized throughput as a post-completion performance metric with no fixed daily quota.
+- Standardized the coordination acceptance checkpoint as two independent AI reviews followed by human project-owner acceptance.
+- Preserved genuinely historical documents and snapshots as historical evidence rather than rewriting their period-specific records.
+
+---
+
 ## 2026-09-03 — Core production completion goal correction
 
 - Replaced the arbitrary fixed target of 3 recap videos/day as the project's core completion criterion.
@@ -25,7 +35,7 @@ This is a project-goal correction only. It does not change the locked AD archite
 - Confirmed Issue #3 remains intentionally open as the formal acceptance gate because its original body contains stale historical checklist/state text and its required independent second-AI or human acceptance has not yet been recorded.
 - Confirmed no production engine code was changed by this coordination audit.
 
-The coordination layer is considered **implementation-complete but acceptance-pending**, not falsely declared final/100% complete.
+The coordination layer is considered implementation-complete but acceptance-pending.
 
 ---
 
@@ -33,41 +43,28 @@ The coordination layer is considered **implementation-complete but acceptance-pe
 
 - Re-audited the full multi-AI coordination layer rather than treating the new protocol as automatically complete.
 - Corrected `Project_Control/AI_COLLABORATION_PROTOCOL.md` so architectural governance and implementation truth are explicitly separate.
-- Corrected status language so current-commit CI is not labeled green solely because the older Stage-A merge commit passed run #123.
-- Identified the open Issue #3 body as historical coordination-gate text requiring reconciliation before closure; it contains the original 2026-08-28 checklist and stale disagreement/state references.
+- Corrected status language so current-commit CI is not labeled green solely because an older Stage-A merge commit passed.
+- Identified the original Issue #3 body as historical coordination-gate text requiring reconciliation before closure.
 - Updated `Project_Control/MULTI_AI_STATUS.md`, `PROJECT_STATE.md`, `CURRENT_TASK.md`, and `docs/PROJECT_STATUS.md` to preserve the same acceptance boundary.
-- Explicitly quarantined `ARK_X_Cinema_Current_State.txt` as a 2026-08-26 historical audit snapshot rather than current project state.
-- Retained the dedicated `GROK.md` and `CLAUDE.md` entry points and their convergence on the shared protocol.
+- Explicitly quarantined `ARK_X_Cinema_Current_State.txt` as a 2026-08-26 historical audit snapshot.
+- Retained the dedicated `GROK.md` and `CLAUDE.md` entry points.
 
 No production engine code was changed by this coordination audit.
-
----
-
-## 2026-09-03 — Final multi-AI coordination audit refinements
-
-- Refined `Project_Control/AI_COLLABORATION_PROTOCOL.md` to separate **architectural governance** from **implementation truth**.
-- Locked architecture decisions now constrain permitted changes; current code cannot silently redefine architecture.
-- Current-commit CI/test evidence is treated as the strongest evidence of tested behavior, ahead of untested code inspection.
-- Added `Project_Control/DECISIONS.md` startup coverage to the mandatory coordination sequence.
-- Classified `ARK_X_Cinema_Current_State.txt` as a historical 2026-08-26 audit snapshot; it is not current project state and must not override Project_Control or current master evidence.
-- Preserved the dedicated `GROK.md` entry point and shared Claude/ChatGPT authority chain.
-
-This refinement closes the remaining identified coordination ambiguity without changing production code or PC validation requirements.
 
 ---
 
 ## 2026-09-03 — Multi-AI collaboration protocol hardening
 
 - Added `Project_Control/AI_COLLABORATION_PROTOCOL.md` as the mandatory shared procedure for ChatGPT, Claude, Grok, and future owner-authorized AI agents.
-- Added `GROK.md` as a dedicated Grok entry point into the shared repository rules.
+- Added `GROK.md` as a dedicated Grok entry point.
 - Hardened `AGENTS.md` to require the shared collaboration protocol before significant changes.
-- Wired the protocol into `CLAUDE.md` and `docs/AI_HANDOFF.md` so dedicated agent entry points converge on the same rules.
-- Wired the protocol into `Project_Control/CURRENT_TASK.md` and the existing active architecture/status documentation chain.
+- Wired the protocol into `CLAUDE.md` and `docs/AI_HANDOFF.md`.
+- Wired the protocol into `Project_Control/CURRENT_TASK.md` and the active project-control documentation chain.
 - Added explicit conflict-resolution authority and a current-commit-only CI verification rule.
-- Formalized significant-change recording through Git commits, this changelog, and `DECISIONS.md` for architectural decisions.
-- Added `DECISION-004` to `Project_Control/DECISIONS.md` to lock the collaboration authority/handoff rules.
+- Formalized significant-change recording through Git commits, the changelog, and `DECISIONS.md` for architectural decisions.
+- Added `DECISION-004` to lock the collaboration authority and handoff rules.
 
-This hardening changes coordination/documentation only. It does not replace the production architecture or alter PC runtime validation requirements.
+This hardening changes coordination/documentation only. It does not replace the production architecture or alter Windows runtime validation requirements.
 
 ---
 
@@ -76,10 +73,10 @@ This hardening changes coordination/documentation only. It does not replace the 
 - Expanded `AGENTS.md` with a repository-wide forensic audit protocol.
 - Added `Project_Control/AUDIT_LEDGER.md` for formal repository coverage and uncertainty tracking.
 - Updated `CURRENT_TASK.md` to require the audit ledger during future full audits.
-- Reconciled `IMPLEMENTATION_STATUS.md` with the current modular master implementation and clearly separated repository verification from PC-only runtime validation.
-- Preserved existing ARK X Cinema architecture constraints, multi-agent rules, evidence-first intelligence rules, checkpoint/state requirements, low-RAM policy, and legal-source constraints.
+- Reconciled `IMPLEMENTATION_STATUS.md` with the modular master implementation and separated repository verification from Windows runtime validation.
+- Preserved existing architecture constraints, multi-agent rules, evidence-first intelligence rules, checkpoint/state requirements, low-RAM policy, and legal-source constraints.
 
-The new permanent repair sequence is:
+The permanent repair sequence is:
 
 `AUDIT → DISCOVER → ROOT-CAUSE ANALYSIS → FIX → TEST → RE-SCAN → CROSS-FILE REGRESSION AUDIT → TEST AGAIN → FINAL VERIFICATION`
 
@@ -93,7 +90,7 @@ The new permanent repair sequence is:
 - Recap script engine and script-stage boundary established.
 - Resumable stage/checkpoint infrastructure established.
 
-Real TTS, FFmpeg production rendering, final narration subtitles, full end-to-end execution, and PC runtime/performance validation remain explicit later gates unless proven by current master evidence.
+Real TTS, FFmpeg production rendering, final narration subtitles, full end-to-end execution, and Windows runtime/performance validation remain later validation work unless proven by current evidence.
 
 ---
 

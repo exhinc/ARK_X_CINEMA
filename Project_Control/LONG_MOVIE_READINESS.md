@@ -1,15 +1,11 @@
 # ARK X CINEMA — LONG-MOVIE READINESS
 
-**Status:** GitHub-side design complete; runtime validation pending  
+**Status:** GitHub-side design complete; Windows validation pending  
 **Last updated:** 2026-09-03
 
-**Related active execution decision:** `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
+**Related architecture decision:** `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
 
-The execution architecture decision governs the broader runtime/model/cloud strategy. This document remains the specific long-movie safeguards and validation contract.
-
-## Purpose
-
-This document defines the safeguards used before attempting a full-length movie. It is a design and engineering contract, not proof of runtime performance.
+This document defines the safeguards for processing a full-length movie. It is a design and engineering contract, not proof of runtime performance.
 
 ## 1. Movie-scoped persistence
 
@@ -19,29 +15,20 @@ All production artifacts must belong to a specific movie workspace under:
 Projects/<movie>/
 ```
 
-The source manifest, transcript outputs, timeline, bounded evidence, intelligence, script, narration metadata, edit manifest, subtitles, final video, QA results, and stage state must be traceable to that movie.
-
-Global folders such as `Logs/`, `Backups/`, or historical fixtures are never the authoritative source for a current movie run.
+Artifacts must remain traceable to that movie. Global folders and historical fixtures are not authoritative sources for a current movie run.
 
 ## 2. Bounded intelligence
 
-Do not send an entire movie transcript or unrestricted AD corpus to the local LLM in one prompt. The timeline and evidence stages must preserve source provenance while providing bounded scene-level or packet-level inputs.
+Do not send an entire movie transcript or unrestricted AD corpus to the local LLM in one prompt. Preserve source provenance while providing bounded scene-level or packet-level inputs.
 
-This reduces memory pressure and limits the blast radius of malformed model output.
+This reduces memory pressure and limits the effect of malformed model output.
 
 ## 3. Deterministic stage boundaries
 
 A long movie is processed as ordered stages with explicit artifacts:
 
 ```text
-INGESTION
-TRANSCRIPTION
-TIMELINE
-INTELLIGENCE
-SCRIPT
-TTS
-VIDEO
-QA
+INGESTION -> TRANSCRIPTION -> TIMELINE -> INTELLIGENCE -> SCRIPT -> TTS -> VIDEO -> QA
 ```
 
 A stage may be skipped only when its expected artifact exists and passes the stage-state integrity rules.
@@ -50,26 +37,26 @@ A stage may be skipped only when its expected artifact exists and passes the sta
 
 On interruption or failure:
 
-- preserve previously verified completed artifacts;
+- preserve verified completed artifacts;
 - record the failed stage and error;
-- retry from the earliest invalid/incomplete stage;
-- never treat a missing or modified completed artifact as safely resumable;
-- never silently erase the earlier failure history.
+- retry from the earliest invalid or incomplete stage;
+- never treat a missing or modified artifact as safely resumable;
+- never erase earlier failure history.
 
-## 5. Large artifact handling
+## 5. Large-artifact handling
 
 For large SRTs, many scenes, and large manifests:
 
-- use streaming/iterative parsing where practical;
+- use streaming or iterative parsing where practical;
 - avoid unnecessary duplicate in-memory copies of full text blobs;
 - keep evidence packets bounded;
-- write intermediate JSON artifacts to disk instead of retaining every stage result in process memory;
+- write intermediate JSON artifacts to disk instead of retaining every result in process memory;
 - keep temporary render products separate from final outputs;
 - verify paths before processing.
 
 ## 6. Disk-space policy
 
-Before a full movie run, the runtime validation procedure must check:
+Before a full movie run, check:
 
 - free space on the workspace volume;
 - source media size;
@@ -77,16 +64,16 @@ Before a full movie run, the runtime validation procedure must check:
 - expected final render size;
 - available headroom for temporary FFmpeg files.
 
-A run should fail closed rather than start a full render with obviously insufficient free space.
+A run should fail closed rather than begin a full render when free space is obviously insufficient.
 
 ## 7. Cleanup policy
 
 Artifacts fall into four classes:
 
-1. **Source** — never deleted automatically by the pipeline.
+1. **Source** — never deleted automatically.
 2. **Authoritative production artifacts** — retained for resume, provenance, and QA.
 3. **Temporary render artifacts** — eligible for cleanup after successful finalization and QA.
-4. **Historical backups/test fixtures** — preserved unless explicitly archived/deleted by a separate decision.
+4. **Historical backups/test fixtures** — preserved unless explicitly archived or deleted by a separate decision.
 
 Cleanup must never delete the only copy of an artifact required for resume or auditability.
 
@@ -95,24 +82,17 @@ Cleanup must never delete the only copy of an artifact required for resume or au
 The first runtime validation must proceed from small to large:
 
 ```text
-TINY TEST
+TINY / SHORT TEST
   -> MEDIUM REAL-MEDIA TEST
-  -> FIRST FULL MOVIE
+  -> FIRST FULL 3–4 HOUR MOVIE
+  -> HUMAN QA
+  -> CORE RELIABILITY
 ```
 
 Each step must pass before advancing. A failure must be repaired and re-tested rather than bypassed.
 
-## 9. Non-claims
+## 9. Completion boundary
 
-This design does not prove:
+The core project completion criterion is one reliable real 3–4 hour movie from input through final recap and required QA. Throughput is measured only after that criterion is achieved.
 
-- completion time for a full movie;
-- peak RAM on the target machine;
-- Whisper.cpp transcription throughput;
-- Ollama generation throughput;
-- Piper generation throughput;
-- FFmpeg render throughput;
-- successful crash recovery on real media;
-- suitability for 3 videos/day.
-
-Those are runtime measurements and remain explicitly unverified until the Windows validation gate produces evidence.
+Additional movies may then be processed sequentially as actual hardware, storage, and processing time permit. There is no fixed daily quota.
