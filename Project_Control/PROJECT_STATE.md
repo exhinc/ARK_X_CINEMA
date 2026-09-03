@@ -31,13 +31,17 @@ That document is the active decision record for local-first execution, optional 
 
 ARK X Cinema is a $0/month movie-recap production system designed to automate as much of the production workflow as practical while retaining final human QA/approval.
 
-Target:
-- 3 different movie recap videos per day
+Primary completion criterion:
+- Reliably process one real, legally obtained 3–4 hour movie through the intended pipeline on the target Windows PC and produce a finished recap video that passes the required automated and human QA checks.
+
+Supporting requirements:
 - Free/open-source-first tooling
 - Local processing wherever practical
 - Low-RAM Windows laptop compatibility
 - Legal movie/source acquisition
 - No piracy or DRM bypass
+
+Throughput is **not** a fixed project completion quota. Once reliable one-movie processing is achieved, practical throughput is measured empirically from actual end-to-end processing time, hardware limits, storage, and workload conditions. The system is not required to produce a predetermined number of movies per day for the core project to be considered complete.
 
 ---
 
@@ -99,7 +103,7 @@ PR #7 supplied the controlled current-master Stage-A integration and was merged 
 
 ### CI evidence
 
-Master commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e` passed GitHub Actions run #123, job `tests`.
+The latest coordination-hardening master commit `98625c2b5aa6ddb9cdb53f1318449e4feb7b8679` was manually run through GitHub Actions after the coordination audit and completed with **Status: Success** (workflow run #33721190514 / job #100540507339). The run produced one Node.js deprecation warning for actions/checkout@v4 and actions/setup-python@v5; the warning did not cause failure.
 
 Issue #1, the historical CI regression, is closed with completed state.
 
@@ -130,13 +134,12 @@ The next milestone is controlled PC validation, not another architectural rewrit
 ```text
 TINY TEST
    -> MEDIUM REAL-MEDIA TEST
-   -> FIRST FULL MOVIE
+   -> FIRST FULL 3–4 HOUR MOVIE
    -> HUMAN QA
    -> STAGE-A RELIABILITY
-   -> 1 VIDEO/DAY
-   -> 2 VIDEOS/DAY
-   -> 3 VIDEOS/DAY
 ```
+
+After core reliability is established, throughput may be measured and optimized empirically. Additional movies may then be processed sequentially as system capacity allows; no fixed daily quota is required for project completion.
 
 No full movie is to be used as the first runtime test.
 
