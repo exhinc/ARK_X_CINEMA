@@ -5,6 +5,11 @@ GitHub `master` is the shared engineering source of truth. The primary AI collab
 
 Before changing code, inspect the current repository, relevant tests, project status, and recent commits. Do not rely on historical chat claims when the repository can answer the question.
 
+## Active architecture decision record
+The current execution-architecture decision is maintained at `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. It is the active decision record for runtime/model execution, optional cloud/accelerator experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first decisions, and monetization-oriented editing policy.
+
+Agents must read this record before proposing changes in those areas. It supplements the project state and current-task records; it does not by itself prove PC runtime validation or production readiness.
+
 ## Project objective
 ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The ultimate target is 3 distinct recap videos/day, with human final QA/approval. Movie/source files must be legally obtained; no piracy or DRM bypass.
 
@@ -85,7 +90,7 @@ A full audit must reconstruct the actual system, not review files in isolation. 
 
 Whenever a significant defect is discovered, search the repository for other occurrences of the same underlying defect pattern. Fix confirmed related instances when appropriate rather than treating the first occurrence as necessarily isolated.
 
-Configuration is part of the software system. Cross-check environment variables, `.env`/example configuration, package scripts, build/test configuration, CI/CD, GitHub Actions, Docker/container configuration, deployment configuration, database configuration, and runtime configuration against the actual implementation.
+Configuration is part of the software system. Cross-check environment variables, `.env`/example configuration, package scripts, build/test configuration, CI/CD, Docker/container configuration, deployment configuration, database configuration, and runtime configuration against the actual implementation.
 
 A full audit must explicitly consider applicable security areas including secrets, credentials, authentication, authorization, input validation, injection, XSS, CSRF, SSRF, path traversal, command execution, unsafe file operations, sensitive-information leakage, dependency risks, CORS, session/cookie security, and privilege boundaries. Report only what can actually be verified.
 
