@@ -179,5 +179,6 @@ def validate_runtime_or_raise() -> None:
 
 
 if __name__ == "__main__":
-    validate_runtime_or_raise()
-    log("ARK X Cinema runtime foundation PASS")
+    from run_production import main as run_production_main
+
+    raise SystemExit(run_production_main())
