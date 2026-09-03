@@ -40,21 +40,22 @@ It governs local-first execution, optional accelerator/cloud experiments, replac
 - `Project_Control/AUDIT_LEDGER.md` records the completed controlled forensic GitHub audit.
 - The active execution architecture decision is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`.
 - Architecture decision DECISION-001 remains locked for the separate AD audio -> whisper.cpp -> timestamped AD SRT -> movie intelligence boundary; the newer execution decision does not replace that source-specific constraint.
-- The historical full AD transcription test for *The Platform (2019)* recorded successful AD audio -> whisper.cpp -> timestamped SRT conversion.
+- `Project_Control/DECISIONS.md` contains DECISION-004 locking the multi-AI authority/handoff rules.
+- `GROK.md` is the dedicated Grok entry point; `CLAUDE.md` is the dedicated Claude entry point.
+- `docs/AI_HANDOFF.md` is the persistent cross-agent handoff.
+- The historical root snapshot `ARK_X_Cinema_Current_State.txt` is dated 2026-08-26 and is evidence only, not current project state.
 - Current `master` contains repository-relative runtime configuration, canonical per-movie workspace/source-manifest support, subtitle/AD ingestion, deterministic timeline processing, bounded evidence packets, local Ollama integration, structured-output validation, recap-script generation, resumable checkpoints, Piper TTS integration, deterministic script-to-scene edit mapping, final recap subtitles, deterministic FFmpeg assembly, deterministic FFprobe QA, and the full Stage-A runner composition.
 - PR #7 was merged into `master` on 2026-08-28 as commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e`.
 - The post-merge GitHub Actions run for that master commit succeeded: workflow `ARK X Cinema Tests`, run #123, job `tests`.
 - Issue #1 (CI regression) is closed with completed state.
 - The old PR #6 is historical/unmerged and is not evidence against current master; PR #7 was the controlled current-master rebuild and merge.
-- Current repository evidence therefore supports a **GitHub-side Stage-A implementation complete / PC validation pending** status.
+- The GitHub-only coordination hardening is implemented in the repository, but Issue #3 remains the formal acceptance gate until its stale historical checklist/state is reconciled and at least one independent second-AI or human acceptance is recorded.
 
 ---
 
-## 4. PRODUCTION BOUNDARY
+## 4. GITHUB-SIDE IMPLEMENTATION BOUNDARY
 
-### GitHub-side implementation status: COMPLETE
-
-The code and portable regression suite now cover the intended Stage-A production chain:
+The repository and portable regression suite cover the intended Stage-A production chain:
 
 ```text
 INGESTION
@@ -70,9 +71,11 @@ INGESTION
   -> FINAL MEDIA QA
 ```
 
-Underlying all stages: checkpoint/state handling, artifact validation, provenance, and one-heavy-AI-stage-at-a-time policy.
+This remains repository-side implementation evidence, not proof of Windows runtime success.
 
-### PC/runtime status: UNVERIFIED
+---
+
+## 5. PC/RUNTIME STATUS: UNVERIFIED
 
 The following are still deliberately unverified because GitHub cannot reproduce the user's Windows runtime:
 
@@ -89,54 +92,28 @@ No GitHub result should be interpreted as proof of these items.
 
 ---
 
-## 5. EVIDENCE SNAPSHOT
+## 6. COORDINATION ACCEPTANCE GATE
 
-| Area | Current evidence | Status |
-|---|---|---|
-| Runtime configuration | `Engine/runtime_config.py` + runtime tests | COMPLETE / repository-tested |
-| Canonical workspace | `Engine/project_workspace.py` + ingestion tests | COMPLETE / repository-tested |
-| AD ingestion | `Engine/transcription_stage_adapter.py` and source-manifest path | COMPLETE / boundary-tested; PC execution unverified |
-| Timeline | deterministic timeline engine + tests | COMPLETE / repository-tested |
-| Intelligence | Ollama adapter + structured-output validation + tests | COMPLETE / repository-tested; real model unverified |
-| Recap script | recap engine + adapter + tests | COMPLETE / repository-tested; real model unverified |
-| TTS | Piper engine + adapter + tests | COMPLETE / repository-tested; PC runtime unverified |
-| Edit mapping | `Engine/edit_manifest_engine.py` + tests | COMPLETE / repository-tested |
-| Recap subtitles | `Engine/recap_subtitle_engine.py` + tests | COMPLETE / repository-tested |
-| Video assembly | `Engine/ffmpeg_video_engine.py` + tests | COMPLETE / command construction tested; real encoding unverified |
-| Final QA | `Engine/media_qa_inspector.py` + tests | COMPLETE / repository-tested; real media unverified |
-| Stage-A runner | `Engine/stage_a_runner.py` + tests | COMPLETE / repository-tested; real end-to-end unverified |
-| Checkpoint/resume | `checkpoint.py`, `stage_state.py`, `resumable_orchestrator.py` + tests | COMPLETE / repository-tested; real crash/recovery unverified |
-| CI | master run #123 success for the Stage-A merge commit; later documentation changes require current-commit CI verification | COMPLETE / repository evidence for merge; current docs baseline requires fresh CI |
+Issue #3 is the formal GitHub-only coordination/acceptance gate. Its original body contains historical 2026-08-28 checklist text and should not be read as current status without reconciling it against current `master` evidence.
+
+Current coordination hardening evidence:
+
+- shared startup sequence: implemented in `AI_COLLABORATION_PROTOCOL.md`
+- architectural-governance vs implementation-truth distinction: implemented
+- current-commit-only CI rule: implemented
+- significant-change record rule: implemented
+- dedicated Grok entry point: implemented
+- Claude entry point convergence: implemented
+- persistent handoff convergence: implemented
+- historical root state snapshot explicitly quarantined: implemented
+
+The remaining acceptance event is independent review by another AI or the human operator, not another architecture rewrite.
 
 ---
 
-## 6. LONG-MOVIE READINESS
+## 7. NEXT CONTROLLED STEP
 
-Repository design target for long movies:
-
-- Keep artifacts per movie under `Projects/<movie>/`.
-- Process transcript/timeline/evidence structures as bounded, explicit artifacts rather than one monolithic prompt.
-- Preserve stage boundaries so interrupted work can resume from the last verified artifact.
-- Validate artifact integrity before skipping a completed stage.
-- Do not retain large intermediate media longer than required by the production policy.
-- Keep final outputs separate from source media and historical backups.
-- Treat disk space as a runtime preflight condition before full-movie processing.
-
-The broader runtime strategy is governed by `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`; the exact large-movie throughput, memory profile, and interruption behavior remain PC validation items.
-
----
-
-## 7. MULTI-AI CONSENSUS RULE
-
-The GitHub engineering baseline is now sufficiently evidenced for the next controlled decision, but the project should not claim final Stage-A production readiness until at least one additional AI assessment or the human operator explicitly accepts this evidence.
-
-Until that consensus event occurs, Issue #3 remains the active coordination gate.
-
----
-
-## 8. NEXT CONTROLLED STEP
-
-After the GitHub-only gate is accepted, run PC validation in this order:
+After Issue #3 acceptance and current-commit CI verification, close the GitHub-only gate and proceed to controlled Windows validation:
 
 ```text
 TINY SYNTHETIC / SHORT MEDIA
@@ -149,4 +126,4 @@ TINY SYNTHETIC / SHORT MEDIA
         -> 3/DAY
 ```
 
-Do not jump directly to a full movie merely because CI is green.
+Do not jump directly to a full movie merely because repository CI is green.
