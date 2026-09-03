@@ -10,6 +10,11 @@ The current execution-architecture decision is maintained at `Project_Control/EX
 
 Agents must read this record before proposing changes in those areas. It supplements the project state and current-task records; it does not by itself prove PC runtime validation or production readiness.
 
+## Multi-AI collaboration protocol
+The mandatory multi-agent startup, authority/conflict-resolution, current-commit CI, and change-record procedure is maintained in `Project_Control/AI_COLLABORATION_PROTOCOL.md`.
+
+Every agent must follow that protocol before making significant repository changes. `Project_Control/CHANGELOG.md` records project-significant history, and `Project_Control/DECISIONS.md` records architectural decisions.
+
 ## Project objective
 ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The ultimate target is 3 distinct recap videos/day, with human final QA/approval. Movie/source files must be legally obtained; no piracy or DRM bypass.
 
