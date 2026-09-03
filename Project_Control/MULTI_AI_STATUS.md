@@ -3,7 +3,7 @@
 **Repository:** https://github.com/exhinc/ARK_X_CINEMA  
 **Purpose:** Shared, evidence-based status document for all AI agents and the human operator.
 
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
 
 ---
 
@@ -13,11 +13,22 @@ No single AI may declare final production truth. Repository claims must cite cur
 
 ---
 
-## 1. AGREED CURRENT FACTS
+## 1. ACTIVE EXECUTION ARCHITECTURE DECISION
+
+The active runtime/execution architecture decision is recorded in:
+
+`Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
+
+It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first runtime decisions, and monetization-oriented editing policy. It supplements this status record; it does not prove PC validation or production readiness.
+
+---
+
+## 2. AGREED CURRENT FACTS
 
 - `AGENTS.md` is the authoritative AI engineering contract.
 - `Project_Control/AUDIT_LEDGER.md` records the completed controlled forensic GitHub audit.
-- Architecture decision DECISION-001 remains locked: separate AD audio -> whisper.cpp -> timestamped AD SRT -> movie intelligence.
+- The active execution architecture decision is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`.
+- Architecture decision DECISION-001 remains locked for the separate AD audio -> whisper.cpp -> timestamped AD SRT -> movie intelligence boundary; the newer execution decision does not replace that source-specific constraint.
 - The historical full AD transcription test for *The Platform (2019)* recorded successful AD audio -> whisper.cpp -> timestamped SRT conversion.
 - Current `master` contains repository-relative runtime configuration, canonical per-movie workspace/source-manifest support, subtitle/AD ingestion, deterministic timeline processing, bounded evidence packets, local Ollama integration, structured-output validation, recap-script generation, resumable checkpoints, Piper TTS integration, deterministic script-to-scene edit mapping, final recap subtitles, deterministic FFmpeg assembly, deterministic FFprobe QA, and the full Stage-A runner composition.
 - PR #7 was merged into `master` on 2026-08-28 as commit `3fd4a87c2a68df98eff3652fbc65c4f2f972267e`.
@@ -28,7 +39,7 @@ No single AI may declare final production truth. Repository claims must cite cur
 
 ---
 
-## 2. PRODUCTION BOUNDARY
+## 3. PRODUCTION BOUNDARY
 
 ### GitHub-side implementation status: COMPLETE
 
@@ -67,7 +78,7 @@ No GitHub result should be interpreted as proof of these items.
 
 ---
 
-## 3. EVIDENCE SNAPSHOT
+## 4. EVIDENCE SNAPSHOT
 
 | Area | Current evidence | Status |
 |---|---|---|
@@ -84,11 +95,11 @@ No GitHub result should be interpreted as proof of these items.
 | Final QA | `Engine/media_qa_inspector.py` + tests | COMPLETE / repository-tested; real media unverified |
 | Stage-A runner | `Engine/stage_a_runner.py` + tests | COMPLETE / repository-tested; real end-to-end unverified |
 | Checkpoint/resume | `checkpoint.py`, `stage_state.py`, `resumable_orchestrator.py` + tests | COMPLETE / repository-tested; real crash/recovery unverified |
-| CI | master run #123 success | COMPLETE / repository evidence |
+| CI | master run #123 success for the Stage-A merge commit; subsequent documentation commits require current-commit CI verification | COMPLETE / repository evidence for merge; current docs baseline requires fresh CI |
 
 ---
 
-## 4. LONG-MOVIE READINESS
+## 5. LONG-MOVIE READINESS
 
 Repository design target for long movies:
 
@@ -100,11 +111,11 @@ Repository design target for long movies:
 - Keep final outputs separate from source media and historical backups.
 - Treat disk space as a runtime preflight condition before full-movie processing.
 
-The exact large-movie throughput, memory profile, and interruption behavior remain PC validation items.
+The broader runtime strategy is governed by `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`; the exact large-movie throughput, memory profile, and interruption behavior remain PC validation items.
 
 ---
 
-## 5. MULTI-AI CONSENSUS RULE
+## 6. MULTI-AI CONSENSUS RULE
 
 The GitHub engineering baseline is now sufficiently evidenced for the next controlled decision, but the project should not claim final Stage-A production readiness until at least one additional AI assessment or the human operator explicitly accepts this evidence.
 
@@ -112,7 +123,7 @@ Until that consensus event occurs, Issue #3 remains the active coordination gate
 
 ---
 
-## 6. NEXT CONTROLLED STEP
+## 7. NEXT CONTROLLED STEP
 
 After the GitHub-only gate is accepted, run PC validation in this order:
 
