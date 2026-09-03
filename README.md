@@ -12,7 +12,7 @@ The system is being engineered around three principles:
 - **$0/month software and infrastructure**
 - **Human final QA and approval**
 
-The long-term production target is **3 different recap videos per day** while remaining practical on a low-RAM Windows laptop.
+The core production goal is to **reliably process one real 3–4 hour movie end-to-end** on the target Windows PC and produce a finished recap video that passes the required automated and human QA. There is no fixed daily movie quota. After the first full-length movie is reliable, additional throughput is measured and optimized empirically based on actual processing time, hardware, storage, and workload conditions.
 
 > **Project status:** Active development  
 > **Current architecture:** Locked  
@@ -553,18 +553,18 @@ Superseding an architecture decision requires an explicit new decision.
 The development progression is:
 
 ```text
-Stage A
-1 finished video reliably
+CORE COMPLETION
+1 real 3–4 hour movie reliably end-to-end
         ↓
-Stage B
-1 video/day reliably
+MEASURE THROUGHPUT
         ↓
-Stage C
-2 videos/day reliably
+OPTIMIZE WHEN USEFUL
         ↓
-Stage D
-3 videos/day reliably
+PROCESS ADDITIONAL MOVIES
+AS HARDWARE / TIME / STORAGE ALLOW
 ```
+
+There is no fixed number of videos per day required for the core project to be considered complete.
 
 ### 4. One heavy AI stage at a time
 
@@ -632,7 +632,7 @@ The system's purpose is production automation—not circumvention.
 
 ## Phase 3 — Reliability
 
-- [ ] Repeatable one-video production
+- [ ] Reliable full-length movie production
 - [ ] Failure recovery under real workload
 - [ ] Pipeline resume under real workload
 - [ ] Resource/RAM measurements
@@ -642,11 +642,12 @@ The system's purpose is production automation—not circumvention.
 
 ## Phase 4 — Throughput
 
-- [ ] 1 video/day
-- [ ] 2 videos/day
-- [ ] 3 videos/day
+Throughput is intentionally **not a fixed completion quota**. After one reliable 3–4 hour movie is proven, actual processing time and hardware capacity determine how many additional movies can be processed.
 
-Throughput is increased only after the previous stage is reliable.
+- [ ] Measure real end-to-end processing time
+- [ ] Identify throughput bottlenecks
+- [ ] Optimize only where the measured benefit is worthwhile
+- [ ] Process additional movies as capacity allows
 
 ---
 
@@ -688,9 +689,13 @@ Throughput is increased only after the previous stage is reliable.
 
 **NOT YET PRODUCTION-READY**
 
-### Target
+### Core completion target
 
-**3 recap videos/day**
+**1 real 3–4 hour movie reliably end-to-end with required automated and human QA**
+
+### Throughput
+
+**EMPIRICAL / MEASURE AFTER CORE COMPLETION — NO FIXED DAILY QUOTA**
 
 ---
 
@@ -704,6 +709,6 @@ Every stage should be:
 
 **observable → testable → recoverable → replaceable → scalable**
 
-The goal is not to make one impressive demo.
+The goal is not to chase an arbitrary daily quota.
 
-The goal is to build a repeatable production machine.
+The goal is to build a reliable production machine that can finish one full-length movie and then continue processing additional movies as real system capacity allows.
