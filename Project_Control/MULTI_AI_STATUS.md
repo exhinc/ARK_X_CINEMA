@@ -13,7 +13,17 @@ No single AI may declare final production truth. Repository claims must cite cur
 
 ---
 
-## 1. ACTIVE EXECUTION ARCHITECTURE DECISION
+## 1. ACTIVE MULTI-AI COLLABORATION PROTOCOL
+
+The mandatory shared startup, authority/conflict-resolution, current-commit CI, and change-record rules are defined in:
+
+`Project_Control/AI_COLLABORATION_PROTOCOL.md`
+
+All ChatGPT, Claude, and Grok work must follow that protocol before significant repository changes.
+
+---
+
+## 2. ACTIVE EXECUTION ARCHITECTURE DECISION
 
 The active runtime/execution architecture decision is recorded in:
 
@@ -23,9 +33,10 @@ It governs local-first execution, optional accelerator/cloud experiments, replac
 
 ---
 
-## 2. AGREED CURRENT FACTS
+## 3. AGREED CURRENT FACTS
 
 - `AGENTS.md` is the authoritative AI engineering contract.
+- `Project_Control/AI_COLLABORATION_PROTOCOL.md` is the mandatory multi-AI coordination procedure.
 - `Project_Control/AUDIT_LEDGER.md` records the completed controlled forensic GitHub audit.
 - The active execution architecture decision is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`.
 - Architecture decision DECISION-001 remains locked for the separate AD audio -> whisper.cpp -> timestamped AD SRT -> movie intelligence boundary; the newer execution decision does not replace that source-specific constraint.
@@ -39,7 +50,7 @@ It governs local-first execution, optional accelerator/cloud experiments, replac
 
 ---
 
-## 3. PRODUCTION BOUNDARY
+## 4. PRODUCTION BOUNDARY
 
 ### GitHub-side implementation status: COMPLETE
 
@@ -78,7 +89,7 @@ No GitHub result should be interpreted as proof of these items.
 
 ---
 
-## 4. EVIDENCE SNAPSHOT
+## 5. EVIDENCE SNAPSHOT
 
 | Area | Current evidence | Status |
 |---|---|---|
@@ -95,11 +106,11 @@ No GitHub result should be interpreted as proof of these items.
 | Final QA | `Engine/media_qa_inspector.py` + tests | COMPLETE / repository-tested; real media unverified |
 | Stage-A runner | `Engine/stage_a_runner.py` + tests | COMPLETE / repository-tested; real end-to-end unverified |
 | Checkpoint/resume | `checkpoint.py`, `stage_state.py`, `resumable_orchestrator.py` + tests | COMPLETE / repository-tested; real crash/recovery unverified |
-| CI | master run #123 success for the Stage-A merge commit; subsequent documentation commits require current-commit CI verification | COMPLETE / repository evidence for merge; current docs baseline requires fresh CI |
+| CI | master run #123 success for the Stage-A merge commit; later documentation changes require current-commit CI verification | COMPLETE / repository evidence for merge; current docs baseline requires fresh CI |
 
 ---
 
-## 5. LONG-MOVIE READINESS
+## 6. LONG-MOVIE READINESS
 
 Repository design target for long movies:
 
@@ -115,7 +126,7 @@ The broader runtime strategy is governed by `Project_Control/EXECUTION_ARCHITECT
 
 ---
 
-## 6. MULTI-AI CONSENSUS RULE
+## 7. MULTI-AI CONSENSUS RULE
 
 The GitHub engineering baseline is now sufficiently evidenced for the next controlled decision, but the project should not claim final Stage-A production readiness until at least one additional AI assessment or the human operator explicitly accepts this evidence.
 
@@ -123,7 +134,7 @@ Until that consensus event occurs, Issue #3 remains the active coordination gate
 
 ---
 
-## 7. NEXT CONTROLLED STEP
+## 8. NEXT CONTROLLED STEP
 
 After the GitHub-only gate is accepted, run PC validation in this order:
 
