@@ -1,7 +1,11 @@
 # ARK X CINEMA — LONG-MOVIE READINESS
 
 **Status:** GitHub-side design complete; runtime validation pending  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
+
+**Related active execution decision:** `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
+
+The execution architecture decision governs the broader runtime/model/cloud strategy. This document remains the specific long-movie safeguards and validation contract.
 
 ## Purpose
 
