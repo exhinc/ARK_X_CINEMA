@@ -4,7 +4,7 @@
 
 ## Status legend
 - 🟢 Implemented / repository-tested
-- 🟡 Needs real-environment validation
+- 🟡 Needs current-commit or real-environment validation
 - 🔵 Next
 - 🔴 Known defect
 
@@ -13,6 +13,10 @@
 The broader runtime/execution strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first decisions, and monetization-oriented editing policy.
 
 This decision record does not constitute Windows runtime validation or production-readiness evidence.
+
+## Active multi-AI coordination protocol
+
+The mandatory shared coordination procedure is recorded in `Project_Control/AI_COLLABORATION_PROTOCOL.md`. It defines the agent startup sequence, architectural-governance rules, implementation-evidence hierarchy, current-commit CI verification, change-record requirements, and handoff procedure.
 
 ## Current state
 
@@ -36,7 +40,7 @@ This decision record does not constitute Windows runtime validation or productio
 | Stage state | 🟢 | Ordered pipeline state with prerequisite enforcement |
 | Resumable execution | 🟢 | Safe skip, failure recording, retry, and artifact validation |
 | Stage-A runner | 🟢 | Complete repository-side composition from ingestion through QA |
-| GitHub CI | 🟢 | Current documentation baseline was updated after the Stage-A merge; current-commit CI must be checked before using CI as fresh validation evidence |
+| GitHub CI | 🟡 | Stage-A merge commit passed run #123; the coordination-hardening commits require a completed current-commit Actions run before this row is green |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | Real TTS test | 🟡 | Requires Windows PC |
@@ -63,11 +67,13 @@ Long-movie safeguards and test sequencing are recorded in `Project_Control/LONG_
 
 ## Multi-agent coordination
 
-Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`. Current code and current verified CI evidence override stale historical claims. Agents must also consult the active execution architecture decision before proposing changes in its covered areas.
+Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; Grok's entry point is `GROK.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`; and the mandatory coordination procedure is `Project_Control/AI_COLLABORATION_PROTOCOL.md`.
+
+The old `ARK_X_Cinema_Current_State.txt` is a dated historical audit snapshot and is not current project state.
 
 ## Immediate next step
 
-Finish the GitHub-only gate with fresh CI for the current documentation baseline and obtain the required consensus/acceptance in Issue #3. Then freeze architecture and move to controlled Windows runtime validation.
+Complete current-commit CI verification for the coordination-hardening tree and obtain the independent second-AI or human acceptance required by Issue #3. Then close the GitHub-only gate and move to controlled Windows runtime validation.
 
 ## Resolved issue
 
