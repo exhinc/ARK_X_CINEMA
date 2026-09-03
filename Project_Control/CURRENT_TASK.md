@@ -8,7 +8,7 @@
 
 All ChatGPT, Claude, and Grok work must follow `Project_Control/AI_COLLABORATION_PROTOCOL.md` before significant repository changes.
 
-The protocol defines the mandatory startup sequence, authority/conflict resolution, current-commit CI rule, safe modification procedure, and change-record requirements. It supplements the shared instructions in `AGENTS.md` and this task record.
+The protocol defines the mandatory startup sequence, architectural-governance vs implementation-truth boundaries, authority/conflict resolution, current-commit CI rule, safe modification procedure, and change-record requirements. It supplements the shared instructions in `AGENTS.md` and this task record.
 
 ---
 
@@ -72,15 +72,30 @@ Integrated on current master:
 
 Post-merge GitHub Actions run #123 for the merge commit completed successfully.
 
+### Build #7 — Multi-AI Coordination Hardening
+**REPOSITORY IMPLEMENTED / ACCEPTANCE PENDING**
+
+Implemented:
+
+- mandatory shared collaboration protocol
+- explicit architectural-governance vs implementation-truth distinction
+- current-commit-only CI rule
+- formal change-record rule
+- dedicated Grok entry point
+- Claude/shared-handoff convergence
+- explicit quarantine of the historical root state snapshot
+
+The formal acceptance point remains Issue #3, which still contains historical checklist/state text and requires reconciliation plus independent second-AI or human acceptance before closure.
+
 ---
 
 ## CURRENT GATE
 
-### GitHub gate
+### GitHub implementation gate
 
-**IMPLEMENTATION COMPLETE / CI GREEN**
+**IMPLEMENTATION COMPLETE**
 
-Current repository evidence is sufficient to stop architectural development and move to runtime validation.
+The repository-side Stage-A composition and coordination framework are implemented. Current-commit CI must be verified before describing the newest documentation tree as CI-verified.
 
 ### PC gate
 
@@ -125,15 +140,16 @@ AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
 ## NEXT EXECUTION ORDER
 
 ```text
-1. PC preflight
-2. Tiny test
-3. Medium test
-4. First full movie
-5. Human QA
-6. Reliability fixes only
-7. 1 video/day
-8. 2 videos/day
-9. 3 videos/day
+1. Complete current-commit CI verification / Issue #3 acceptance
+2. PC preflight
+3. Tiny test
+4. Medium test
+5. First full movie
+6. Human QA
+7. Reliability fixes only
+8. 1 video/day
+9. 2 videos/day
+10. 3 videos/day
 ```
 
 No new architecture should be introduced during the runtime-validation gate unless testing exposes a concrete defect that requires it.
@@ -142,4 +158,4 @@ No new architecture should be introduced during the runtime-validation gate unle
 
 ## HANDOFF RULE
 
-Future agents must read `AGENTS.md`, `Project_Control/AI_COLLABORATION_PROTOCOL.md`, plus the current Project_Control and docs status files before changing architecture or claiming completion. Current master is the source of truth; old PR #6 and historical audit wording must not override current evidence.
+Future agents must read `AGENTS.md`, `Project_Control/AI_COLLABORATION_PROTOCOL.md`, plus the current Project_Control and docs status files before changing architecture or claiming completion. Current master is the source of truth for implementation and verified current-commit evidence; locked decisions govern permitted architectural changes; old PR #6 and historical audit wording must not override current evidence.
