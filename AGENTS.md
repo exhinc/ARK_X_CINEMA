@@ -17,6 +17,8 @@ Every agent must follow that protocol before making significant repository chang
 
 Important distinction: `Project_Control/DECISIONS.md` governs architectural permission, while current-master code/tests govern what is actually implemented and observed. Code must not silently supersede a locked architecture decision.
 
+Historical snapshot warning: `ARK_X_Cinema_Current_State.txt` is a dated audit snapshot from 2026-08-26. It is historical evidence only, not current project state. Agents must not use it to override the active Project_Control records or current master code/tests.
+
 ## Project objective
 ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The ultimate target is 3 distinct recap videos/day, with human final QA/approval. Movie/source files must be legally obtained; no piracy or DRM bypass.
 
