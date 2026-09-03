@@ -3,7 +3,17 @@
 **Project:** ARK X Cinema  
 **Purpose:** Automated YouTube movie-recap production system  
 **Current State:** Stage-A GitHub implementation complete; PC validation gate pending  
-**Last Updated:** 2026-08-31
+**Last Updated:** 2026-09-03
+
+---
+
+## 0. ACTIVE ARCHITECTURE DECISION
+
+The current runtime and execution-architecture decisions are recorded in:
+
+`Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
+
+That document is the active decision record for local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, runtime benchmarking, and monetization-oriented editing policy. It supplements this project-state record; it does not override the PC validation gate below.
 
 ---
 
@@ -160,6 +170,9 @@ COMPLETE
 
 ARCHITECTURE:
 LOCKED
+
+ACTIVE EXECUTION ARCHITECTURE DECISION:
+`Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
 
 AD AUDIO -> whisper.cpp -> AD SRT:
 IMPLEMENTED / PC VALIDATION UNVERIFIED
