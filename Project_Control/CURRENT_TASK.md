@@ -4,6 +4,14 @@
 
 ---
 
+## ACTIVE COLLABORATION PROTOCOL
+
+All ChatGPT, Claude, and Grok work must follow `Project_Control/AI_COLLABORATION_PROTOCOL.md` before significant repository changes.
+
+The protocol defines the mandatory startup sequence, authority/conflict resolution, current-commit CI rule, safe modification procedure, and change-record requirements. It supplements the shared instructions in `AGENTS.md` and this task record.
+
+---
+
 ## ACTIVE ARCHITECTURE DECISION
 
 The active runtime/execution architecture decision is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. Read that record before proposing changes to model runtime, cloud/accelerator execution, long-movie persistence, FFmpeg usage, or monetization-oriented editing policy.
@@ -134,4 +142,4 @@ No new architecture should be introduced during the runtime-validation gate unle
 
 ## HANDOFF RULE
 
-Future agents must read `AGENTS.md` plus the current Project_Control and docs status files before changing architecture or claiming completion. Current master is the source of truth; old PR #6 and historical audit wording must not override current evidence.
+Future agents must read `AGENTS.md`, `Project_Control/AI_COLLABORATION_PROTOCOL.md`, plus the current Project_Control and docs status files before changing architecture or claiming completion. Current master is the source of truth; old PR #6 and historical audit wording must not override current evidence.
