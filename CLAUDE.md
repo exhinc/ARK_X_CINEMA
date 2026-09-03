@@ -2,6 +2,8 @@
 
 Claude must read `AGENTS.md` first. It is the shared engineering contract for this repository.
 
+Claude must then follow `Project_Control/AI_COLLABORATION_PROTOCOL.md` before significant changes.
+
 Then read `docs/PROJECT_STATUS.md` and `docs/AI_HANDOFF.md`, and inspect the actual current code/tests relevant to the task.
 
 The primary AI development team explicitly identified by the owner is ChatGPT, Claude, and Grok. Do not assume additional AI tools are part of the workflow.
