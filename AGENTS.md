@@ -20,7 +20,9 @@ Important distinction: `Project_Control/DECISIONS.md` governs architectural perm
 Historical snapshot warning: `ARK_X_Cinema_Current_State.txt` is a dated audit snapshot from 2026-08-26. It is historical evidence only, not current project state. Agents must not use it to override the active Project_Control records or current master code/tests.
 
 ## Project objective
-ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The ultimate target is 3 distinct recap videos/day, with human final QA/approval. Movie/source files must be legally obtained; no piracy or DRM bypass.
+ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The core completion criterion is reliable end-to-end processing of one real 3–4 hour movie on the target Windows PC, producing a finished recap video that passes the required automated and human QA. Movie/source files must be legally obtained; no piracy or DRM bypass.
+
+A fixed daily movie quota is not a project requirement. After one full-length movie is proven reliable, practical throughput is measured and optimized empirically from actual processing time, hardware capacity, RAM behavior, storage, workload characteristics, and other real constraints.
 
 ## Core architecture
 Canonical flow:
@@ -57,14 +59,13 @@ Do not replace or rewrite the existing production orchestrator, deterministic ti
 ## Testing truthfulness
 Passing unit/CI tests prove code contracts only. They do NOT prove real Whisper.cpp, Ollama, TTS, FFmpeg, RAM limits, or end-to-end movie processing.
 
-Never claim the project is end-to-end validated until a real movie has successfully passed the pipeline on the target Windows machine and the resource constraints have been measured.
+Never claim the project is end-to-end validated until a real 3–4 hour movie has successfully passed the pipeline on the target Windows machine and the resource constraints have been measured.
 
-Use concrete validation milestones instead of vague “production-ready” claims:
+The primary validation milestone is:
 
-- Stage A: 1 real finished video reliably
-- Stage B: 1 video/day reliably
-- Stage C: 2 videos/day reliably
-- Stage D: 3 different movies/day reliably
+- **Core completion:** 1 real 3–4 hour movie finished reliably end-to-end with required QA
+
+Throughput milestones are secondary performance measurements, not completion gates. Record actual throughput only after core completion is proven.
 
 ## Verified vs unverified
 Always distinguish:
@@ -79,9 +80,9 @@ NOT VERIFIED UNTIL PC TESTING:
 - actual Ollama/model inference/performance
 - actual TTS engine performance/quality
 - actual FFmpeg production rendering
-- full 2–3 hour movie processing
+- full 3–4 hour movie processing
 - ≤2 GB additional AI RAM target
-- end-to-end Stage A reliability
+- end-to-end reliability on the target PC
 
 ## Multi-agent coordination
 Before modifying anything, inspect current `master` and recent commits. Prefer small, reviewable changes. Add/update tests with behavior changes. Record unresolved issues in GitHub issues or project documentation when appropriate. Never hide failures by weakening tests or deleting evidence of a regression.
