@@ -7,7 +7,17 @@
 
 ---
 
-## 0. ACTIVE ARCHITECTURE DECISION
+## 0. ACTIVE MULTI-AI COLLABORATION PROTOCOL
+
+The mandatory coordination procedure for ChatGPT, Claude, Grok, and future owner-authorized AI agents is recorded in:
+
+`Project_Control/AI_COLLABORATION_PROTOCOL.md`
+
+It defines startup inspection, architectural-governance boundaries, implementation-evidence rules, current-commit CI verification, change recording, and handoff requirements. It does not replace this project-state record or the active architecture decision.
+
+---
+
+## 1. ACTIVE ARCHITECTURE DECISION
 
 The current runtime and execution-architecture decisions are recorded in:
 
@@ -17,7 +27,7 @@ That document is the active decision record for local-first execution, optional 
 
 ---
 
-## 1. PROJECT OBJECTIVE
+## 2. PROJECT OBJECTIVE
 
 ARK X Cinema is a $0/month movie-recap production system designed to automate as much of the production workflow as practical while retaining final human QA/approval.
 
@@ -31,7 +41,7 @@ Target:
 
 ---
 
-## 2. HARDWARE BASELINE
+## 3. HARDWARE BASELINE
 
 Recorded target workstation baseline:
 - HP Laptop 15-dy2xxx
@@ -45,7 +55,7 @@ The approximate <=2 GB additional AI-workload RAM target remains a validation ta
 
 ---
 
-## 3. LOCKED AD ARCHITECTURE
+## 4. LOCKED AD ARCHITECTURE
 
 The Audio Description asset is supplied separately from the movie.
 
@@ -61,7 +71,7 @@ Do not replace this architecture without an explicit superseding decision.
 
 ---
 
-## 4. CURRENT GITHUB IMPLEMENTATION STATUS
+## 5. CURRENT GITHUB IMPLEMENTATION STATUS
 
 ### Stage-A implementation: COMPLETE on `master`
 
@@ -95,7 +105,7 @@ Issue #1, the historical CI regression, is closed with completed state.
 
 ---
 
-## 5. PC-ONLY VALIDATION STILL REQUIRED
+## 6. PC-ONLY VALIDATION STILL REQUIRED
 
 GitHub CI cannot prove the user's Windows environment. The following remain UNVERIFIED:
 
@@ -113,7 +123,7 @@ Therefore the project is **not yet declared Stage-A production-ready**.
 
 ---
 
-## 6. NEXT MILESTONE
+## 7. NEXT MILESTONE
 
 The next milestone is controlled PC validation, not another architectural rewrite.
 
@@ -128,54 +138,10 @@ TINY TEST
    -> 3 VIDEOS/DAY
 ```
 
-No full-movie run should be the first runtime test.
+No full movie is to be used as the first runtime test.
 
 ---
 
-## 7. LONG-MOVIE SAFEGUARDS
+## 8. HANDOFF / CURRENT-STATE RULE
 
-For long movies the design requires:
-
-- movie-scoped artifacts under `Projects/<movie>/`
-- bounded evidence sent to the local model
-- explicit checkpointed stages
-- artifact integrity verification before resume/skip
-- deterministic intermediate manifests instead of hidden global state
-- explicit disk-space preflight before full rendering
-- cleanup rules that distinguish source media, reusable artifacts, temporary render files, and final outputs
-- safe interruption/resume without deleting earlier verified work
-
-Actual performance and reliability remain PC validation items.
-
----
-
-## 8. FORENSIC AUDIT STATUS
-
-The controlled repository forensic audit recorded in `Project_Control/AUDIT_LEDGER.md` is complete for its GitHub scope.
-
-Historical implementation audits remain historical evidence only.
-
----
-
-## STATUS
-
-GITHUB-SIDE STAGE-A IMPLEMENTATION:
-COMPLETE
-
-GITHUB CI:
-GREEN
-
-FORENSIC GITHUB AUDIT:
-COMPLETE
-
-ARCHITECTURE:
-LOCKED
-
-ACTIVE EXECUTION ARCHITECTURE DECISION:
-`Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`
-
-AD AUDIO -> whisper.cpp -> AD SRT:
-IMPLEMENTED / PC VALIDATION UNVERIFIED
-
-FIRST-MOVIE PRODUCTION:
-PC VALIDATION PENDING
+`Project_Control/AI_COLLABORATION_PROTOCOL.md` is the mandatory multi-AI coordination procedure. `AGENTS.md` is the shared engineering contract. `Project_Control/DECISIONS.md` governs architectural permission. Current master code/tests and applicable current-commit CI establish what is implemented/verified. Historical files, including `ARK_X_Cinema_Current_State.txt`, are evidence only and must not override active Project_Control records or current master evidence.
