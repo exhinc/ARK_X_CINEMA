@@ -7,6 +7,8 @@
 **Audit started:** 2026-08-28  
 **Audit status:** COMPLETE — controlled discovery, repair, re-scan, and final verification completed
 
+**Historical-record boundary:** This ledger records the forensic audit performed against the historical audit baseline above. Entries below describing code, CI, or remaining work are period-specific findings from that audit and must not be treated as the current master state. Current implementation and CI status are maintained by the active Project_Control records and the current `master` commit.
+
 **Purpose:** Evidence ledger for the new exhaustive forensic audit. Historical implementation/status audits are evidence only and do not count as execution of this audit.
 
 ## Status values
@@ -81,7 +83,7 @@ The active `Engine/Tests` suite contains checkpoint, ingestion, intelligence, Ol
 
 ## CI evidence
 
-Latest final-master CI:
+Latest final-master CI **for this historical audit:**
 
 - Workflow: `ARK X Cinema Tests`
 - Run: #116
@@ -91,7 +93,7 @@ Latest final-master CI:
 - Job: `tests` — success
 - Engine test step — success
 
-CI success proves the repository test contract for the final audited commit. It does not prove Windows runtime behavior, model output quality, RAM, TTS, FFmpeg production rendering, or a full movie run. fileciteturn289file0L2-L2
+This CI entry is historical evidence for the audit baseline above. Current master CI must be checked against the current commit before making a current CI claim. CI success proves the repository test contract for the audited commit; it does not prove Windows runtime behavior, model output quality, RAM, TTS, FFmpeg production rendering, or a full movie run.
 
 ## Findings and repairs
 
@@ -101,7 +103,7 @@ CI success proves the repository test contract for the final audited commit. It 
 
 **Repair:** README updated to match the authoritative implementation.
 
-**Evidence:** commit `d71e684cba082a5b9c0ee1307744c07216583df8` records the surgical documentation correction. fileciteturn282file0L3-L7
+**Evidence:** commit `d71e684cba082a5b9c0ee1307744c07216583df8` records the surgical documentation correction.
 
 **Final status:** FIXED / RE-SCANNED.
 
@@ -140,12 +142,12 @@ Reviewed applicable current-master surfaces:
 
 ## Branch/collaboration audit
 
-Current branch inventory:
+Current branch inventory **as recorded during this historical audit**:
 
-- `master` — authoritative default branch.
+- `master` — authoritative default branch at audit time.
 - `github-only/structured-output-and-ci` — branch exists; current repository state does not show the reported structured-output work as a distinct merged branch state. Treat the original report as historical unless independently verified from a diverging branch.
 - `stage-a/final-ci-validation` — validation branch, not master.
-- `stage-a/pre-pc-integration` — unmerged development branch; PR #6 remains open with 25 commits and 20 changed files, base `master`, head `c5f9f235b53b3720a8f407c2ed7caf1685b55b78`. It contains later TTS/edit/FFmpeg/QA integration and is explicitly not counted as current-master completion. fileciteturn284file0L4-L13
+- `stage-a/pre-pc-integration` — unmerged development branch; PR #6 remains open with 25 commits and 20 changed files, base `master`, head `c5f9f235b53b3720a8f407c2ed7caf1685b55b78`. It contains later TTS/edit/FFmpeg/QA integration and is explicitly not counted as current-master completion.
 
 The audited master contains no wholesale replacement of `Engine/orchestrator.py` as part of the controlled forensic repair pass.
 
@@ -159,14 +161,16 @@ These cannot be closed by GitHub-only evidence:
 - actual FFmpeg production rendering and media inspection;
 - real interrupted-run/resume behavior on production media;
 - RAM target of approximately ≤2 GB additional active AI workload;
-- complete 2–3 hour movie processing;
+- complete long-movie processing;
 - final end-to-end Stage-A reliability;
 - final human editorial/copyright/platform-policy judgment.
 
+These are historical audit-scope unknowns. The current Windows validation boundary is defined by the active Project_Control records, not by this historical ledger.
+
 ## Final audit determination
 
-The new controlled forensic audit is **COMPLETE for the GitHub repository scope** represented by this ledger.
+The new controlled forensic audit is **COMPLETE for the GitHub repository scope represented by the historical audit baseline above**.
 
 It does **not** mean the application is bug-free, secure in every possible respect, production-ready, or fully validated on Windows.
 
-The repository is now in a verified state for the next controlled engineering decision, with confirmed defects repaired, historical material preserved, CI evidence current for the final audited commit, and remaining environment-dependent questions explicitly recorded as `UNVERIFIED`.
+The ledger remains a historical evidence record. Current project state must be taken from the active Project_Control records and current `master` evidence.
