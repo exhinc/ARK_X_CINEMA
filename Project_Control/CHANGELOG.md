@@ -9,7 +9,9 @@ Significant project changes are recorded here so AI agents can reconstruct proje
 - Added `Project_Control/AI_COLLABORATION_PROTOCOL.md` as the mandatory shared procedure for ChatGPT, Claude, Grok, and future owner-authorized AI agents.
 - Added `GROK.md` as a dedicated Grok entry point into the shared repository rules.
 - Hardened `AGENTS.md` to require the shared collaboration protocol before significant changes.
-- Added explicit conflict-resolution authority: current master/verified artifacts > current-commit CI/test evidence > active architecture decisions > current status/handoff records > individual AI recommendations > old chat history.
+- Wired the protocol into `CLAUDE.md` and `docs/AI_HANDOFF.md` so dedicated agent entry points converge on the same rules.
+- Wired the protocol into `Project_Control/CURRENT_TASK.md` and the existing active architecture/status documentation chain.
+- Added explicit conflict-resolution authority: current master/verified artifacts > current-commit CI/test evidence > active architecture decisions > current project status/handoff records > individual AI recommendations > old chat history.
 - Established a current-commit-only CI verification rule for claims of CI status.
 - Formalized significant-change recording through Git commits, this changelog, and `DECISIONS.md` for architectural decisions.
 - Added `DECISION-004` to `Project_Control/DECISIONS.md` to lock the collaboration authority/handoff rules.
