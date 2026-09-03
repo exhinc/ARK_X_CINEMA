@@ -4,6 +4,18 @@ Significant project changes are recorded here so AI agents can reconstruct proje
 
 ---
 
+## 2026-09-03 — Final multi-AI audit gate state
+
+- Confirmed the multi-AI coordination layer has converged on one shared protocol, architecture decision record, project state, current task, status, handoff, and entry-point chain.
+- Confirmed `GROK.md` and `CLAUDE.md` converge on `AGENTS.md` plus the shared collaboration protocol.
+- Confirmed the old `ARK_X_Cinema_Current_State.txt` is explicitly historical and cannot override active Project_Control evidence.
+- Confirmed Issue #3 remains intentionally open as the formal acceptance gate because its original body contains stale historical checklist/state text and its required independent second-AI or human acceptance has not yet been recorded.
+- Confirmed no production engine code was changed by this coordination audit.
+
+The coordination layer is considered **implementation-complete but acceptance-pending**, not falsely declared final/100% complete.
+
+---
+
 ## 2026-09-03 — Multi-AI coordination gate reconciliation
 
 - Re-audited the full multi-AI coordination layer rather than treating the new protocol as automatically complete.
@@ -43,40 +55,3 @@ This refinement closes the remaining identified coordination ambiguity without c
 - Added `DECISION-004` to `Project_Control/DECISIONS.md` to lock the collaboration authority/handoff rules.
 
 This hardening changes coordination/documentation only. It does not replace the production architecture or alter PC runtime validation requirements.
-
----
-
-## 2026-08-28 — Permanent forensic audit protocol upgrade
-
-- Expanded `AGENTS.md` with a repository-wide forensic audit protocol.
-- Added `Project_Control/AUDIT_LEDGER.md` for formal repository coverage and uncertainty tracking.
-- Updated `CURRENT_TASK.md` to require the audit ledger during future full audits.
-- Reconciled `IMPLEMENTATION_STATUS.md` with the current modular master implementation and clearly separated repository verification from PC-only runtime validation.
-- Preserved existing ARK X Cinema architecture constraints, multi-agent rules, evidence-first intelligence rules, checkpoint/state requirements, low-RAM policy, and legal-source constraints.
-
-The new permanent repair sequence is:
-
-`AUDIT → DISCOVER → ROOT-CAUSE ANALYSIS → FIX → TEST → RE-SCAN → CROSS-FILE REGRESSION AUDIT → TEST AGAIN → FINAL VERIFICATION`
-
----
-
-## 2026-08-28 — Stage-A core engineering baseline
-
-- Runtime/configuration foundation integrated into the active engine.
-- Canonical per-movie workspace/source-manifest implementation established.
-- Evidence packet and structured-output pipeline established.
-- Recap script engine and script-stage boundary established.
-- Resumable stage/checkpoint infrastructure established.
-
-Real TTS, FFmpeg production rendering, final narration subtitles, full end-to-end execution, and PC runtime/performance validation remain explicit later gates unless proven by current master evidence.
-
----
-
-## 2026-08-27 — Architecture and agent-control consolidation
-
-- Locked AD architecture: separate AD audio → whisper.cpp → timestamped AD SRT.
-- Established Project_Control source-of-truth records.
-- Established multi-agent coordination rules.
-- Established runtime/configuration foundation.
-
-Historical patch scripts and backups are retained as development evidence and are not the primary production modification mechanism.
