@@ -1,12 +1,18 @@
 # ARK X Cinema — Project Status
 
-**Last repository update:** 2026-08-31
+**Last repository update:** 2026-09-03
 
 ## Status legend
 - 🟢 Implemented / repository-tested
 - 🟡 Needs real-environment validation
 - 🔵 Next
 - 🔴 Known defect
+
+## Active execution architecture decision
+
+The broader runtime/execution strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first decisions, and monetization-oriented editing policy.
+
+This decision record does not constitute Windows runtime validation or production-readiness evidence.
 
 ## Current state
 
@@ -30,7 +36,7 @@
 | Stage state | 🟢 | Ordered pipeline state with prerequisite enforcement |
 | Resumable execution | 🟢 | Safe skip, failure recording, retry, and artifact validation |
 | Stage-A runner | 🟢 | Complete repository-side composition from ingestion through QA |
-| GitHub CI | 🟢 | Master Stage-A merge commit passed Actions run #123; subsequent docs-only commits are pending fresh CI evidence |
+| GitHub CI | 🟢 | Current documentation baseline was updated after the Stage-A merge; current-commit CI must be checked before using CI as fresh validation evidence |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | Real TTS test | 🟡 | Requires Windows PC |
@@ -53,11 +59,11 @@ AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
 
 ## Long-movie policy
 
-Long-movie safeguards and test sequencing are recorded in `Project_Control/LONG_MOVIE_READINESS.md`. The design requires movie-scoped artifacts, bounded evidence, explicit stage checkpoints, artifact validation, disk-space preflight, controlled cleanup, and tiny -> medium -> full validation.
+Long-movie safeguards and test sequencing are recorded in `Project_Control/LONG_MOVIE_READINESS.md`, while the broader runtime strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. The design requires movie-scoped artifacts, bounded evidence, explicit stage checkpoints, artifact validation, disk-space preflight, controlled cleanup, and tiny -> medium -> full validation.
 
 ## Multi-agent coordination
 
-Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`. Current code and current verified CI evidence override stale historical claims.
+Shared instructions are in `AGENTS.md`; Claude's entry point is `CLAUDE.md`; the persistent cross-agent handoff is `docs/AI_HANDOFF.md`. Current code and current verified CI evidence override stale historical claims. Agents must also consult the active execution architecture decision before proposing changes in its covered areas.
 
 ## Immediate next step
 
