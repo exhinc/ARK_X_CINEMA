@@ -24,7 +24,7 @@ It supplements this task record. The immediate gate remains PC validation; do no
 
 **PHASE 2 — STAGE-A IMPLEMENTATION COMPLETE / PC VALIDATION GATE**
 
-The GitHub-side Stage-A production composition is complete on `master`. The remaining work is controlled runtime validation on the target Windows machine, followed by reliability testing and scaling.
+The GitHub-side Stage-A production composition is complete on `master`. The remaining work is controlled runtime validation on the target Windows machine, followed by reliability testing. Throughput optimization is secondary and is not a core completion gate.
 
 ---
 
@@ -85,7 +85,14 @@ Implemented:
 - Claude/shared-handoff convergence
 - explicit quarantine of the historical root state snapshot
 
-The formal acceptance point remains Issue #3, which still contains historical checklist/state text and requires reconciliation plus independent second-AI or human acceptance before closure.
+The formal acceptance point remains Issue #3, which still contains historical checklist/state text and requires reconciliation plus independent acceptance before closure.
+
+### Build #8 — Core Production Completion Goal Correction
+**IMPLEMENTED / CI-VERIFIED**
+
+The project objective has been corrected so that the core completion criterion is reliable end-to-end processing of one real 3–4 hour movie on the target Windows PC, producing a finished recap that passes required QA.
+
+A fixed daily movie quota is no longer a completion requirement. Throughput is measured and optimized only after reliable one-movie processing is established.
 
 ---
 
@@ -93,9 +100,11 @@ The formal acceptance point remains Issue #3, which still contains historical ch
 
 ### GitHub implementation gate
 
-**IMPLEMENTATION COMPLETE**
+**IMPLEMENTATION COMPLETE / CURRENT-MASTER CI VERIFIED**
 
-The repository-side Stage-A composition and coordination framework are implemented. Current-commit CI must be verified before describing the newest documentation tree as CI-verified.
+The current master coordination-hardening tree was manually run through GitHub Actions at commit `98625c2b5aa6ddb9cdb53f1318449e4feb7b8679` and completed successfully. A Node.js deprecation warning was present but did not fail the workflow.
+
+The remaining coordination acceptance event is the independent acceptance required by Issue #3.
 
 ### PC gate
 
@@ -112,10 +121,10 @@ Required evidence:
 7. interrupted-run/resume test on real media
 8. short real-media end-to-end run
 9. medium real-media run
-10. first full-movie run
+10. first full 3–4 hour movie run
 11. final human QA
 
-Do not call Stage A production-ready until these runtime gates are passed.
+Do not call the core production goal complete until the full-length real-movie validation is passed.
 
 ---
 
@@ -140,16 +149,16 @@ AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
 ## NEXT EXECUTION ORDER
 
 ```text
-1. Complete current-commit CI verification / Issue #3 acceptance
-2. PC preflight
-3. Tiny test
-4. Medium test
-5. First full movie
-6. Human QA
-7. Reliability fixes only
-8. 1 video/day
-9. 2 videos/day
-10. 3 videos/day
+1. Complete Issue #3 acceptance and close the GitHub-only coordination gate
+2. Freeze coordination architecture unless real use exposes a concrete defect
+3. PC preflight
+4. Tiny test
+5. Medium real-media test
+6. First full 3–4 hour movie
+7. Human QA
+8. Reliability fixes only
+9. Measure/optimize throughput empirically
+10. Process additional movies as system capacity allows
 ```
 
 No new architecture should be introduced during the runtime-validation gate unless testing exposes a concrete defect that requires it.
