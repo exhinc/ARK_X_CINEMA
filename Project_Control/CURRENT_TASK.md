@@ -1,6 +1,14 @@
 # ARK X CINEMA — CURRENT TASK
 
-**Last Updated:** 2026-08-31
+**Last Updated:** 2026-09-03
+
+---
+
+## ACTIVE ARCHITECTURE DECISION
+
+The active runtime/execution architecture decision is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. Read that record before proposing changes to model runtime, cloud/accelerator execution, long-movie persistence, FFmpeg usage, or monetization-oriented editing policy.
+
+It supplements this task record. The immediate gate remains PC validation; do not treat the decision record as evidence that runtime validation has been completed.
 
 ---
 
