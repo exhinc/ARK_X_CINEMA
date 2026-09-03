@@ -15,6 +15,8 @@ The mandatory multi-agent startup, authority/conflict-resolution, current-commit
 
 Every agent must follow that protocol before making significant repository changes. `Project_Control/CHANGELOG.md` records project-significant history, and `Project_Control/DECISIONS.md` records architectural decisions.
 
+Important distinction: `Project_Control/DECISIONS.md` governs architectural permission, while current-master code/tests govern what is actually implemented and observed. Code must not silently supersede a locked architecture decision.
+
 ## Project objective
 ARK X Cinema is a $0/month, highly automated YouTube movie-recap production system. The ultimate target is 3 distinct recap videos/day, with human final QA/approval. Movie/source files must be legally obtained; no piracy or DRM bypass.
 
@@ -137,7 +139,7 @@ The second audit must specifically search for additional occurrences of discover
 Agents should automatically fix confirmed defects that can be safely fixed within the existing architecture. Do not silently overturn ARK X Cinema established or locked architectural decisions. If a defect cannot be correctly fixed without changing a locked decision, identify and document the conflict and escalate the architectural decision instead of silently replacing the architecture.
 
 ## Completion discipline
-Do not add new architecture merely because a stage exists as an adapter. An adapter is not the same as a production implementation. The actual external/runtime integration must be explicitly verified before it is described as complete.
+Do not add new architecture merely because a stage exists as an adapter. An adapter is not the same thing as a validated production implementation. The actual external/runtime integration must be explicitly verified before it is described as complete.
 
 A full audit cannot be declared complete merely because the application builds, tests pass, obvious files were inspected, or major bugs were fixed. Before declaring completion, establish repository coverage, system understanding, findings, fixes, validation performed, remaining unknowns, environmental limitations, and unresolved issues. Do not claim 100% correctness, security, or bug-free status.
 
