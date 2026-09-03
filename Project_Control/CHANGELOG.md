@@ -4,6 +4,19 @@ Significant project changes are recorded here so AI agents can reconstruct proje
 
 ---
 
+## 2026-09-03 — Final multi-AI coordination audit refinements
+
+- Refined `Project_Control/AI_COLLABORATION_PROTOCOL.md` to separate **architectural governance** from **implementation truth**.
+- Locked architecture decisions now constrain permitted changes; current code cannot silently redefine architecture.
+- Current-commit CI/test evidence is treated as the strongest evidence of tested behavior, ahead of untested code inspection.
+- Added `Project_Control/DECISIONS.md` startup coverage to the mandatory coordination sequence.
+- Classified `ARK_X_Cinema_Current_State.txt` as a historical 2026-08-26 audit snapshot; it is not current project state and must not override Project_Control or current master evidence.
+- Preserved the dedicated `GROK.md` entry point and shared Claude/ChatGPT authority chain.
+
+This refinement closes the remaining identified coordination ambiguity without changing production code or PC validation requirements.
+
+---
+
 ## 2026-09-03 — Multi-AI collaboration protocol hardening
 
 - Added `Project_Control/AI_COLLABORATION_PROTOCOL.md` as the mandatory shared procedure for ChatGPT, Claude, Grok, and future owner-authorized AI agents.
@@ -11,8 +24,7 @@ Significant project changes are recorded here so AI agents can reconstruct proje
 - Hardened `AGENTS.md` to require the shared collaboration protocol before significant changes.
 - Wired the protocol into `CLAUDE.md` and `docs/AI_HANDOFF.md` so dedicated agent entry points converge on the same rules.
 - Wired the protocol into `Project_Control/CURRENT_TASK.md` and the existing active architecture/status documentation chain.
-- Added explicit conflict-resolution authority: current master/verified artifacts > current-commit CI/test evidence > active architecture decisions > current project status/handoff records > individual AI recommendations > old chat history.
-- Established a current-commit-only CI verification rule for claims of CI status.
+- Added explicit conflict-resolution authority and a current-commit-only CI verification rule.
 - Formalized significant-change recording through Git commits, this changelog, and `DECISIONS.md` for architectural decisions.
 - Added `DECISION-004` to `Project_Control/DECISIONS.md` to lock the collaboration authority/handoff rules.
 
