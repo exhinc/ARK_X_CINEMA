@@ -50,18 +50,19 @@ def test_discover_source_rejects_multiple_sources(tmp_path, monkeypatch):
 def test_main_runs_stage_a_for_explicit_source(monkeypatch, tmp_path, capsys):
     source = tmp_path / "Movie"
     source.mkdir()
+    workspace = tmp_path / "Projects" / "Movie"
     calls = []
 
     def fake_run_stage_a(path):
         calls.append(path)
-        return tmp_path / "Projects" / "Movie"
+        return workspace
 
     monkeypatch.setattr(run_production, "run_stage_a", fake_run_stage_a)
     monkeypatch.setattr(run_production.sys, "argv", ["run_production.py", str(source)])
 
     assert run_production.main() == 0
     assert calls == [source.resolve()]
-    assert str(source.resolve()) in capsys.readouterr().out
+    assert str(workspace) in capsys.readouterr().out
 
 
 def test_main_rejects_missing_explicit_source(monkeypatch, tmp_path):
