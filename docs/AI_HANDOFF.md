@@ -10,7 +10,12 @@ The owner has explicitly identified ChatGPT, Claude, and Grok as the primary AI 
 
 GitHub `master` is the shared engineering source of truth. Current code, tests, and current GitHub Actions results outrank historical chat statements.
 
-## 3. Hard constraints
+## 3. Active execution architecture decision
+The broader runtime/execution strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first runtime decisions, and monetization-oriented editing policy.
+
+Future agents must read that decision before proposing changes in those areas. It complements this handoff; it does not constitute PC runtime validation or production-readiness evidence.
+
+## 4. Hard constraints
 - $0/month software/API budget.
 - Local/free/open-source first.
 - Windows 11 low-RAM target: approximately 7.65 GB usable RAM.
@@ -19,20 +24,20 @@ GitHub `master` is the shared engineering source of truth. Current code, tests, 
 - Human final QA is mandatory.
 - Do not silently replace or rewrite established production orchestration.
 
-## 4. Authoritative pipeline
+## 5. Authoritative pipeline
 Legal movie/source files → movie workspace/ingestion → existing subtitles/transcript timing when available + separate AD audio → whisper.cpp converts AD audio to timestamped SRT → canonical timeline → bounded evidence packets → evidence-first local LLM intelligence → original recap script → local TTS → FFmpeg assembly → automated/deterministic media QA → human approval → upload preparation.
 
 The AD asset is separate audio (typically MP3). It is not assumed to be embedded in the movie and is not assumed to already be an SRT.
 
-## 5. Evidence-first intelligence
+## 6. Evidence-first intelligence
 The LLM must receive bounded evidence packets rather than an unrestricted movie. Preserve scene ID, timestamps, source (`subtitle` vs `ad`), dialogue, visual/action evidence, and evidence limits. Every claim must be traceable to supplied evidence. Unsupported facts must remain unknown/unsupported.
 
-## 6. What the repository establishes
+## 7. What the repository establishes
 The repository contains foundations/boundaries for runtime/config, movie workspace, subtitle + AD ingestion, AD transcription, canonical timeline, bounded evidence packets, intelligence, script, TTS, video assembly, QA, ordered/resumable stage state, atomic checkpoints, artifact SHA-256 verification, and thin adapters.
 
 An adapter/boundary is not the same thing as a validated production engine. Do not claim real runtime validation merely because a mock/injected implementation passes CI.
 
-## 7. Stage order and checkpoints
+## 8. Stage order and checkpoints
 Stages are ordered:
 1. ingestion
 2. transcription
@@ -45,10 +50,10 @@ Stages are ordered:
 
 Later stages require completed prerequisites. A stage is complete only when its required artifact succeeds and is checkpointed/verified according to the current implementation. Failed stages must propagate failure. Resume must safely skip only intact, verified completed work.
 
-## 8. CI truth
+## 9. CI truth
 Never call CI green without checking the GitHub Actions result for the current commit/tree. Historical runs are not current proof. Repository tests prove portable code contracts; they do not prove Windows runtime behavior.
 
-## 9. Still unverified until Windows testing
+## 10. Still unverified until Windows testing
 - actual Whisper.cpp execution/performance and AD → SRT quality
 - actual Ollama/Qwen runtime and structured-output behavior under resource limits
 - actual TTS engine selection, quality, speed, and memory use
@@ -58,22 +63,22 @@ Never call CI green without checking the GitHub Actions result for the current c
 - complete processing of a real 2–3 hour movie
 - Stage A end-to-end reliability
 
-## 10. Concrete milestones
+## 11. Concrete milestones
 Do not use vague “production-ready” status labels. Use:
 - Stage A: 1 real finished video reliably
 - Stage B: 1 real video/day reliably
 - Stage C: 2 real videos/day reliably
 - Stage D: 3 different movies/day reliably
 
-## 11. Safe multi-agent modification procedure
+## 12. Safe multi-agent modification procedure
 Before editing: fetch current `master`, read `AGENTS.md`, this file, and `docs/PROJECT_STATUS.md`; inspect affected code/tests; check relevant recent commits and CI.
 
 After editing: make the smallest safe change, add/update focused tests, verify current-commit CI, synchronize documentation, and record significant unresolved defects in GitHub Issues. Never weaken tests or erase useful history to make a result look successful. Never revert another agent's work based only on old chat context.
 
-## 12. Copyright discipline
+## 13. Copyright discipline
 Generated recap narration must be original prose derived from structured intelligence. Do not build a workflow that reproduces movie subtitles/dialogue as the narration. Keep source evidence separate from generated narration.
 
-## 13. Current status language
+## 14. Current status language
 Use:
 - 🟢 Implemented/repository-tested
 - 🟡 Requires current-commit CI or real-environment verification
