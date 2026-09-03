@@ -12,6 +12,8 @@
 
 The broader runtime/execution strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. It governs local-first execution, optional accelerator/cloud experiments, replaceable LLM backends, long-movie persistence, FFmpeg usage, benchmark-first decisions, and monetization-oriented editing policy.
 
+The core production-completion criterion is one reliable real 3–4 hour movie completed end-to-end on the target Windows PC with required automated and human QA. There is no fixed daily production quota.
+
 This decision record does not constitute Windows runtime validation or production-readiness evidence.
 
 ## Active multi-AI coordination protocol
@@ -40,7 +42,7 @@ The mandatory shared coordination procedure is recorded in `Project_Control/AI_C
 | Stage state | 🟢 | Ordered pipeline state with prerequisite enforcement |
 | Resumable execution | 🟢 | Safe skip, failure recording, retry, and artifact validation |
 | Stage-A runner | 🟢 | Complete repository-side composition from ingestion through QA |
-| GitHub CI | 🟡 | Stage-A merge commit passed run #123; the coordination-hardening commits require a completed current-commit Actions run before this row is green |
+| GitHub CI | 🟢 | Current master commit `98625c2b5aa6ddb9cdb53f1318449e4feb7b8679` manually verified by successful GitHub Actions run #33721190514 |
 | Real Ollama/Qwen test | 🟡 | Requires Windows PC |
 | Real whisper.cpp test | 🟡 | Requires Windows PC |
 | Real TTS test | 🟡 | Requires Windows PC |
@@ -63,7 +65,7 @@ AD AUDIO -> whisper.cpp -> TIMESTAMPED AD SRT -> MOVIE INTELLIGENCE
 
 ## Long-movie policy
 
-Long-movie safeguards and test sequencing are recorded in `Project_Control/LONG_MOVIE_READINESS.md`, while the broader runtime strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. The design requires movie-scoped artifacts, bounded evidence, explicit stage checkpoints, artifact validation, disk-space preflight, controlled cleanup, and tiny -> medium -> full validation.
+Long-movie safeguards and test sequencing are recorded in `Project_Control/LONG_MOVIE_READINESS.md`, while the broader runtime strategy is recorded in `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`. The design requires movie-scoped artifacts, bounded evidence, explicit stage checkpoints, artifact validation, disk-space preflight, controlled cleanup, and tiny -> medium -> full validation before the first full movie.
 
 ## Multi-agent coordination
 
@@ -73,7 +75,7 @@ The old `ARK_X_Cinema_Current_State.txt` is a dated historical audit snapshot an
 
 ## Immediate next step
 
-Complete current-commit CI verification for the coordination-hardening tree and obtain the independent second-AI or human acceptance required by Issue #3. Then close the GitHub-only gate and move to controlled Windows runtime validation.
+Obtain the independent acceptance required by Issue #3, reconcile its stale historical body against current master evidence, and then close the GitHub-only coordination gate. After that, move to controlled Windows runtime validation for the one-movie completion criterion.
 
 ## Resolved issue
 
