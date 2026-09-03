@@ -118,15 +118,22 @@ The mandatory procedure is defined in:
 
 `Project_Control/AI_COLLABORATION_PROTOCOL.md`
 
-## Authority order
+## Architectural governance
 
-When sources disagree, resolve them in this order:
+Locked architecture decisions constrain what changes are permitted. Current
+code does not silently supersede a locked architecture decision. If the
+implementation and a locked decision conflict, the agent must treat the
+condition as a consistency/defect finding and determine whether the code should
+be repaired or whether a new explicit superseding decision is required.
 
+## Implementation truth
+
+For the implementation currently on `master`, observed behavior follows this
+evidence order:
+
+CURRENT-COMMIT VERIFIED TEST / CI EVIDENCE
+>
 CURRENT MASTER CODE / VERIFIED ARTIFACTS
->
-CURRENT-COMMIT TEST / CI EVIDENCE
->
-ACTIVE ARCHITECTURE DECISIONS
 >
 CURRENT PROJECT STATUS / HANDOFF RECORDS
 >
@@ -134,8 +141,9 @@ INDIVIDUAL AI RECOMMENDATION
 >
 OLD CHAT HISTORY
 
-A proposed architectural change that conflicts with a locked decision requires
-an explicit new decision before implementation.
+A current-commit test/CI result is stronger evidence about tested behavior than
+an untested code inspection. Status and handoff files explain intent/state but
+do not override implementation evidence.
 
 ## Startup requirement
 
