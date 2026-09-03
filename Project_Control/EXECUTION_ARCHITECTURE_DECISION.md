@@ -30,6 +30,8 @@ ARK X CINEMA
 
 The project will make runtime decisions from **measured workload results on the actual target machine**, not from generic claims about RAM, speed, model size, or cloud quotas.
 
+The core production-completion criterion is defined by DECISION-005 in `Project_Control/DECISIONS.md`: one real 3–4 hour movie must complete reliably end-to-end on the target Windows PC with required automated and human QA. There is no fixed daily production quota.
+
 ---
 
 ## 2. Current Architecture Remains Locked
@@ -201,18 +203,17 @@ Required design principles remain:
 - safe interruption/resume
 - incremental artifact persistence where practical
 
-The project will progress through:
+The runtime validation path is:
 
 ```text
 TINY TEST
    -> MEDIUM REAL-MEDIA TEST
-   -> FIRST FULL MOVIE
+   -> FIRST FULL 3–4 HOUR MOVIE
    -> HUMAN QA
    -> STAGE-A RELIABILITY
-   -> 1 VIDEO/DAY
-   -> 2 VIDEOS/DAY
-   -> 3 VIDEOS/DAY
 ```
+
+After the one-movie reliability target is achieved, throughput is measured and optimized empirically. Additional movies may be processed sequentially as hardware, storage, and processing time permit. No fixed daily quota is required for core project completion.
 
 No full movie is to be used as the first runtime test.
 
@@ -270,7 +271,7 @@ https://support.google.com/youtube/answer/1311392
 This document does **not** claim that:
 
 - the <=2 GB RAM target has been achieved;
-- a full 2-4 hour movie has completed end-to-end successfully;
+- a full 3-4 hour movie has completed end-to-end successfully;
 - local execution is faster than cloud execution;
 - Colab or Kaggle will always provide a particular GPU or RAM profile;
 - Ollama is faster than llama.cpp for this workload;
@@ -313,4 +314,4 @@ No single tutorial, benchmark, AI recommendation, or cloud-resource screenshot i
 
 ## FINAL DECISION
 
-**KEEP THE CURRENT CORE. MEASURE THE REAL MACHINE. KEEP BACKENDS SWAPPABLE. USE CLOUD ONLY WHEN MEASURED USEFUL. PERSIST LONG-MOVIE STATE TO DISK. DO NOT BUILD COPYRIGHT-DETECTION EVASION INTO THE PIPELINE.**
+**KEEP THE CURRENT CORE. MEASURE THE REAL MACHINE. KEEP BACKENDS SWAPPABLE. USE CLOUD ONLY WHEN MEASURED USEFUL. PERSIST LONG-MOVIE STATE TO DISK. DO NOT BUILD COPYRIGHT-DETECTION EVASION INTO THE PIPELINE. COMPLETE THE CORE GOAL BY PROVING ONE REAL 3–4 HOUR MOVIE END-TO-END; TREAT THROUGHPUT AS AN EMPIRICAL PERFORMANCE METRIC, NOT A FIXED QUOTA.**
