@@ -160,3 +160,32 @@ reference the current commit/tree that was actually tested.
 Significant project changes are recorded in `Project_Control/CHANGELOG.md`.
 Architectural changes are recorded in this file. Git commit history remains
 the immutable chronological record.
+
+---
+
+# DECISION-005 — CORE PRODUCTION COMPLETION AND THROUGHPUT POLICY
+
+**Date:** 2026-09-03  
+**Status:** LOCKED
+
+## Decision
+
+The core ARK X Cinema production-completion criterion is **reliable end-to-end processing of one real 3–4 hour movie** on the target Windows PC, using legally obtained source material, through the intended pipeline to a finished recap video that passes required automated and human QA.
+
+A fixed daily movie quota is **not** a core completion requirement.
+
+After one full-length movie is proven reliable, additional throughput is treated as an empirical performance property of the system. Practical throughput depends on actual processing time, hardware capacity, RAM behavior, storage, workload characteristics, and later optimization.
+
+The system may process additional movies sequentially whenever capacity permits. Targets such as one movie/day or multiple movies/day may be measured or optimized later, but failure to reach any predetermined daily quota does not mean the core project is incomplete.
+
+## Reason
+
+The project is intended to automate reliable production, not to impose an arbitrary production quota. A fixed daily target can distort engineering decisions and encourage premature scaling before one complete long-movie run is proven stable.
+
+## Validation boundary
+
+The one-movie completion criterion still requires real Windows validation, real media, measured resource use, successful end-to-end execution, and human QA. Repository implementation and CI remain necessary but are not sufficient evidence of completion.
+
+## Supersession rule
+
+Any future change to the core completion criterion should be recorded as a new explicit decision with evidence explaining why the target is being changed.
