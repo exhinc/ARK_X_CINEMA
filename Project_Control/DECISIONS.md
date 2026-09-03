@@ -101,3 +101,54 @@ Required control documents:
 
 Git provides historical file versions.
 
+---
+
+# DECISION-004 — MULTI-AI COLLABORATION AUTHORITY AND HANDOFF PROTOCOL
+
+**Date:** 2026-09-03  
+**Status:** LOCKED
+
+## Decision
+
+ChatGPT, Claude, Grok, and any future AI agent explicitly added by the owner
+must use the same repository-backed startup, authority, conflict-resolution,
+CI-verification, and change-record rules.
+
+The mandatory procedure is defined in:
+
+`Project_Control/AI_COLLABORATION_PROTOCOL.md`
+
+## Authority order
+
+When sources disagree, resolve them in this order:
+
+CURRENT MASTER CODE / VERIFIED ARTIFACTS
+>
+CURRENT-COMMIT TEST / CI EVIDENCE
+>
+ACTIVE ARCHITECTURE DECISIONS
+>
+CURRENT PROJECT STATUS / HANDOFF RECORDS
+>
+INDIVIDUAL AI RECOMMENDATION
+>
+OLD CHAT HISTORY
+
+A proposed architectural change that conflicts with a locked decision requires
+an explicit new decision before implementation.
+
+## Startup requirement
+
+Agents must complete the repository inspection sequence defined in the
+collaboration protocol before proposing or making significant changes.
+
+## CI requirement
+
+Historical CI results do not prove newer commits. Claims about CI status must
+reference the current commit/tree that was actually tested.
+
+## Change history requirement
+
+Significant project changes are recorded in `Project_Control/CHANGELOG.md`.
+Architectural changes are recorded in this file. Git commit history remains
+the immutable chronological record.
