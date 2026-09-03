@@ -6,6 +6,8 @@ import sys
 ENGINE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ENGINE))
 
+import pytest
+
 import run_production  # noqa: E402
 
 
@@ -47,6 +49,7 @@ def test_discover_source_rejects_multiple_sources(tmp_path, monkeypatch):
 
 def test_main_runs_stage_a_for_explicit_source(monkeypatch, tmp_path, capsys):
     source = tmp_path / "Movie"
+    source.mkdir()
     calls = []
 
     def fake_run_stage_a(path):
@@ -59,3 +62,11 @@ def test_main_runs_stage_a_for_explicit_source(monkeypatch, tmp_path, capsys):
     assert run_production.main() == 0
     assert calls == [source.resolve()]
     assert str(source.resolve()) in capsys.readouterr().out
+
+
+def test_main_rejects_missing_explicit_source(monkeypatch, tmp_path):
+    source = tmp_path / "MissingMovie"
+    monkeypatch.setattr(run_production.sys, "argv", ["run_production.py", str(source)])
+
+    with pytest.raises(run_production.StageARunnerError, match="Production source does not exist"):
+        run_production.main()
