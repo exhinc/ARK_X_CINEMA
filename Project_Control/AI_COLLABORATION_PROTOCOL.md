@@ -14,23 +14,30 @@ Before proposing or making a repository change, the agent must:
 3. Read `Project_Control/CURRENT_TASK.md`.
 4. Read `Project_Control/MULTI_AI_STATUS.md`.
 5. Read `Project_Control/EXECUTION_ARCHITECTURE_DECISION.md`.
-6. Read `docs/PROJECT_STATUS.md` and `docs/AI_HANDOFF.md` when the task affects project status or multi-agent coordination.
-7. Inspect the actual affected code/tests.
-8. Inspect recent `master` commits.
-9. Check GitHub Actions for the current commit before describing CI as verified.
+6. Read `Project_Control/DECISIONS.md`.
+7. Read `docs/PROJECT_STATUS.md` and `docs/AI_HANDOFF.md` when the task affects project status or multi-agent coordination.
+8. Inspect the actual affected code/tests.
+9. Inspect recent `master` commits.
+10. Check GitHub Actions for the current commit before describing CI as verified.
 
 An agent must not rely on a previous chat as a substitute for this repository inspection.
 
 ## 2. Authority and conflict resolution
 
-When sources disagree, use this authority order:
+The project has two distinct kinds of authority and they must not be confused.
+
+### Architectural governance
+
+Locked architecture decisions define what changes are permitted. Code must not silently supersede a locked architectural decision. To intentionally change a locked architecture, the agent must create a new explicit decision identifying the decision being superseded, the evidence supporting the change, affected paths, compatibility/rollback implications, and required validation.
+
+### Implementation truth
+
+For the implementation that is currently on `master`, use this evidence order:
 
 ```text
+CURRENT-COMMIT VERIFIED TEST / CI EVIDENCE
+        >
 CURRENT MASTER CODE / VERIFIED ARTIFACTS
-        >
-CURRENT-COMMIT TEST / CI EVIDENCE
-        >
-ACTIVE ARCHITECTURE DECISIONS
         >
 CURRENT PROJECT STATUS / HANDOFF RECORDS
         >
@@ -39,9 +46,11 @@ INDIVIDUAL AI RECOMMENDATION
 OLD CHAT HISTORY
 ```
 
-A current architecture decision can constrain an implementation even when code currently differs; a confirmed code defect should be repaired rather than defended by documentation. A change that would supersede a locked architectural decision requires a new explicit decision record.
+A passing current-commit test/CI result is stronger evidence about observed behavior than an untested code inspection. Current code remains the implementation source of truth when interpreting what is actually present. Project status and handoff records explain state and intent but do not override code or test evidence.
 
 No AI may treat another AI's opinion as authoritative merely because it sounds more confident.
+
+When a current implementation conflicts with a locked architecture decision, treat it as a **consistency/defect finding**, not as automatic permission to redefine the architecture. Determine whether the implementation is wrong or whether a formal superseding decision is required.
 
 ## 3. Current-commit CI rule
 
