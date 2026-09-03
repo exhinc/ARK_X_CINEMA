@@ -30,7 +30,7 @@ The active runtime/execution architecture is recorded in `Project_Control/EXECUT
 
 - `AGENTS.md` is the shared AI engineering contract.
 - `Project_Control/AI_COLLABORATION_PROTOCOL.md` is the mandatory coordination procedure.
-- `Project_Control/AUDIT_LEDGER.md` records the controlled forensic audit.
+- `Project_Control/AUDIT_LEDGER.md` records the controlled forensic audit and is explicitly a historical audit record tied to its recorded audit baseline.
 - `Project_Control/DECISIONS.md` contains the locked architecture decisions, including DECISION-005 for the one-movie completion criterion.
 - `GROK.md` and `CLAUDE.md` are dedicated agent entry points that converge on the shared rules.
 - `docs/AI_HANDOFF.md` is the persistent cross-agent handoff.
@@ -65,7 +65,7 @@ The following remain unverified until tested on the target Windows machine:
 
 ## 6. COORDINATION ACCEPTANCE CHECKPOINT
 
-Issue #3 is the coordination acceptance checkpoint. The repository-side controls are implemented and the current master has a successful CI result for the tree that was verified. The remaining acceptance record is:
+Issue #3 is the coordination acceptance checkpoint. The repository-side controls are implemented and the current master has a successful CI result for the currently verified commit. The remaining acceptance record is:
 
 1. two independent AI reviews of the current repository evidence; and
 2. human project-owner acceptance.
